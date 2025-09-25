@@ -16,6 +16,7 @@
 
       nix.openssh.authorizedKeys.keys = [
         # TODO: insert hydra's key
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFjThKUxa07cl3mwZH2tIxpCbedtoHpPr+CmsUYKVw3p root@pascal"
       ]
       ++ authorizedKeys;
     };
