@@ -6,4 +6,8 @@
   environment.systemPackages = with pkgs; [
     nvtopPackages.nvidia
   ];
+
+  nix.settings.system-features = [
+    "cuda"
+  ];
 }
