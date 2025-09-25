@@ -7,6 +7,7 @@
   # RTX 6000 ada
   hardware.nvidia.open = true;
   nix.settings.system-features = [ "cuda-ada" ];
+  programs.nix-required-mounts.allowedPatterns.nvidia-gpu.onFeatures = [ "cuda-ada" ];
 
   boot.loader = {
     systemd-boot = {

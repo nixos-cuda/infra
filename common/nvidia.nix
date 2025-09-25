@@ -7,6 +7,11 @@
     nvtopPackages.nvidia
   ];
 
+  programs.nix-required-mounts = {
+    enable = true;
+    presets.nvidia-gpu.enable = true;
+  };
+
   nix.settings.system-features = [
     "cuda"
   ];
