@@ -9,6 +9,8 @@
       experimental-features = "nix-command flakes";
 
       warn-dirty = false;
+
+      trusted-users = [ "nix" ];
     };
 
     # Garbage collection

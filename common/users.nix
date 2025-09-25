@@ -9,7 +9,7 @@
       };
 
       nix = {
-        isSystemUser = true;
+        isNormalUser = true;
         group = "nix";
       };
     };
