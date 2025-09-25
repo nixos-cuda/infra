@@ -3,6 +3,7 @@
   imports = [
     inputs.disko.nixosModules.disko
     ./nix.nix
+    ./nvidia.nix
     ./ssh.nix
     ./users.nix
   ];
@@ -14,13 +15,9 @@
 
   networking.firewall.enable = true;
 
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.graphics.enable = true;
-
   environment.systemPackages = with pkgs; [
     btop
     htop
-    nvtopPackages.nvidia
   ];
   programs.neovim = {
     enable = true;
