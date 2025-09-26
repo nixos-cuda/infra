@@ -17,6 +17,9 @@
     efi.canTouchEfiVariables = true;
   };
 
-  networking.hostName = "ada";
+  networking = {
+    hostName = "ada";
+    hostId = "7b3b5a4c";
+  };
   system.stateVersion = "25.05";
 }
