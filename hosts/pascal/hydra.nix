@@ -1,3 +1,4 @@
+# TODO: move to hydra
 { config, ... }:
 {
   nix = {
@@ -20,6 +21,23 @@
         ];
         mandatoryFeatures = [
           "cuda"
+        ];
+      }
+
+      # CPU builder
+      {
+        hostName = "91.224.148.57";
+        sshUser = "nix";
+        sshKey = "/etc/ssh/ssh_key_builder";
+        # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
+        publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUJyc3o4UkttbkNCdWEzQ3djMnRYOEYvYXVBbWNTcjlRcWVMSnRkL0ZLTHMgcm9vdEBuaXhvcwo=";
+        systems = [ "x86_64-linux" ];
+        maxJobs = 8;
+        supportedFeatures = [
+          "benchmark"
+          "big-parallel"
+          "kvm"
+          "nixos-test"
         ];
       }
     ];
