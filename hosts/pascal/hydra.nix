@@ -24,6 +24,22 @@
         ];
       }
 
+      # TODO remove
+      {
+        hostName = "localhost";
+        systems = [ "x86_64-linux" ];
+        supportedFeatures = [
+          "benchmark"
+          "big-parallel"
+          "kvm"
+          "nixos-test"
+          "cuda-pascal" # TODO
+        ];
+        mandatoryFeatures = [
+          "cuda"
+        ];
+      }
+
       # CPU builder
       {
         hostName = "91.224.148.57";
