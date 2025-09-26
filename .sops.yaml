@@ -1,0 +1,10 @@
+keys:
+  - &pascal age1u5vktt8749t3ztwyp8qup62ym3grcuzmlaa6fh7cwefhkhl7792snnukvw
+  - &gaetan age1nd7aeqmpwrr6gy2zy3807exhplpp58pmvm79epytquddx58pce0sdq42x2
+
+creation_rules:
+  - path_regex: hosts/pascal/secrets.yaml$
+    key_groups:
+    - age:
+      - *pascal
+      - *gaetan

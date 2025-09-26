@@ -13,7 +13,7 @@ This repository hosts the NixOS configurations for the nix-community CUDA-enable
 
 - [ ] Repair `ada` by reinstalling NixOS with the new ZFS nix store
 - [ ] Apply the same process to `pascal`
-- [ ] Set up `sops-nix` for managing the secrets
+- [x] Set up `sops-nix` for managing the secrets
 - [ ] Hydra
     - [ ] Back up the Hydra configuration (DB?, jobsets?)
     - [ ] Find a better solution for the cuda-gpu-tests jobset (rather than using my fork as input)
