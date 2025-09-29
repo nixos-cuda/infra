@@ -18,12 +18,12 @@
           "nixos-test"
         ];
       in
+      # 3 builders:
+      # - localhost: for most cuda GPU tests
+      # - CPU builder: for building regular derivations (which do not require a GPU)
+      # - pascal: for cuda-pascal GPU tests (older GPU)
       [
-        # 3 builders:
-        # - localhost: for most cuda GPU tests
-        # - CPU builder: for building regular derivations (which do not require a GPU)
-        # - pascal: for cuda-pascal GPU tests (older GPU)
-
+        # localhost
         {
           hostName = "localhost";
           inherit system supportedFeatures;
