@@ -9,6 +9,9 @@
       authorizedKeys = [
         # @GaetanLepage
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEJSonNBBb1DlhaO4EfMh3TbIIsV25phZQ9vp/qKOw9E"
+
+        # @SomeoneSerge
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILQBX9vypn+dy8nqtV5cchWes2xB5MqsBVMrtJ6hjX1D"
       ];
     in
     {
