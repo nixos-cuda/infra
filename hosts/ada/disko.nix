@@ -53,13 +53,6 @@
       options = {
         ashift = "9";
       };
-      # rootFsOptions = {
-      #   acltype = "posixacl";
-      #   compression = "zstd";
-      #   mountpoint = "none";
-      #   xattr = "sa";
-      #   atime = "off";
-      # };
       datasets.nix = {
         type = "zfs_fs";
         mountpoint = "/nix";
