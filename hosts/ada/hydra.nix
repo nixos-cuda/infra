@@ -67,6 +67,7 @@
         notificationSender = "hydra@glepage.com";
         useSubstitutes = true;
       };
+      postgresqlBackup.enable = true;
 
       caddy = {
         enable = true;
