@@ -1,6 +1,7 @@
 {
   imports = [
     ./hardware.nix
+    ./hydra.nix
     ./disko.nix
   ];
 

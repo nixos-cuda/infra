@@ -1,10 +1,10 @@
 keys:
-  - &pascal age1u5vktt8749t3ztwyp8qup62ym3grcuzmlaa6fh7cwefhkhl7792snnukvw
+  - &ada age13z5mcpxjn3uhh4xm9r6y7fsaxurtjspwjhtmu08kgzm2xh9cgdcseq88he
   - &gaetan age16fjn06trywshgm5gg68d8zyr7x0tgdd2x22v92hrrtx806rq3sfs9xl5f6
 
 creation_rules:
-  - path_regex: hosts/pascal/secrets.yaml$
+  - path_regex: hosts/ada/secrets.yaml$
     key_groups:
     - age:
-      - *pascal
+      - *ada
       - *gaetan

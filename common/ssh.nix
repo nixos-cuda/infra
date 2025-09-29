@@ -15,8 +15,8 @@
       root.openssh.authorizedKeys.keys = authorizedKeys;
 
       nix.openssh.authorizedKeys.keys = [
-        # TODO: insert hydra's key
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFjThKUxa07cl3mwZH2tIxpCbedtoHpPr+CmsUYKVw3p root@pascal"
+        # Ada's SSH key
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDi1X4YCtWEto02ovI/fsond7hMKPZ0cFYMLkGn9rGtu"
       ]
       ++ authorizedKeys;
     };

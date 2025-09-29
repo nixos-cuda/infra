@@ -2,7 +2,6 @@
   imports = [
     ./disko.nix
     ./hardware.nix
-    ./hydra.nix
   ];
 
   # GTX 1080
