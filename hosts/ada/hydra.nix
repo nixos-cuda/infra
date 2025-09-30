@@ -6,7 +6,7 @@ in
 {
   # Public key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDi1X4YCtWEto02ovI/fsond7hMKPZ0cFYMLkGn9rGtu
   # Used to authenticate to both the CPU builder
-  sops.secrets.ssh-private-key = { };
+  sops.secrets.ssh-private-key.owner = config.users.users.hydra-queue-runner.name;
 
   nix = {
     distributedBuilds = true;
