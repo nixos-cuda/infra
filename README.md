@@ -1,6 +1,6 @@
-# Nix-community CUDA-enabled builders
+# Nixos-cuda infrastructure
 
-This repository hosts the NixOS configurations for the nix-community CUDA-enabled builders.
+This repository hosts the NixOS configurations for the [nixos-cuda](https://github.com/nixos-cuda) various builders.
 
 ## Hosts
 
