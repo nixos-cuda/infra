@@ -1,5 +1,8 @@
 # TODO: move to hydra
 { config, ... }:
+let
+  baseDomain = "nixos-cuda.org";
+in
 {
   # Public key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDi1X4YCtWEto02ovI/fsond7hMKPZ0cFYMLkGn9rGtu
   # Used to authenticate to both the CPU builder
@@ -44,7 +47,7 @@
 
         # Pascal
         {
-          hostName = "95.216.72.164";
+          hostName = "pascal.${baseDomain}";
           sshUser = "nix";
           inherit sshKey supportedFeatures system;
           # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
@@ -57,14 +60,14 @@
 
   services =
     let
-      hydraURL = "hydra-cuda.glepage.com";
+      hydraURL = "hydra.${baseDomain}";
     in
     {
       hydra = {
         enable = true;
 
         inherit hydraURL;
-        notificationSender = "hydra@glepage.com";
+        notificationSender = "hydra@${baseDomain}";
         useSubstitutes = true;
       };
       postgresqlBackup.enable = true;
