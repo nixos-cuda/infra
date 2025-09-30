@@ -6,7 +6,8 @@ in
 {
   # Public key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDi1X4YCtWEto02ovI/fsond7hMKPZ0cFYMLkGn9rGtu
   # Used to authenticate to both the CPU builder
-  sops.secrets.ssh-private-key.sopsFile = ./secrets.yaml;
+  sops.secrets.ssh-private-key = { };
+
   nix = {
     distributedBuilds = true;
 
@@ -31,6 +32,7 @@ in
           hostName = "localhost";
           inherit system supportedFeatures;
           mandatoryFeatures = [ "cuda" ];
+          maxJobs = 4;
         }
 
         # CPU builder

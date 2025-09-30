@@ -1,5 +1,6 @@
 {
   imports = [
+    ./cache.nix
     ./hardware.nix
     ./hydra.nix
     ./disko.nix
@@ -8,6 +9,8 @@
   # RTX 6000 ada
   hardware.nvidia.open = true;
   programs.nix-required-mounts.allowedPatterns.nvidia-gpu.onFeatures = [ "cuda-ada" ];
+
+  sops.defaultSopsFile = ./secrets.yaml;
 
   boot.loader = {
     systemd-boot = {
