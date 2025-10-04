@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../common
     ./disko.nix
     ./hardware.nix
   ];
