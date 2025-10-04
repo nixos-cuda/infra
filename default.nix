@@ -23,9 +23,6 @@
           };
           modules = [
             path
-            ./common
-            (inputs.sops-nix + "/modules/sops")
-            (inputs.disko + "/module.nix")
           ];
         };
       }

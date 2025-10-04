@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../common
     ./cache.nix
     ./hardware.nix
     ./hydra.nix
