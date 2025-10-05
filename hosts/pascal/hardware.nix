@@ -21,6 +21,10 @@
     };
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
+    blacklistedKernelModules = [ "nouveau" ];
+    kernelParams = [
+      "intel_iommu=on"
+    ];
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
