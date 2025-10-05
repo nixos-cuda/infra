@@ -17,10 +17,26 @@
         "xhci_pci"
         "ahci"
       ];
-      kernelModules = [ ];
+      kernelModules = [
+        "vfio"
+        "vfio_pci"
+      ];
     };
-    kernelModules = [ "kvm-intel" ];
+    kernelModules = [
+      "kvm-intel"
+    ];
     extraModulePackages = [ ];
+    blacklistedKernelModules = [ "nouveau" ];
+    kernelParams = [
+      "intel_iommu=on"
+      "snd_hda_core.gpu_bind=0"
+      "vfio-pci.ids=${
+        lib.concatStringsSep "," [
+          "10de:1b80"
+          "10de:10f0"
+        ]
+      }"
+    ];
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

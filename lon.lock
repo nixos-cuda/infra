@@ -1,0 +1,55 @@
+{
+  "version": "1",
+  "sources": {
+    "disko": {
+      "type": "GitHub",
+      "fetchType": "tarball",
+      "owner": "nix-community",
+      "repo": "disko",
+      "branch": "master",
+      "revision": "67ff9807dd148e704baadbd4fd783b54282ca627",
+      "url": "https://github.com/nix-community/disko/archive/67ff9807dd148e704baadbd4fd783b54282ca627.tar.gz",
+      "hash": "sha256-IGmaEf3Do8o5Cwp1kXBN1wQmZwQN3NLfq5t4nHtVtcU="
+    },
+    "microvm.nix": {
+      "type": "GitHub",
+      "fetchType": "tarball",
+      "owner": "Astro",
+      "repo": "microvm.nix",
+      "branch": "master",
+      "revision": "458f8f103552dd15b6bf4248a373737818536f21",
+      "url": "https://github.com/Astro/microvm.nix/archive/458f8f103552dd15b6bf4248a373737818536f21.tar.gz",
+      "hash": "sha256-EzV4mAjSxIO4qgb03T1/Z08yTSNJ1fQ9qyhN9VyQLn8="
+    },
+    "nixpkgs": {
+      "type": "GitHub",
+      "fetchType": "tarball",
+      "owner": "nixos",
+      "repo": "nixpkgs",
+      "branch": "nixos-unstable",
+      "revision": "b2f842e4d99dc35a0951b9582c64bb26789e929d",
+      "url": "https://github.com/nixos/nixpkgs/archive/b2f842e4d99dc35a0951b9582c64bb26789e929d.tar.gz",
+      "hash": "sha256-ohaApD0NtpszUBgTl/GGBUkNYwVgaQWivugNpuip9X8="
+    },
+    "sops-nix": {
+      "type": "GitHub",
+      "fetchType": "tarball",
+      "owner": "Mic92",
+      "repo": "sops-nix",
+      "branch": "master",
+      "revision": "9fcfabe085281dd793589bdc770a2e577a3caa5d",
+      "url": "https://github.com/Mic92/sops-nix/archive/9fcfabe085281dd793589bdc770a2e577a3caa5d.tar.gz",
+      "hash": "sha256-f9QC2KKiNReZDG2yyKAtDZh0rSK2Xp1wkPzKbHeQVRU="
+    },
+    "uvms": {
+      "type": "Git",
+      "fetchType": "git",
+      "branch": "master",
+      "revision": "55b7a907e017ab1eec11055181707a5fe1a642b7",
+      "url": "https://forge.someonex.net/else/uvms.git",
+      "hash": "sha256-RyuT8IpwZA8oTaX/w/A4J6JL7F1hqDxMJfZOqBmUDYA=",
+      "lastModified": 1758939963,
+      "submodules": false
+    }
+  }
+}

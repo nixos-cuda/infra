@@ -1,10 +1,9 @@
 { pkgs, inputs, ... }:
 {
   imports = [
-    inputs.disko.nixosModules.disko
-    inputs.sops-nix.nixosModules.sops
+    (inputs.sops-nix + "/modules/sops")
+    (inputs.disko + "/module.nix")
     ./nix.nix
-    ./nvidia.nix
     ./ssh.nix
     ./users.nix
   ];
@@ -15,6 +14,8 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   networking.firewall.enable = true;
+  networking.useNetworkd = true;
+  networking.nftables.enable = true;
 
   environment.systemPackages = with pkgs; [
     btop

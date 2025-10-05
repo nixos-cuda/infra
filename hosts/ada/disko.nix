@@ -57,6 +57,17 @@
         type = "zfs_fs";
         mountpoint = "/nix";
       };
+      datasets.builder_store = {
+        type = "zfs_volume";
+        size = "80%";
+        content = {
+          type = "filesystem";
+          format = "xfs";
+          options = [
+            "reflink=1"
+          ];
+        };
+      };
     };
   };
 }

@@ -1,12 +1,29 @@
+{ inputs, ... }:
 {
   imports = [
+    ../../common
     ./disko.nix
     ./hardware.nix
+    (inputs."uvms" + "/profiles/vsock-connect.nix")
+    (inputs."microvm.nix" + "/nixos-modules/host")
   ];
+
+  microvm.vms.pascal-builder.specialArgs = {
+    inherit inputs;
+  };
+  microvm.vms.pascal-builder.config = {
+    imports = [ ../pascal-builder ];
+  };
+  microvm.vms.pascal-builder.pkgs = null;
+
+  networking.nat.internalInterfaces = [ "vt-*" ];
+  networking.nat.externalInterface = "enp0s31f6";
+  networking.firewall.extraInputRules = ''
+    iifname "vt-*" udp dport { 53, 67 } accept
+  '';
 
   # GTX 1080
   hardware.nvidia.open = false;
-  programs.nix-required-mounts.allowedPatterns.nvidia-gpu.onFeatures = [ "cuda-pascal" ];
 
   networking = {
     hostName = "pascal";
