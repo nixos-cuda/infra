@@ -18,6 +18,9 @@
 
   networking.nat.internalInterfaces = [ "vt-*" ];
   networking.nat.externalInterface = "enp0s31f6";
+  networking.firewall.extraInputRules = ''
+    iifname "vt-*" udp dport { 53, 67 } accept
+  '';
 
   # GTX 1080
   hardware.nvidia.open = false;

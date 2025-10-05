@@ -6,7 +6,7 @@ in
   imports = [
     ../../common
     ../../modules/nvidia.nix
-    (inputs."microvm.nix" + "/nixos-modules/microvm")
+    # (inputs."microvm.nix" + "/nixos-modules/microvm")
   ];
   microvm.hypervisor = "cloud-hypervisor";
   microvm.vcpu = 18;

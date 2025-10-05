@@ -7,7 +7,7 @@ in
     ../../common
     ../../modules/nvidia.nix
     (inputs."uvms" + "/profiles/vsock-connect-guest.nix")
-    (inputs."microvm.nix" + "/nixos-modules/microvm")
+    # (inputs."microvm.nix" + "/nixos-modules/microvm")
   ];
   microvm.hypervisor = "cloud-hypervisor";
   microvm.registerClosure = false;
