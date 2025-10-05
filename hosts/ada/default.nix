@@ -1,6 +1,7 @@
 {
   imports = [
     ../../common
+    ../../modules/nvidia.nix
     ./cache.nix
     ./hardware.nix
     ./hydra.nix

@@ -4,7 +4,6 @@
     (inputs.sops-nix + "/modules/sops")
     (inputs.disko + "/module.nix")
     ./nix.nix
-    ./nvidia.nix
     ./ssh.nix
     ./users.nix
   ];

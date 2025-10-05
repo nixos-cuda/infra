@@ -24,6 +24,12 @@
     blacklistedKernelModules = [ "nouveau" ];
     kernelParams = [
       "intel_iommu=on"
+      "vfio.pci.ids=${
+        lib.concatStringsSep "," [
+          "10de:1b80"
+          "10de:10f0"
+        ]
+      }"
     ];
   };
 
