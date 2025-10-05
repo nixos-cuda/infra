@@ -1,12 +1,25 @@
+{ inputs, ... }:
 {
   imports = [
-    ../../common
-    ../../modules/nvidia.nix
     ./cache.nix
     ./hardware.nix
     ./hydra.nix
     ./disko.nix
+    ../../modules/nvidia.nix
+    ../../common
+    (inputs."microvm.nix" + "/nixos-modules/host")
   ];
+
+  microvm.vms.ada-builder.specialArgs = {
+    inherit inputs;
+  };
+  microvm.vms.ada-builder.config = {
+    imports = [ ../ada-builder ];
+  };
+  microvm.vms.ada-builder.pkgs = null;
+  networking.nat.enable = true;
+  networking.nat.internalInterfaces = [ "vt-*" ];
+  networking.nat.externalInterface = "enp4s0";
 
   # RTX 6000 ada
   hardware.nvidia.open = true;

@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  nixpkgs.config.allowUnfree = true;
   nix.settings.extra-substituters = [
     "https://cache.flox.dev"
     "https://nix-community.cachix.org"

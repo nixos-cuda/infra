@@ -11,6 +11,16 @@
       "url": "https://github.com/nix-community/disko/archive/67ff9807dd148e704baadbd4fd783b54282ca627.tar.gz",
       "hash": "sha256-IGmaEf3Do8o5Cwp1kXBN1wQmZwQN3NLfq5t4nHtVtcU="
     },
+    "microvm.nix": {
+      "type": "GitHub",
+      "fetchType": "tarball",
+      "owner": "Astro",
+      "repo": "microvm.nix",
+      "branch": "master",
+      "revision": "458f8f103552dd15b6bf4248a373737818536f21",
+      "url": "https://github.com/Astro/microvm.nix/archive/458f8f103552dd15b6bf4248a373737818536f21.tar.gz",
+      "hash": "sha256-EzV4mAjSxIO4qgb03T1/Z08yTSNJ1fQ9qyhN9VyQLn8="
+    },
     "nixpkgs": {
       "type": "GitHub",
       "fetchType": "tarball",
