@@ -9,6 +9,9 @@ in
     (inputs."microvm.nix" + "/nixos-modules/microvm")
   ];
   microvm.hypervisor = "cloud-hypervisor";
+  microvm.vcpu = 18;
+  microvm.hotplugMem = 1024 * 42;
+  microvm.hotpluggedMem = 1024 * 2;
   microvm.registerClosure = false;
   microvm.writableStoreOverlay = "/nix/.rw-store";
   microvm.volumes = [

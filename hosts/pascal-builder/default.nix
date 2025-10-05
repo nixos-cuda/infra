@@ -12,6 +12,9 @@ in
   microvm.hypervisor = "cloud-hypervisor";
   microvm.registerClosure = false;
   microvm.writableStoreOverlay = "/nix/.rw-store";
+  microvm.vcpu = 8;
+  microvm.hotplugMem = 1024 * 42;
+  microvm.hotpluggedMem = 1024 * 2;
   microvm.volumes = [
     {
       mountPoint = "/nix"; # Persist both .rw-store/ and var/nix/db/
@@ -69,7 +72,6 @@ in
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILQBX9vypn+dy8nqtV5cchWes2xB5MqsBVMrtJ6hjX1D else@x390"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDISAY0+w9AqunYOZV//eOC0R5ExFgdB3pjSxqLaQlvP root@pascal"
   ];
-
 
   # GTX 1080
   hardware.nvidia.open = false;
