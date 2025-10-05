@@ -40,6 +40,16 @@
       "revision": "9fcfabe085281dd793589bdc770a2e577a3caa5d",
       "url": "https://github.com/Mic92/sops-nix/archive/9fcfabe085281dd793589bdc770a2e577a3caa5d.tar.gz",
       "hash": "sha256-f9QC2KKiNReZDG2yyKAtDZh0rSK2Xp1wkPzKbHeQVRU="
+    },
+    "uvms": {
+      "type": "Git",
+      "fetchType": "git",
+      "branch": "master",
+      "revision": "55b7a907e017ab1eec11055181707a5fe1a642b7",
+      "url": "https://forge.someonex.net/else/uvms.git",
+      "hash": "sha256-RyuT8IpwZA8oTaX/w/A4J6JL7F1hqDxMJfZOqBmUDYA=",
+      "lastModified": 1758939963,
+      "submodules": false
     }
   }
 }

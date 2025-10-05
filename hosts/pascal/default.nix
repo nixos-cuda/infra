@@ -4,6 +4,7 @@
     ../../common
     ./disko.nix
     ./hardware.nix
+    (inputs."uvms" + "/profiles/vsock-connect.nix")
     (inputs."microvm.nix" + "/nixos-modules/host")
   ];
 

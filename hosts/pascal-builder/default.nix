@@ -6,6 +6,7 @@ in
   imports = [
     ../../common
     ../../modules/nvidia.nix
+    (inputs."uvms" + "/profiles/vsock-connect-guest.nix")
     (inputs."microvm.nix" + "/nixos-modules/microvm")
   ];
   microvm.hypervisor = "cloud-hypervisor";
@@ -64,6 +65,11 @@ in
   programs.nix-required-mounts.allowedPatterns.nvidia-gpu.onFeatures = [ "cuda-pascal" ];
 
   services.openssh.enable = true;
+  users.users.root.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILQBX9vypn+dy8nqtV5cchWes2xB5MqsBVMrtJ6hjX1D else@x390"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDISAY0+w9AqunYOZV//eOC0R5ExFgdB3pjSxqLaQlvP root@pascal"
+  ];
+
 
   # GTX 1080
   hardware.nvidia.open = false;
