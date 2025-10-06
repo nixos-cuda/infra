@@ -71,6 +71,10 @@ in
         inherit hydraURL;
         notificationSender = "hydra@${baseDomain}";
         useSubstitutes = true;
+
+        extraConfig = ''
+          max_output_size = 4294967296 # 4 << 30 = 4GiB
+        '';
       };
       postgresqlBackup.enable = true;
 
