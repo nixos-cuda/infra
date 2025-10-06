@@ -1,37 +1,75 @@
-# Nixos-cuda infrastructure
+# NixOS-CUDA CI/CD
 
-This repository hosts the NixOS configurations for the [nixos-cuda](https://github.com/nixos-cuda) various builders.
+[NixOS-CUDA](https://hydra.nixos-cuda.org) CI/CD Infrastructure, including NixOS configurations for Hydra and the builders.
+This is not an official NixOS project.
+
+## Scope
+
+The purpose of this system is to advance maintainability of hardware-accelerated (specifically CUDA) software in Nixpkgs.
+Sustainable maintenance and development of Nixpkgs CUDA requires both a comprehensive test suite run on-schedule, for retroactive detection,
+and a lighter on-push test-suite for early notification of contributors and the prevention of regressions from being merged.
+
+We aim to detect and distinguish between:
+- build failures;
+- breakages of basic functionality, like the loading of shared libraries by downstream applications in their GPU branches;
+- architecture-specific errors;
+- errors in collective communication libraries;
+- regressions in performance and closure sizes.
 
 ## Hosts
 
-| Hostname  | IP                                    | GPU                   | GPU architecture  |
-|-----------|---------------------------------------|-----------------------|-------------------|
-| ada       | `ada.nixos-cuda.org` - 144.76.101.55  | RTX 4000 ada (SFF)    | Ada Lovelace      |
-| pascal    | `ada.nixos-cuda.org` - 95.216.72.164  | GeForce GTX 1080      | Pascal            |
+Accounts of currently available hardware and access.
 
-## Services
+| Hostname  | IP                                       | GPU                   | GPU architecture  |
+|-----------|------------------------------------------|-----------------------|-------------------|
+| ada       | `ada.nixos-cuda.org` - 144.76.101.55     | RTX 4000 ada (SFF)    | Ada Lovelace      |
+| pascal    | `pascal.nixos-cuda.org` - 95.216.72.164  | GeForce GTX 1080      | Pascal            |
+| CPU builder courtesy of Gaetan and liberodark | N/A | None | None |
 
-### [Hydra](https://hydra.nixos-cuda.org)
+## [Hydra](https://hydra.nixos-cuda.org) jobsets
 
-Two jobsets:
-- `cuda-gpu-tests`: Runs the nixpkgs tests that run on a GPU.
-- `cuda-gpu-tests`: Builds `nixpkgs`'s [`release-cuda.nix`](https://github.com/NixOS/nixpkgs/blob/master/pkgs/top-level/release-cuda.nix) jobset.
+- [`cuda-gpu-tests`](https://hydra.nixos-cuda.org/jobset/cuda/cuda-gpu-tests): runs the nixpkgs GPU tests on builders with `cuda` capability.
+- [`cuda-packages`](https://hydra.nixos-cuda.org/jobset/cuda/cuda-packages): builds `nixpkgs`'s [`release-cuda.nix`](https://github.com/NixOS/nixpkgs/blob/master/pkgs/top-level/release-cuda.nix) jobset.
 
-Runs on `ada`.
+Hydra currently runs on `ada`.
 
-### [Binary cache](https://cache.nixos-cuda.org)
+## [Substituter](https://cache.nixos-cuda.org)
 
-Backed up by [harmonia](https://github.com/nix-community/harmonia).
+Hydra's binary cache is exposed for development purposes.
+For a compliant way to consume CUDA with Nix refer to [NVIDIA](https://developer.nvidia.com/blog/developers-can-now-get-cuda-directly-from-their-favorite-third-party-platforms).
+The substituter is currently backed by [harmonia](https://github.com/nix-community/harmonia).
+Hydra currently runs on `ada`.
 
-Runs on `ada`.
+## ROADMAP
 
-## TODO
-
-- [x] Repair `ada` by reinstalling NixOS with the new ZFS nix store
-- [x] Apply the same process to `pascal`
-- [x] Set up `sops-nix` for managing the secrets
-- [ ] Hydra
-    - [x] Back up the Hydra configuration (DB?, jobsets?)
-    - [x] Use `ada` for hosting the hydra instance (more storage available)
-    - [ ] Find a better solution for the cuda-gpu-tests jobset (rather than using my fork as input)
-- [x] Add a public cache for people (who?) to use (harmonia?)
+- [ ] Coverage
+    - [ ] Remove hard-coded attribute lists: cf. "Collect `gpuCheck`s by following `recurseIntoAttrs`" in "MVE"; same for packages.
+    - [ ] Data-Center Hardware and Multi-GPU set-ups
+      - [ ] Probably requires ephemeral builders due to cost.
+      - [ ] Currently no multi-GPU/collective communications test-suites available in Nixpkgs.
+    - [ ] Jetson (tentatively, based on owned hardware and colocation)
+- [ ] Efficiency:
+    - [ ] `harmonia` → `snix-narbridge`;
+    - [ ] virtiofsd flat stores → snix virtiofs; in particular, we should hope to eliminate the inefficient Nix substitution;
+    - [ ] Ephemeral Builders:
+        - [ ] Make NixOS work on Azure (under pain limits).
+        - [ ] Basic functionality: on-demand deployment and automatic deallocation of remote builders; the hooking up the builders to Hydra.
+        - [ ] IO costs: synchronizing the closures is likely to be the bottleneck. Cf. the snix virtio story.
+- [ ] Isolation and Access Control:
+    - [ ] [Serge] Move remote builders, Hydra, and web services to microvms with isolated stores.
+    - [ ] Prevent unaudited SSH access to hypervisors and to Hydra (currently Gaetan and Serge in authorized keys).
+    - [ ] Pull-based Deployment.
+- [x] Mimimal Viable Example:
+    - [x] [third parties via Jonas] Initial funding for GPU hardware.
+    - [x] [Jonas] GitHub organization, domain names, web page.
+    - [x] [Gaetan] Set up NixOS and Hydra.
+    - [x] [Gaetan] ZFS Nix store on `ada`, `pascal`.
+    - [x] [Gaetan] Set up `sops-nix` for managing the secrets.
+    - [ ] [Gaetan] Hydra.
+        - [x] [Gaetan] Back up the Hydra configuration (DB?, jobsets?).
+        - [x] [Gaetan] Move Hydra to `ada` (more storage available).
+        - [x] [Serge] Figure out how Hydra inputs work.
+        - [ ] Open PR for cuda-gpu-tests jobset (currently the input points at Gaetan's branch)
+        - [ ] Collect `gpuCheck`s by following `recurseIntoAttrs` and `passthru.tests` (currently using a hard-coded list). 
+        - [ ] Declarative jobsets (currently configured via web UI).
+    - [x] [Gaetan] Expose binary cache
