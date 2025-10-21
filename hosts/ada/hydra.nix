@@ -44,7 +44,7 @@ in
           inherit sshKey supportedFeatures system;
           # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
           publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUJyc3o4UkttbkNCdWEzQ3djMnRYOEYvYXVBbWNTcjlRcWVMSnRkL0ZLTHMgcm9vdEBuaXhvcwo=";
-          maxJobs = 8;
+          maxJobs = 1;
         }
 
         # Pascal
