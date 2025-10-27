@@ -2,6 +2,7 @@
   imports = [
     ./disko.nix
     ./hardware.nix
+    ../../modules/nvidia.nix
   ];
 
   # GTX 1080

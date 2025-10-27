@@ -4,6 +4,7 @@
     ./hardware.nix
     ./hydra.nix
     ./disko.nix
+    ../../modules/nvidia.nix
   ];
 
   # RTX 6000 ada

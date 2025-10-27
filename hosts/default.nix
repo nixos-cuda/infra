@@ -9,7 +9,7 @@
           system = "x86_64-linux";
           specialArgs.inputs = inputs;
           modules = [
-            ../common
+            ../modules/common
             ./${hostname}
           ];
         };
