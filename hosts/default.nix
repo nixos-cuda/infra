@@ -1,6 +1,5 @@
 { inputs, lib, ... }:
 {
-
   flake =
     let
       mkHost =
@@ -16,6 +15,10 @@
         };
     in
     {
-      nixosConfigurations = lib.genAttrs [ "ada" "pascal" ] mkHost;
+      nixosConfigurations = lib.genAttrs [
+        "ada"
+        "hydra"
+        "pascal"
+      ] mkHost;
     };
 }
