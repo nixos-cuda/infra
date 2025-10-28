@@ -11,6 +11,7 @@
           modules = [
             ../modules/common
             ./${hostname}
+            { networking.hostName = hostname; }
           ];
         };
     in
