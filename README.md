@@ -70,7 +70,8 @@ Hydra currently runs on `hydra`.
         - [x] [Gaetan] Back up the Hydra configuration (DB?, jobsets?).
         - [x] [Gaetan] Move Hydra to `ada` (more storage available).
         - [x] [Serge] Figure out how Hydra inputs work.
-        - [ ] Open PR for cuda-gpu-tests jobset (currently the input points at Gaetan's branch)
+        - [x] Open PR for cuda-gpu-tests jobset (currently the input points at Gaetan's branch)
+          -> https://github.com/NixOS/nixpkgs/pull/454251
         - [ ] Collect `gpuCheck`s by following `recurseIntoAttrs` and `passthru.tests` (currently using a hard-coded list).
         - [ ] Declarative jobsets (currently configured via web UI).
     - [x] [Gaetan] Expose binary cache
