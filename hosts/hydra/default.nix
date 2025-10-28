@@ -3,6 +3,7 @@
   imports = [
     ./cache.nix
     ./disko.nix
+    ./grafana.nix
     ./hardware.nix
     ./hydra.nix
   ];
