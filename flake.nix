@@ -18,6 +18,12 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    devshell = {
+      url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    deploy-rs.url = "github:serokell/deploy-rs";
   };
 
   outputs =
@@ -37,6 +43,7 @@
 
       imports = [
         ./hosts
+        inputs.devshell.flakeModule
       ];
     };
 }

@@ -1,5 +1,9 @@
 { inputs, lib, ... }:
 {
+  imports = [
+    ./deploy-rs.nix
+  ];
+
   flake =
     let
       mkHost =
