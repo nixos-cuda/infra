@@ -23,30 +23,30 @@ in
         ];
       in
       # 3 builders:
-      # - localhost: for most cuda GPU tests
       # - CPU builder: for building regular derivations (which do not require a GPU)
+      # - ada: for most cuda GPU tests
       # - pascal: for cuda-pascal GPU tests (older GPU)
       [
-        # localhost
-        {
-          hostName = "localhost";
-          inherit system supportedFeatures;
-          mandatoryFeatures = [ "cuda" ];
-          maxJobs = 4;
-        }
-
         # CPU builder
-        # https://github.com/liberodark/nix-community-builder
-        # build02.ynh.ovh
         {
-          hostName = "91.224.148.57";
+          hostName = "atlas.${baseDomain}";
           sshUser = "nix";
           inherit sshKey supportedFeatures system;
           # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
-          publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUJyc3o4UkttbkNCdWEzQ3djMnRYOEYvYXVBbWNTcjlRcWVMSnRkL0ZLTHMgcm9vdEBuaXhvcwo=";
-          maxJobs = 2;
+          publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUhwbG9zNlh0STY1VmVqbEMvdVNwbUF6bjJ4MEloZFIzYTl4d3ZFbWJsN0Igcm9vdEBhdGxhcwo=";
+          maxJobs = 4;
         }
 
+        # Ada
+        {
+          hostName = "ada.${baseDomain}";
+          sshUser = "nix";
+          inherit system supportedFeatures;
+          # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
+          publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUp1RjdhSkZydXJUUHBMNjIxZU5mWlkxR2J0cHZhTkxIVlZKcTdKdDZ0YzYgcm9vdEBhZGEK";
+          mandatoryFeatures = [ "cuda" ];
+          maxJobs = 2;
+        }
         # Pascal
         {
           hostName = "pascal.${baseDomain}";
@@ -54,7 +54,7 @@ in
           inherit sshKey supportedFeatures system;
           # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
           publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUZqVGhLVXhhMDdjbDNtd1pIMnRJeHBDYmVkdG9IcFByK0Ntc1VZS1Z3M3Agcm9vdEBwYXNjYWwK";
-          maxJobs = 10;
+          maxJobs = 2;
           mandatoryFeatures = [ "cuda-pascal" ];
         }
       ];

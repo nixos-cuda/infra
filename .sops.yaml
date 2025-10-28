@@ -1,10 +1,10 @@
 keys:
-  - &ada age13z5mcpxjn3uhh4xm9r6y7fsaxurtjspwjhtmu08kgzm2xh9cgdcseq88he
+  - &hydra age1yd6t2gsq9z7rcste8h8zd4jzlzhnqck6xaplhsptzy2w7apdrpusr2aa02
   - &gaetan age16fjn06trywshgm5gg68d8zyr7x0tgdd2x22v92hrrtx806rq3sfs9xl5f6
 
 creation_rules:
-  - path_regex: hosts/ada/secrets.yaml$
+  - path_regex: hosts/hydra/secrets.yaml$
     key_groups:
     - age:
-      - *ada
+      - *hydra
       - *gaetan

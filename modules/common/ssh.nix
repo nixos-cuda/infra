@@ -18,7 +18,7 @@
       root.openssh.authorizedKeys.keys = authorizedKeys;
 
       nix.openssh.authorizedKeys.keys = [
-        # Ada's SSH key
+        # Hydra's SSH key
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDi1X4YCtWEto02ovI/fsond7hMKPZ0cFYMLkGn9rGtu"
       ]
       ++ authorizedKeys;
