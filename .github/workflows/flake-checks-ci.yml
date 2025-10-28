@@ -1,0 +1,21 @@
+name: flake-check
+
+on:
+  pull_request:
+    paths:
+      - "flake.nix"
+      - "flake.lock"
+
+permissions:
+  contents: read
+
+jobs:
+  nix-check:
+    name: nix-check
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: nix flake check
+        run: nix flake check --print-build-logs --no-update-lock-file
