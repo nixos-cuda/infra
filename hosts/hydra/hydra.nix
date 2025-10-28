@@ -41,7 +41,7 @@ in
         {
           hostName = "ada.${baseDomain}";
           sshUser = "nix";
-          inherit system supportedFeatures;
+          inherit sshKey supportedFeatures system;
           # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
           publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUp1RjdhSkZydXJUUHBMNjIxZU5mWlkxR2J0cHZhTkxIVlZKcTdKdDZ0YzYgcm9vdEBhZGEK";
           mandatoryFeatures = [ "cuda" ];
