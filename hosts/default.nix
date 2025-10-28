@@ -17,6 +17,7 @@
     {
       nixosConfigurations = lib.genAttrs [
         "ada"
+        "atlas"
         "hydra"
         "pascal"
       ] mkHost;
