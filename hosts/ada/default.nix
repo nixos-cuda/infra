@@ -13,15 +13,6 @@
 
   sops.defaultSopsFile = ./secrets.yaml;
 
-  boot.loader = {
-    systemd-boot = {
-      enable = true;
-      configurationLimit = 10;
-    };
-
-    efi.canTouchEfiVariables = true;
-  };
-
   networking.hostId = "7b3b5a4c";
 
   system.stateVersion = "25.05";

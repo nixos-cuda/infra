@@ -1,4 +1,9 @@
-{ pkgs, inputs, ... }:
+{
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 {
   imports = [
     inputs.disko.nixosModules.disko
@@ -14,6 +19,15 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   networking.firewall.enable = true;
+
+  boot.loader = {
+    systemd-boot = {
+      enable = lib.mkDefault true;
+      configurationLimit = 10;
+    };
+
+    efi.canTouchEfiVariables = lib.mkDefault true;
+  };
 
   environment.systemPackages = with pkgs; [
     btop
