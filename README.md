@@ -20,25 +20,26 @@ We aim to detect and distinguish between:
 
 Accounts of currently available hardware and access.
 
-| Hostname  | IP                                       | GPU                   | GPU architecture  |
-|-----------|------------------------------------------|-----------------------|-------------------|
-| ada       | `ada.nixos-cuda.org` - 144.76.101.55     | RTX 4000 ada (SFF)    | Ada Lovelace      |
-| pascal    | `pascal.nixos-cuda.org` - 95.216.72.164  | GeForce GTX 1080      | Pascal            |
-| CPU builder courtesy of Gaetan and liberodark | N/A | None | None |
+| Hostname  | Purpose               | IP                                        | GPU                   | GPU architecture  |
+|-----------|-----------------------|-------------------------------------------|-----------------------|-------------------|
+| ada       | GPU builder           | ada.nixos-cuda.org` - 144.76.101.55       | RTX 4000 ada (SFF)    | Ada Lovelace      |
+| pascal    | GPU builder           | `pascal.nixos-cuda.org` - 95.216.72.164   | GeForce GTX 1080      | Pascal            |
+| hydra     | Hydra + binary cache  | `hydra.nixos-cuda.org` - 37.27.129.22     | -                     | -                 |
+| atlas     | CPU builder           | `atlas.nixos-cuda.org` - 95.216.20.88     | -                     | -                 |
 
 ## [Hydra](https://hydra.nixos-cuda.org) jobsets
 
 - [`cuda-gpu-tests`](https://hydra.nixos-cuda.org/jobset/cuda/cuda-gpu-tests): runs the nixpkgs GPU tests on builders with `cuda` capability.
 - [`cuda-packages`](https://hydra.nixos-cuda.org/jobset/cuda/cuda-packages): builds `nixpkgs`'s [`release-cuda.nix`](https://github.com/NixOS/nixpkgs/blob/master/pkgs/top-level/release-cuda.nix) jobset.
 
-Hydra currently runs on `ada`.
+Hydra currently runs on `hydra`.
 
 ## [Substituter](https://cache.nixos-cuda.org)
 
 Hydra's binary cache is exposed for development purposes.
 For a compliant way to consume CUDA with Nix refer to [NVIDIA](https://developer.nvidia.com/blog/developers-can-now-get-cuda-directly-from-their-favorite-third-party-platforms).
 The substituter is currently backed by [harmonia](https://github.com/nix-community/harmonia).
-Hydra currently runs on `ada`.
+Hydra currently runs on `hydra`.
 
 ## ROADMAP
 
@@ -70,6 +71,6 @@ Hydra currently runs on `ada`.
         - [x] [Gaetan] Move Hydra to `ada` (more storage available).
         - [x] [Serge] Figure out how Hydra inputs work.
         - [ ] Open PR for cuda-gpu-tests jobset (currently the input points at Gaetan's branch)
-        - [ ] Collect `gpuCheck`s by following `recurseIntoAttrs` and `passthru.tests` (currently using a hard-coded list). 
+        - [ ] Collect `gpuCheck`s by following `recurseIntoAttrs` and `passthru.tests` (currently using a hard-coded list).
         - [ ] Declarative jobsets (currently configured via web UI).
     - [x] [Gaetan] Expose binary cache
