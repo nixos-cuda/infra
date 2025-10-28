@@ -15,11 +15,16 @@
   sops.defaultSopsFile = ./secrets.yaml;
 
   # Legacy BIOS
-  boot.loader.systemd-boot.enable = false;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.efiSupport = true;
-  boot.loader.grub.efiInstallAsRemovable = true;
-  boot.loader.efi.canTouchEfiVariables = false;
+  boot.loader = {
+    systemd-boot.enable = false;
+    efi.canTouchEfiVariables = false;
+
+    grub = {
+      enable = true;
+      efiSupport = true;
+      efiInstallAsRemovable = true;
+    };
+  };
 
   system.stateVersion = "25.05";
 }
