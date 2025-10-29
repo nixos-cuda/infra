@@ -1,65 +1,41 @@
-name: flake-update
+name: Update Flake Inputs
 
 on:
   schedule:
-    # Runs every Saturday at 04:00 UTC
-    - cron: "0 4 * * SAT"
-  workflow_dispatch:
-
-permissions:
-  contents: write        # push branches
-  pull-requests: write   # open PRs & enable auto-merge
-
-concurrency:
-  group: flake-lock-updater
-  cancel-in-progress: false
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch: # Allow manual triggering
 
 jobs:
-  update-flake-lock:
+  update-flake-inputs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
-      - name: Checkout (full history for clean diffs)
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v13
+      - name: Setup Nix
+        uses: cachix/install-nix-action@v31
 
-      - name: Update flake.lock
-        run: |
-          set -euo pipefail
-          nix --version
-          nix flake update
-          # if nothing changed, bail out early
-          if git diff --quiet -- flake.lock; then
-            echo "No flake.lock changes."
-            echo "no_changes=true" >> $GITHUB_OUTPUT
-          else
-            echo "no_changes=false" >> $GITHUB_OUTPUT
-          fi
-        id: update
-
-      - name: Create pull request
-        if: steps.update.outputs.no_changes == 'false'
-        id: cpr
-        uses: peter-evans/create-pull-request@v7
+      - name: Update flake inputs
+        uses: mic92/update-flake-inputs@main
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          commit-message: "flake.lock: Update"
-          title: "flake.lock: Update"
-          body: |
-            Automated `nix flake update`.
-          branch: flake-lock-update
-          delete-branch: true
-          signoff: false
-          add-paths: |
-            flake.lock
-
-      - name: Enable auto-merge (squash)
-        if: steps.update.outputs.no_changes == 'false'
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: squash
+          github-token: ${{ steps.app-token.outputs.token }}
+          # Optional: exclude specific files or inputs
+          # exclude-patterns: 'tests/**/flake.nix,examples/**/flake.nix#home-manager'
+          # Optional: add custom labels (default: 'dependencies')
+          # pr-labels: 'dependencies,automated'
+          # Optional: enable auto-merge (default: false)
+          # auto-merge: 'true'
