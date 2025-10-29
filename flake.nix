@@ -45,5 +45,13 @@
         ./hosts
         inputs.devshell.flakeModule
       ];
+
+      perSystem =
+        { pkgs, ... }:
+        {
+          devshells.default.packages = [
+            pkgs.sops
+          ];
+        };
     };
 }
