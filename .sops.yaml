@@ -3,6 +3,10 @@ keys:
   - &gaetan age16fjn06trywshgm5gg68d8zyr7x0tgdd2x22v92hrrtx806rq3sfs9xl5f6
 
 creation_rules:
+  - path_regex: .secrets.yaml$
+    key_groups:
+    - age:
+      - *gaetan
   - path_regex: hosts/hydra/secrets.yaml$
     key_groups:
     - age:

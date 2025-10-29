@@ -24,6 +24,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     deploy-rs.url = "github:serokell/deploy-rs";
+
+    dnscontrol-nix.url = "git+https://codeberg.org/hu5ky/dnscontrol-nix.git";
   };
 
   outputs =
@@ -42,6 +44,7 @@
       ];
 
       imports = [
+        ./dns.nix
         ./hosts
         inputs.devshell.flakeModule
       ];
