@@ -38,4 +38,4 @@ jobs:
           # Optional: add custom labels (default: 'dependencies')
           # pr-labels: 'dependencies,automated'
           # Optional: enable auto-merge (default: false)
-          # auto-merge: 'true'
+          auto-merge: 'true'
