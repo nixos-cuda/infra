@@ -32,6 +32,7 @@
   environment.systemPackages = with pkgs; [
     btop
     htop
+    nix-output-monitor
   ];
   programs.neovim = {
     enable = true;
