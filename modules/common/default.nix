@@ -34,8 +34,11 @@
     htop
     nix-output-monitor
   ];
-  programs.neovim = {
-    enable = true;
-    vimAlias = true;
+  programs = {
+    tmux.enable = true;
+    neovim = {
+      enable = true;
+      vimAlias = true;
+    };
   };
 }
