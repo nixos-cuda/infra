@@ -1,6 +1,8 @@
 { config, ... }:
 let
   domain = "grafana.nixos-cuda.org";
+  dbName = "grafana";
+  userName = "grafana";
 in
 {
   services = {
@@ -14,40 +16,70 @@ in
         server = {
           http_port = 3001;
 
-          root_url = "https://${domain}";
+          root_url = "https://${domain}/";
+          inherit domain;
+          enforce_domain = true;
+          enable_gzip = true;
+        };
+
+        database = {
+          type = "postgres";
+          name = dbName;
+          host = "/run/postgresql";
+          user = userName;
         };
       };
-      provision = {
-        enable = true;
-        datasources.settings.datasources = [
-          {
-            name = "prometheus";
-            type = "prometheus";
-            url = "http://localhost:${toString config.services.prometheus.exporters.node.port}";
-          }
-        ];
-        dashboards = {
-        };
-      };
+      provision.datasources.settings.datasources = [
+        {
+          name = "prometheus";
+          type = "prometheus";
+          url = "http://localhost:${toString config.services.prometheus.port}";
+          isDefault = true;
+        }
+      ];
     };
+
     # Collect system metrics using prometheus and node exporter
     prometheus = {
       enable = true;
-      exporters = {
-        node = {
-          enable = true;
-          enabledCollectors = [ "systemd" ];
-        };
-      };
+
       scrapeConfigs = [
         {
           job_name = "node_exporter";
           scrape_interval = "10s";
           static_configs = [
             {
-              targets = [ "localhost:${toString config.services.prometheus.exporters.node.port}" ];
+              targets =
+                map
+                  (hostName: "${hostName}.nixos-cuda.org:${toString config.services.prometheus.exporters.node.port}")
+                  [
+                    "ada"
+                    "atlas"
+                    "hydra"
+                    "pascal"
+                  ];
             }
           ];
+          relabel_configs = [
+            # `ada.nixos-cuda.org:9100` -> `ada`
+            {
+              source_labels = [ "__address__" ];
+              target_label = "instance";
+              regex = "^([^.]+)\\..*(?::\\d+)?$";
+              replacement = "$1";
+              action = "replace";
+            }
+          ];
+        }
+      ];
+    };
+
+    postgresql = {
+      ensureDatabases = [ dbName ];
+      ensureUsers = [
+        {
+          name = userName;
+          ensureDBOwnership = true;
         }
       ];
     };
@@ -60,4 +92,7 @@ in
       '';
     };
   };
+
+  # TODO remove
+  networking.firewall.allowedTCPPorts = [ config.services.prometheus.port ];
 }

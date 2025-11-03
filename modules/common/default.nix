@@ -8,6 +8,7 @@
   imports = [
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
+    ./monitoring.nix
     ./nix.nix
     ./ssh.nix
     ./users.nix
