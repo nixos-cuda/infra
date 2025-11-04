@@ -41,6 +41,7 @@
           mandatoryFeatures = [ "cuda" ];
           maxJobs = 2;
         }
+
         # Pascal
         {
           hostName = "pascal.${baseDomain}";
