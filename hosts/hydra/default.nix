@@ -6,7 +6,7 @@
     ./github-runner.nix
     ./grafana.nix
     ./hardware.nix
-    ./hydra.nix
+    ./hydra
   ];
 
   networking.hostId = "e1ce6466";
