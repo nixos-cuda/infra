@@ -34,7 +34,7 @@ in
           inherit sshKey supportedFeatures system;
           # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
           publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUhwbG9zNlh0STY1VmVqbEMvdVNwbUF6bjJ4MEloZFIzYTl4d3ZFbWJsN0Igcm9vdEBhdGxhcwo=";
-          maxJobs = 4;
+          maxJobs = 10;
         }
 
         # Ada
