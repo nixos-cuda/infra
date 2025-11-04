@@ -74,6 +74,9 @@ in
 
         extraConfig = ''
           max_output_size = 4294967296 # 4 << 30 = 4GiB
+
+          # Used by the cuda-packages exhaustive jobset
+          allow_import_from_derivation = true
         '';
       };
       postgresqlBackup.enable = true;
