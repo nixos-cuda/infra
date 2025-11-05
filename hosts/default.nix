@@ -23,6 +23,7 @@
         "ada"
         "atlas"
         "hydra"
+        "oxide-1"
         "pascal"
       ] mkHost;
     };
