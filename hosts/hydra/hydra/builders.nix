@@ -52,6 +52,15 @@
           maxJobs = 2;
           mandatoryFeatures = [ "cuda-pascal" ];
         }
+
+        {
+          hostName = "45.154.216.118";
+          sshUser = "nix";
+          inherit sshKey supportedFeatures system;
+          # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
+          publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpPSWlZVThYWnU5NlJoWUZyUnoweVlOUEVnSDUxTTRjRHgrSW1YTHpSeDcgcm9vdEBveGlkZS0xCg==";
+          maxJobs = 3;
+        }
       ];
   };
 
