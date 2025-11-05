@@ -5,18 +5,21 @@
 
     buildMachines =
       let
-        mkBuilder = name: cfg: {
-          hostName = "${name}.nixos-cuda.org";
-          sshKey = config.sops.secrets.ssh-private-key.path;
-          sshUser = "nix";
-          system = "x86_64-linux";
-          supportedFeatures = [
-            "benchmark"
-            "big-parallel"
-            "kvm"
-            "nixos-test"
-          ];
-        };
+        mkBuilder =
+          name: cfg:
+          {
+            hostName = "${name}.nixos-cuda.org";
+            sshKey = config.sops.secrets.ssh-private-key.path;
+            sshUser = "nix";
+            system = "x86_64-linux";
+            supportedFeatures = [
+              "benchmark"
+              "big-parallel"
+              "kvm"
+              "nixos-test"
+            ];
+          }
+          // cfg;
 
         builders = {
           ########### CPU builders
