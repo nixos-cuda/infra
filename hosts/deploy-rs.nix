@@ -10,7 +10,7 @@ in
 {
   flake = {
     deploy.nodes = lib.mapAttrs (hostname: configuration: {
-      inherit hostname;
+      hostname = "${hostname}.nixos-cuda.org";
       profiles.system = {
         sshUser = "root";
         user = "root";
