@@ -1,4 +1,9 @@
-{ config, hostnames, ... }:
+{
+  lib,
+  config,
+  hosts,
+  ...
+}:
 let
   domain = "grafana.nixos-cuda.org";
   dbName = "grafana";
@@ -52,13 +57,13 @@ in
               targets =
                 let
                   mkTarget =
-                    hostName:
+                    hostName: _:
                     let
                       inherit (config.services.prometheus.exporters.node) port;
                     in
                     "${hostName}.nixos-cuda.org:${toString port}";
                 in
-                map mkTarget hostnames;
+                lib.mapAttrsToList mkTarget hosts;
             }
           ];
           relabel_configs = [
