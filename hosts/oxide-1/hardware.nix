@@ -13,14 +13,13 @@
   boot = {
     initrd = {
       availableKernelModules = [
-        # TODO
         "nvme"
-        "xhci_pci"
-        "ahci"
+        "virtio_pci"
+        "virtio_blk"
       ];
       kernelModules = [ ];
     };
-    kernelModules = [ "kvm-amd" ];
+    kernelModules = [ ];
     extraModulePackages = [ ];
   };
 

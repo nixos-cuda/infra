@@ -13,10 +13,9 @@
   boot = {
     initrd = {
       availableKernelModules = [
-        # TODO
+        "ahci"
         "nvme"
         "xhci_pci"
-        "ahci"
       ];
       kernelModules = [ ];
     };
