@@ -44,7 +44,7 @@
           };
           pascal = {
             # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
-            publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUZqVGhLVXhhMDdjbDNtd1pIMnRJeHBDYmVkdG9IcFByK0Ntc1VZS1Z3M3Agcm9vdEBwYXNjYWwK";
+            publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSURJU0FZMCt3OUFxdW5ZT1pWLy9lT0MwUjVFeEZnZEIzcGpTeHFMYVFsdlAgcm9vdEBwYXNjYWwK";
             maxJobs = 2;
             mandatoryFeatures = [ "cuda-pascal" ];
           };
