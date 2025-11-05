@@ -6,11 +6,20 @@
 
   flake =
     let
+      hostnames = [
+        "ada"
+        "atlas"
+        "hydra"
+        "oxide-1"
+        "pascal"
+      ];
       mkHost =
         hostname:
         inputs.nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs.inputs = inputs;
+          specialArgs = {
+            inherit inputs hostnames;
+          };
           modules = [
             ../modules/common
             ./${hostname}
@@ -19,12 +28,6 @@
         };
     in
     {
-      nixosConfigurations = lib.genAttrs [
-        "ada"
-        "atlas"
-        "hydra"
-        "oxide-1"
-        "pascal"
-      ] mkHost;
+      nixosConfigurations = lib.genAttrs hostnames mkHost;
     };
 }

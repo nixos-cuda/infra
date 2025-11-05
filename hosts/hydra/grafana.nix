@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, hostnames, ... }:
 let
   domain = "grafana.nixos-cuda.org";
   dbName = "grafana";
@@ -50,14 +50,15 @@ in
           static_configs = [
             {
               targets =
-                map
-                  (hostName: "${hostName}.nixos-cuda.org:${toString config.services.prometheus.exporters.node.port}")
-                  [
-                    "ada"
-                    "atlas"
-                    "hydra"
-                    "pascal"
-                  ];
+                let
+                  mkTarget =
+                    hostName:
+                    let
+                      inherit (config.services.prometheus.exporters.node) port;
+                    in
+                    "${hostName}.nixos-cuda.org:${toString port}";
+                in
+                map mkTarget hostnames;
             }
           ];
           relabel_configs = [
