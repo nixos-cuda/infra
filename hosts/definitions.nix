@@ -9,6 +9,7 @@
 
     # CPU builders
     oxide-1 = {
+      ip = "45.154.216.118";
       cores = 32;
       max-jobs = 4;
       speedFactor = 4;
