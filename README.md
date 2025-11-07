@@ -32,14 +32,23 @@ Accounts of currently available hardware and access.
 - [`cuda-gpu-tests`](https://hydra.nixos-cuda.org/jobset/cuda/cuda-gpu-tests): runs the nixpkgs GPU tests on builders with `cuda` capability.
 - [`cuda-packages`](https://hydra.nixos-cuda.org/jobset/cuda/cuda-packages): builds `nixpkgs`'s [`release-cuda.nix`](https://github.com/NixOS/nixpkgs/blob/master/pkgs/top-level/release-cuda.nix) jobset.
 
-Hydra currently runs on `hydra`.
-
-## [Substituter](https://cache.nixos-cuda.org)
+## [Binary cache](https://cache.nixos-cuda.org)
 
 Hydra's binary cache is exposed for development purposes.
 For a compliant way to consume CUDA with Nix refer to [NVIDIA](https://developer.nvidia.com/blog/developers-can-now-get-cuda-directly-from-their-favorite-third-party-platforms).
 The substituter is currently backed by [harmonia](https://github.com/nix-community/harmonia).
-Hydra currently runs on `hydra`.
+
+```nix
+{
+  nix.settings.substituters = [
+    "https://cache.nixos-cuda.org"
+  ];
+
+  nix.settings.trusted-public-keys = [
+    "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+  ];
+}
+```
 
 ## ROADMAP
 
