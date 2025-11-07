@@ -2,6 +2,7 @@
   flake.hosts = {
 
     hydra = {
+      ip = "37.27.129.22";
       cores = 16;
       max-jobs = "auto";
     };
@@ -13,6 +14,7 @@
       speedFactor = 4;
     };
     ada = {
+      ip = "144.76.101.55";
       cores = 20;
       max-jobs = 2;
       speedFactor = 4;
@@ -20,11 +22,13 @@
 
     # GPU builders
     atlas = {
+      ip = "95.216.20.88";
       cores = 96;
       max-jobs = 10;
       speedFactor = 10;
     };
     pascal = {
+      ip = "95.216.72.164";
       cores = 8;
       max-jobs = 1;
       speedFactor = 2;
