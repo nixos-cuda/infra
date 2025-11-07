@@ -12,17 +12,16 @@
       ];
     };
 
-  # TODO: add credentials to .secrets.yaml
   flake.dns = inputs.dnscontrol-nix.lib.buildConfig {
     settings.sops = {
-      file = ./.sops.yaml;
+      file = ./.secrets.yaml;
       extractString = "['dns-creds']";
     };
     domains = {
       nixos-cuda = {
         domain = "nixos-cuda.org";
-        registrar = "namecheap";
-        dnsProvider = "namecheap";
+        registrar = "none";
+        dnsProvider = "hetzner";
 
         records = [
           {
