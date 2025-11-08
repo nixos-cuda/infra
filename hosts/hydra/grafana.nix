@@ -16,7 +16,10 @@ in
 
       settings = {
         # Allow public access
-        "auth.anonymous".enabled = true;
+        "auth.anonymous" = {
+          enabled = true;
+          org_name = "NixOS CUDA";
+        };
 
         server = {
           http_port = 3001;
