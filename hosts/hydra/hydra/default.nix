@@ -25,7 +25,7 @@ in
         useSubstitutes = true;
 
         extraConfig = ''
-          max_output_size = 4294967296 # 4 << 30 = 4GiB
+          max_output_size = 12884901888 # 8 << 30 = 12GiB
 
           # Used by the cuda-packages exhaustive jobset
           allow_import_from_derivation = true
