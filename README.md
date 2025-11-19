@@ -20,12 +20,13 @@ We aim to detect and distinguish between:
 
 Accounts of currently available hardware and access.
 
-| Hostname  | Purpose               | IP                                        | GPU                   | GPU architecture  |
-|-----------|-----------------------|-------------------------------------------|-----------------------|-------------------|
-| ada       | GPU builder           | `ada.nixos-cuda.org` - 144.76.101.55      | RTX 4000 ada (SFF)    | Ada Lovelace      |
-| pascal    | GPU builder           | `pascal.nixos-cuda.org` - 95.216.72.164   | GeForce GTX 1080      | Pascal            |
-| hydra     | Hydra + binary cache  | `hydra.nixos-cuda.org` - 37.27.129.22     | -                     | -                 |
-| atlas     | CPU builder           | `atlas.nixos-cuda.org` - 95.216.20.88     | -                     | -                 |
+| Hostname  | Purpose                                                               | IP                                        | GPU                   | GPU architecture  |
+|-----------|-----------------------------------------------------------------------|-------------------------------------------|-----------------------|-------------------|
+| ada       | GPU builder                                                           | `ada.nixos-cuda.org` - 144.76.101.55      | RTX 4000 ada (SFF)    | Ada Lovelace      |
+| pascal    | GPU builder                                                           | `pascal.nixos-cuda.org` - 95.216.72.164   | GeForce GTX 1080      | Pascal            |
+| hydra     | Hydra + binary cache                                                  | `hydra.nixos-cuda.org` - 37.27.129.22     | -                     | -                 |
+| atlas     | CPU builder                                                           | `atlas.nixos-cuda.org` - 95.216.20.88     | -                     | -                 |
+| oxide-1   | CPU builder (provided by [Oxide computers](https://oxide.computer))   | `oxide-1.nixos-cuda.org` - 45.154.216.118 | -                     | -                 |
 
 ## [Hydra](https://hydra.nixos-cuda.org) jobsets
 
