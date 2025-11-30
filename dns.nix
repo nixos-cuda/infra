@@ -26,7 +26,7 @@
       nixos-cuda = {
         domain = "nixos-cuda.org";
         registrar = "none";
-        dnsProvider = "hetzner";
+        dnsProvider = "hetzner_v2";
 
         records =
           let
