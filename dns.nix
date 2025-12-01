@@ -6,11 +6,7 @@
 }:
 {
   perSystem =
-    {
-      system,
-      inputs',
-      ...
-    }:
+    { inputs', ... }:
     {
       devshells.default.packages = [
         inputs'.dnscontrol-nix.packages.default
