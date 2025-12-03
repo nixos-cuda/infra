@@ -52,6 +52,17 @@ in
       enable = true;
 
       scrapeConfigs = [
+        # Harmonia cache monitoring
+        # Not available in the latest release: https://github.com/nix-community/harmonia/issues/631
+        {
+          job_name = "harmonia";
+          static_configs = [
+            {
+              targets = [ config.services.harmonia.settings.bind ];
+            }
+          ];
+        }
+        # Prometheus node exporters
         {
           job_name = "node_exporter";
           scrape_interval = "10s";
