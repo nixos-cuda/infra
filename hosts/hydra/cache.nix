@@ -15,7 +15,13 @@
           config.sops.secrets.harmonia-private-key.path
         ];
 
-        settings.bind = "localhost:${port}";
+        settings = {
+          bind = "localhost:${port}";
+
+          # Pick a lower priority (higher number) than cache.nixos.org
+          # https://cache.nixos.org/nix-cache-info
+          priority = 50;
+        };
       };
 
       caddy.virtualHosts."cache.nixos-cuda.org".extraConfig = ''
