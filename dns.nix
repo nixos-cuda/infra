@@ -50,6 +50,11 @@
           ++ [
             {
               type = "cname";
+              label = "www";
+              target = "@";
+            }
+            {
+              type = "cname";
               label = "cache";
               target = "hydra";
             }
