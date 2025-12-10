@@ -25,7 +25,10 @@
     };
     deploy-rs.url = "github:serokell/deploy-rs";
 
-    dnscontrol-nix.url = "git+https://codeberg.org/hu5ky/dnscontrol-nix.git";
+    dnscontrol-nix = {
+      url = "git+https://codeberg.org/hu5ky/dnscontrol-nix.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
