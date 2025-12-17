@@ -33,9 +33,12 @@ jobs:
         uses: mic92/update-flake-inputs@main
         with:
           github-token: ${{ steps.app-token.outputs.token }}
-          # Optional: exclude specific files or inputs
-          # exclude-patterns: 'tests/**/flake.nix,examples/**/flake.nix#home-manager'
-          # Optional: add custom labels (default: 'dependencies')
-          # pr-labels: 'dependencies,automated'
-          # Optional: enable auto-merge (default: false)
+          # NOTE: Reduce PR noise: it makes sense to deploy an up-to-date
+          # Nixpkgs regularly, but the rest could easily remain stable for months.
+          # NOTE: `name` in `flake#name` refers to input instead of output
+          exclude-patterns: >
+            **/flake.nix#devshell,
+            **/flake.nix#disko,
+            **/flake.nix#flake-parts,
+            **/flake.nix#sops-nix
           auto-merge: 'true'
