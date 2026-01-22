@@ -30,7 +30,7 @@ in
           # Used by the cuda-packages exhaustive jobset
           allow_import_from_derivation = true
 
-          evaluator_workers = 16
+          evaluator_workers = 12
           evaluator_max_memory_size = 4096
         '';
       };
