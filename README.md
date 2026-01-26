@@ -76,12 +76,14 @@ The substituter is currently backed by [harmonia](https://github.com/nix-communi
     - [x] [Gaetan] Set up NixOS and Hydra.
     - [x] [Gaetan] ZFS Nix store on `ada`, `pascal`.
     - [x] [Gaetan] Set up `sops-nix` for managing the secrets.
-    - [ ] [Gaetan] Hydra.
+    - [x] [Gaetan] Hydra.
         - [x] [Gaetan] Back up the Hydra configuration (DB?, jobsets?).
         - [x] [Gaetan] Move Hydra to `ada` (more storage available).
         - [x] [Serge] Figure out how Hydra inputs work.
         - [x] Open PR for cuda-gpu-tests jobset (currently the input points at Gaetan's branch)
-          -> https://github.com/NixOS/nixpkgs/pull/454251
-        - [ ] Collect `gpuCheck`s by following `recurseIntoAttrs` and `passthru.tests` (currently using a hard-coded list).
-        - [ ] Declarative jobsets (currently configured via web UI).
+            -> https://github.com/NixOS/nixpkgs/pull/454251
+        - [x] Collect `gpuCheck`s by following `recurseIntoAttrs` and `passthru.tests` (currently using a hard-coded list).
+            -> https://github.com/nixos-cuda/hydra-jobsets/pull/2
+        - [x] Declarative jobsets (currently configured via web UI).
+            -> https://github.com/nixos-cuda/hydra-jobsets/pull/4
     - [x] [Gaetan] Expose binary cache
