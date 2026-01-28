@@ -26,6 +26,7 @@ in
 
         # Make the drv available to the remote pre-build-hook by copying the .drv to the remote builders
         # https://github.com/NixOS/nix/issues/9272
+        # Fix submitted upstream: https://github.com/NixOS/hydra/pull/1565
         package = pkgs.hydra.overrideAttrs (old: {
           patches = (old.patches or [ ]) ++ [
             ./0001-hydra-queue-runner-make-drv-available-to-remote-pre-build-hook.patch
