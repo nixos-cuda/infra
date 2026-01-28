@@ -45,7 +45,7 @@
             # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
             publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUp1RjdhSkZydXJUUHBMNjIxZU5mWlkxR2J0cHZhTkxIVlZKcTdKdDZ0YzYgcm9vdEBhZGEK";
             supportedFeatures = defaultFeatures ++ [ "cuda" ];
-            # mandatoryFeatures = [ "cuda" ];
+            mandatoryFeatures = [ "cuda" ];
           };
           pascal = {
             # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub

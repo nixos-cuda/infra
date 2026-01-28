@@ -25,7 +25,7 @@
     ada = {
       ip = "144.76.101.55";
       cores = 20;
-      max-jobs = 2;
+      max-jobs = 6;
       speedFactor = 4;
     };
     pascal = {
