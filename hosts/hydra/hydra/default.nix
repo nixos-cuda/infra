@@ -1,5 +1,9 @@
 # TODO: move to hydra
-{ config, ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 let
   baseDomain = "nixos-cuda.org";
 in
@@ -19,6 +23,14 @@ in
     {
       hydra = {
         enable = true;
+
+        # Make the drv available to the remote pre-build-hook by copying the .drv to the remote builders
+        # https://github.com/NixOS/nix/issues/9272
+        package = pkgs.hydra.overrideAttrs (old: {
+          patches = (old.patches or [ ]) ++ [
+            ./0001-hydra-queue-runner-make-drv-available-to-remote-pre-build-hook.patch
+          ];
+        });
 
         inherit hydraURL;
         notificationSender = "hydra@${baseDomain}";

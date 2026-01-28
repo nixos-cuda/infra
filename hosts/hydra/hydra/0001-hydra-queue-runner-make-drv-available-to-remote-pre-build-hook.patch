@@ -1,0 +1,29 @@
+From a91c7a06171b344979220997d4e7b6acc7a19e53 Mon Sep 17 00:00:00 2001
+From: Gaetan Lepage <gaetan@glepage.com>
+Date: Wed, 28 Jan 2026 00:58:03 +0100
+Subject: [PATCH] hydra-queue-runner: make drv available to remote
+ pre-build-hook
+
+Co-authored-by: Someone Else <else@someonex.net>
+---
+ src/hydra-queue-runner/build-remote.cc | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/hydra-queue-runner/build-remote.cc b/src/hydra-queue-runner/build-remote.cc
+index 4111a8fb..ef68603c 100644
+--- a/src/hydra-queue-runner/build-remote.cc
++++ b/src/hydra-queue-runner/build-remote.cc
+@@ -209,7 +209,9 @@ static BasicDerivation sendInputs(
+             destStore.computeFSClosure(basicDrv.inputSrcs, closure);
+             copyPaths(destStore, localStore, closure, NoRepair, NoCheckSigs, NoSubstitute);
+         } else {
+-            copyClosureTo(conn, destStore, basicDrv.inputSrcs, Substitute);
++            StorePathSet pathsToCopy = basicDrv.inputSrcs;
++            pathsToCopy.insert(step.drvPath);
++            copyClosureTo(conn, destStore, pathsToCopy, Substitute);
+         }
+ 
+         auto now2 = std::chrono::steady_clock::now();
+-- 
+2.50.1
+
