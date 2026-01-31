@@ -30,8 +30,15 @@ Accounts of currently available hardware and access.
 
 ## [Hydra](https://hydra.nixos-cuda.org) jobsets
 
-- [`cuda-gpu-tests`](https://hydra.nixos-cuda.org/jobset/cuda/cuda-gpu-tests): runs the nixpkgs GPU tests on builders with `cuda` capability.
-- [`cuda-packages`](https://hydra.nixos-cuda.org/jobset/cuda/cuda-packages): builds `nixpkgs`'s [`release-cuda.nix`](https://github.com/NixOS/nixpkgs/blob/master/pkgs/top-level/release-cuda.nix) jobset.
+We are using [declarative Hydra jobsets](https://hydra.nixos.org/build/320151937/download/1/hydra/plugins/declarative-projects.html).
+All jobsets are defined in [a dedicated repository](https://github.com/nixos-cuda/hydra-jobsets).
+
+Here are the jobsets currently running on Hydra.
+
+- `cuda-packages-[un]stable`: builds `nixpkgs`'s [`release-cuda.nix`](https://github.com/NixOS/nixpkgs/blob/master/pkgs/top-level/release-cuda.nix) jobset.
+- `cuda-gpu-tests-[un]stable`: runs the nixpkgs GPU tests on builders with `cuda` capability.
+
+Learn more [here](https://github.com/nixos-cuda/hydra-jobsets?tab=readme-ov-file#nixos-cuda-hydra-jobsets).
 
 ## [Binary cache](https://cache.nixos-cuda.org)
 
