@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   update-flake-lock:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout (full history for clean diffs)
         uses: actions/checkout@v4
