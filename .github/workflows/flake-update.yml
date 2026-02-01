@@ -1,4 +1,4 @@
-name: Update Flake Inputs
+name: flake-update
 
 on:
   schedule:
@@ -6,39 +6,61 @@ on:
     - cron: '0 2 * * 0'
   workflow_dispatch: # Allow manual triggering
 
+
+permissions:
+  contents: write        # push branches
+  pull-requests: write   # open PRs & enable auto-merge
+
+concurrency:
+  group: flake-lock-updater
+  cancel-in-progress: false
+
 jobs:
-  update-flake-inputs:
+  update-flake-lock:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-
     steps:
-      - name: Generate GitHub App Token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - name: Checkout repository
+      - name: Checkout (full history for clean diffs)
         uses: actions/checkout@v4
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
 
-      - name: Setup Nix
-        uses: cachix/install-nix-action@v31
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v13
 
-      - name: Update flake inputs
-        uses: mic92/update-flake-inputs@main
+      - name: Update flake.lock
+        run: |
+          set -euo pipefail
+          nix --version
+          nix flake update
+          # if nothing changed, bail out early
+          if git diff --quiet -- flake.lock; then
+            echo "No flake.lock changes."
+            echo "no_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "no_changes=false" >> $GITHUB_OUTPUT
+          fi
+        id: update
+
+      - name: Create pull request
+        if: steps.update.outputs.no_changes == 'false'
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
         with:
-          github-token: ${{ steps.app-token.outputs.token }}
-          # NOTE: Reduce PR noise: it makes sense to deploy an up-to-date
-          # Nixpkgs regularly, but the rest could easily remain stable for months.
-          # NOTE: `name` in `flake#name` refers to input instead of output
-          exclude-patterns: >
-            **/flake.nix#devshell,
-            **/flake.nix#disko,
-            **/flake.nix#flake-parts,
-            **/flake.nix#sops-nix
-          auto-merge: 'true'
+          token: ${{ secrets.AUTHOR_GITHUB_TOKEN }}
+          commit-message: "flake.lock: Update"
+          title: "flake.lock: Update"
+          body: |
+            Automated `nix flake update`.
+          branch: flake-lock-update
+          delete-branch: true
+          signoff: false
+          add-paths: |
+            flake.lock
+
+      - name: Enable auto-merge (squash)
+        if: steps.update.outputs.no_changes == 'false'
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.AUTHOR_GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
