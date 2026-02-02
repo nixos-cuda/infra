@@ -29,6 +29,11 @@
       url = "git+https://codeberg.org/hu5ky/dnscontrol-nix.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    git-hooks-nix = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -50,11 +55,16 @@
         ./dns.nix
         ./hosts
         inputs.devshell.flakeModule
+        inputs.git-hooks-nix.flakeModule
       ];
 
       perSystem =
         { pkgs, ... }:
         {
+          pre-commit.settings.hooks = {
+            actionlint.enable = true;
+            nixfmt.enable = true;
+          };
           devshells.default.packages = [
             pkgs.sops
           ];
