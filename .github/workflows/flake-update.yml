@@ -80,8 +80,7 @@ jobs:
 
       - name: Enable auto-merge (rebase)
         if: steps.update.outputs.have_changes
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: rebase
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          nix run --inputs-from . nixpkgs#gh -- pr merge -R "${{ github.repository }}" --rebase --auto "${{ steps.cpr.outputs.pull-request-number }}"
