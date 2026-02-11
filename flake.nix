@@ -59,7 +59,12 @@
       ];
 
       perSystem =
-        { pkgs, ... }:
+        {
+          pkgs,
+          lib,
+          config,
+          ...
+        }:
         {
           pre-commit.settings.hooks = {
             actionlint.enable = true;
@@ -68,6 +73,11 @@
           devshells.default.packages = [
             pkgs.sops
           ];
+          packages = lib.packagesFromDirectoryRecursive {
+            inherit (pkgs) callPackage;
+            directory = ./packages;
+          };
+          checks = lib.mapAttrs' (name: lib.nameValuePair "package-${name}") config.packages;
         };
     };
 }
