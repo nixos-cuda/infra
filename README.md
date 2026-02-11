@@ -60,6 +60,19 @@ The substituter is currently backed by [harmonia](https://github.com/nix-communi
 
 ## ROADMAP
 
+- [ ] Hardware monitoring
+    - [x] Set up Grafana -> https://grafana.nixos-cuda.org
+    - [x] Monitor basic hardware metrics
+    - [ ] Monitor GPU metrics
+        - [ ] Set-up `collectd` + Prometheus on the GPU nodes
+            - https://grafana.com/grafana/dashboards/1500-cuda-gpu/
+            - https://search.nixos.org/options?channel=unstable&show=services.collectd.enable&query=services.collectd
+        - [ ] Add the [`cuda-gpu` dashboard](https://grafana.com/grafana/dashboards/1500-cuda-gpu/)
+    - [ ] Harmonia binary cache monitoring in Grafana\
+        When we'll update to `nixos-26.05`, [Harmonia will be at version `>=0.3.0`](https://github.com/NixOS/nixpkgs/pull/488515).\
+        It ships the ability to monitor metrics from Grafana:
+        - https://github.com/nix-community/harmonia?tab=readme-ov-file#grafana-dashboard
+        - Full changelog: https://github.com/nix-community/harmonia/releases/tag/harmonia-v3.0.0
 - [ ] Coverage
     - [ ] Remove hard-coded attribute lists: cf. "Collect `gpuCheck`s by following `recurseIntoAttrs`" in "MVE"; same for packages.
     - [ ] Data-Center Hardware and Multi-GPU set-ups
