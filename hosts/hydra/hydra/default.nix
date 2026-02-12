@@ -10,6 +10,7 @@ in
 {
   imports = [
     ./builders.nix
+    ./channels.nix
   ];
 
   # Public key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDi1X4YCtWEto02ovI/fsond7hMKPZ0cFYMLkGn9rGtu
