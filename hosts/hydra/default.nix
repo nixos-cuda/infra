@@ -16,6 +16,14 @@
 
   sops.defaultSopsFile = ./secrets.yaml;
 
+  # Enable zramSwap to ponder nix-eval-jobs' high RAM usage
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+    priority = 100;
+    algorithm = "zstd";
+  };
+
   # Legacy BIOS
   boot.loader = {
     systemd-boot.enable = false;
