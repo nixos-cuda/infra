@@ -16,7 +16,7 @@
           pkgs.lib.getExe
             inputs.self.packages.${config.nixpkgs.system}.hydra-channel-update-script;
 
-        commandPrefix = lib.concatStrings [
+        commandPrefix = lib.concatStringsSep " " [
           hydraChannelUpdateScript
 
           "https://${config.services.hydra.hydraURL}"
