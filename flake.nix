@@ -73,6 +73,15 @@
           devshells.default.packages = [
             pkgs.sops
           ];
+          devShells.rust = pkgs.mkShell {
+            packages = [
+              pkgs.rustc
+              pkgs.cargo
+              pkgs.clippy
+              pkgs.rustfmt
+            ]
+            ++ lib.optional pkgs.stdenv.hostPlatform.isDarwin pkgs.libiconv;
+          };
           packages = lib.packagesFromDirectoryRecursive {
             inherit (pkgs) callPackage;
             directory = ./packages;
