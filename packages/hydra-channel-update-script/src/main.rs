@@ -67,6 +67,29 @@ fn get_installation_token(
     Ok(resp.token)
 }
 
+fn sync_branch(
+    http_client: &reqwest::blocking::Client,
+    token: &String,
+    repo_full_name: &String,
+    branch_name: &String,
+) -> Result<()> {
+    #[derive(serde::Serialize)]
+    struct Request {
+        branch: String,
+    }
+    http_client
+        .post(format!(
+            "https://api.github.com/repos/{repo_full_name}/merge-upstream",
+        ))
+        .bearer_auth(token)
+        .json(&Request {
+            branch: branch_name.to_string(),
+        })
+        .send()?
+        .error_for_status_with_body()?;
+    Ok(())
+}
+
 fn update_branch(
     http_client: &reqwest::blocking::Client,
     token: &String,
@@ -177,7 +200,7 @@ fn get_eval(
 
 fn usage() -> Error {
     anyhow!(
-        "usage: {} <hydra_url> <github_app_client_id> <github_app_secret_key> <owner/repo> <branch_name>",
+        "usage: {} <hydra_url> <github_app_client_id> <github_app_secret_key> <owner/repo> <upstream_branch_name> <branch_name>",
         std::env::args().next().unwrap()
     )
 }
@@ -190,6 +213,7 @@ fn main() -> Result<()> {
     let client_id = args.next().ok_or_else(usage)?;
     let secret_key_path = args.next().ok_or_else(usage)?;
     let repo_full_name = args.next().ok_or_else(usage)?;
+    let upstream_branch_name = args.next().ok_or_else(usage)?;
     let branch_name = args.next().ok_or_else(usage)?;
     if args.next().is_some() {
         return Err(usage());
@@ -246,6 +270,15 @@ fn main() -> Result<()> {
         })?;
     let installation_token = get_installation_token(&client, &app_token, installation_id)
         .with_context(|| format!("failed to get token for installation {installation_id}"))?;
+    sync_branch(
+        &client,
+        &installation_token,
+        &repo_full_name,
+        &upstream_branch_name,
+    )
+    .with_context(|| {
+        format!("failed to sync branch {branch_name} in repo {repo_full_name} with the upstream")
+    })?;
     update_branch(
         &client,
         &installation_token,

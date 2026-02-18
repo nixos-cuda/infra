@@ -34,11 +34,11 @@
       ''
         <runcommand>
           job = nixos-cuda:channel-unstable:_tested
-          command = ${commandPrefix} nixos-unstable-cuda
+          command = ${commandPrefix} nixos-unstable-small nixos-unstable-cuda
         </runcommand>
         <runcommand>
           job = nixos-cuda:channel-25.11:_tested
-          command = ${commandPrefix} nixos-25.11-cuda
+          command = ${commandPrefix} nixos-25.11-small nixos-25.11-cuda
         </runcommand>
       '';
   };
