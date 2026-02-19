@@ -17,7 +17,7 @@ Since it uses GitHub app, you need to create it in your org:
   - *GitHub App name* - whatever you like, but must be unique for the all of GitHub
   - *Homepage URL* - any URL, doesn't have to be working
   - in *Webhook* uncheck *Active* since we won't use it
-  - in *Permissions* under *Repository permissions* for *Contents* select *Read and write*
+  - in *Permissions* under *Repository permissions* for *Contents* and *Workflows* select *Read and write*
     - it means that the key for this app can override any content in the repo, so take care to set up neccessary branch protections as needed
   - under *Where can this GitHub App be installed?* select the appropriate option
 - press *Create GitHub App*
