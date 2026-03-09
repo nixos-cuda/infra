@@ -94,5 +94,9 @@
           };
           checks = lib.mapAttrs' (name: lib.nameValuePair "package-${name}") config.packages;
         };
+
+      flake.hydraJobs = builtins.mapAttrs (_: v: { inherit (v) x86_64-linux; }) {
+        inherit (self) packages devShells checks;
+      };
     };
 }
