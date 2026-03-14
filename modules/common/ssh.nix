@@ -50,7 +50,7 @@ in
       ];
     in
     {
-      root.openssh.authorizedKeys.keys = GaetanLepage;
+      root.openssh.authorizedKeys.keys = GaetanLepage ++ SomeoneSerge;
 
       nix.openssh.authorizedKeys.keys = map (key: "${ssh-restrict} ${key}") (
         hydra ++ GaetanLepage ++ SomeoneSerge ++ YorikSar
