@@ -34,6 +34,12 @@
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    hydra-github-app = {
+      url = "github:YorikSar/hydra-github-app";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.git-hooks-nix.follows = "git-hooks-nix";
+    };
   };
 
   outputs =

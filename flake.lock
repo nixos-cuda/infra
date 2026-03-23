@@ -195,6 +195,29 @@
         "type": "github"
       }
     },
+    "hydra-github-app": {
+      "inputs": {
+        "git-hooks-nix": [
+          "git-hooks-nix"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774271950,
+        "narHash": "sha256-JCJCPaacKZwXtjGODTkplC/wzb2FjwH6ZDHxTzhWaOc=",
+        "owner": "YorikSar",
+        "repo": "hydra-github-app",
+        "rev": "28bd0649c46b972cb7687f1b1317ecb29bbfd448",
+        "type": "github"
+      },
+      "original": {
+        "owner": "YorikSar",
+        "repo": "hydra-github-app",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1743014863,
@@ -251,6 +274,7 @@
         "dnscontrol-nix": "dnscontrol-nix",
         "flake-parts": "flake-parts",
         "git-hooks-nix": "git-hooks-nix",
+        "hydra-github-app": "hydra-github-app",
         "nixpkgs": "nixpkgs_3",
         "sops-nix": "sops-nix"
       }
