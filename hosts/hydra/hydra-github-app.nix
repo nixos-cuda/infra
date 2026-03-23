@@ -24,8 +24,8 @@ in
       github_app = {
         webhook_secret_file = config.sops.secrets.hydra-github-app-webhook-secret.path;
         app_private_key_file = config.sops.secrets.hydra-github-app-private-key.path;
-        app_id = 1; # INSERT_HERE
-        client_id = "INSERT_HERE";
+        app_id = 3166838;
+        client_id = "Iv23liR8I9R73IRTYbMw";
       };
       hydra = {
         url = "https://${hydraURL}";
