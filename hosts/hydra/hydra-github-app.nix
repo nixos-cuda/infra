@@ -9,6 +9,13 @@ let
 in
 {
   imports = [ inputs.hydra-github-app.nixosModules.default ];
+
+  sops.secrets = {
+    hydra-github-app-webhook-secret = { };
+    hydra-github-app-private-key = { };
+    hydra-github-app-hydra-password = { };
+  };
+
   # Caddy will evaluate handle_path before reverse_proxy, see docs at
   # https://caddyserver.com/docs/caddyfile/directives#directive-order
   services.caddy.virtualHosts.${hydraURL}.extraConfig = ''
@@ -29,9 +36,9 @@ in
       };
       hydra = {
         url = "https://${hydraURL}";
-        user = "github-app";
+        user = "github_app";
         password_file = config.sops.secrets.hydra-github-app-hydra-password.path;
-        project = "INSERT_HERE";
+        project = "github-ci";
       };
       repositories = {
         "nixos-cuda/infra" = {
