@@ -47,7 +47,7 @@ in
           hydra_jobset_template = {
             description = "triggered by PR {pr_url}";
             nixexprinput = "jobsets";
-            nixexprpath = "pr.nix";
+            nixexprpath = "jobsets/nixpkgs-pr.nix";
             inputs = {
               jobsets = {
                 type = "git";
