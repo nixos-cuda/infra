@@ -10,6 +10,15 @@ let
   userName = "grafana";
 in
 {
+  systemd.services.grafana.serviceConfig.LoadCredential = [
+    "admin_pw:${config.sops.secrets."grafana/admin_pw".path}"
+  ];
+  sops.secrets."grafana/admin_pw" = {
+    owner = "grafana";
+    group = "grafana";
+    sopsFile = ./secrets-grafana.yaml;
+  };
+
   services = {
     grafana = {
       enable = true;
@@ -19,6 +28,11 @@ in
         "auth.anonymous" = {
           enabled = true;
           org_name = "NixOS CUDA";
+        };
+
+        security = {
+          admin_user = "clanker";
+          admin_password = "__file\${/run/credentials/grafana/admin_pw}";
         };
 
         server = {

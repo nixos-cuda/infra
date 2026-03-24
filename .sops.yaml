@@ -1,6 +1,7 @@
 keys:
   - &hydra age1yd6t2gsq9z7rcste8h8zd4jzlzhnqck6xaplhsptzy2w7apdrpusr2aa02
   - &gaetan age16fjn06trywshgm5gg68d8zyr7x0tgdd2x22v92hrrtx806rq3sfs9xl5f6
+  - &serge age1r40mw48s4mc9rgj5da0rhx04rtpntd72jnc4k60w9d9etztdy42swuxjtz
 
 creation_rules:
   - path_regex: .secrets.yaml$
@@ -12,3 +13,9 @@ creation_rules:
     - age:
       - *hydra
       - *gaetan
+  - path_regex: hosts/hydra/secrets-grafana.yaml$
+    key_groups:
+    - age:
+      - *hydra
+      - *gaetan
+      - *serge
