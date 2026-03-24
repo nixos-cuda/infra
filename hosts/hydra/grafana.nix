@@ -105,6 +105,24 @@ in
             }
           ];
         }
+        {
+          job_name = "hydra";
+          metrics_path = "/prometheus";
+          scheme = "https";
+          static_configs = [ { targets = [ "hydra.nixos-cuda.org:443" ]; } ];
+        }
+        {
+          job_name = "hydra_queue_runner";
+          metrics_path = "/metrics";
+          scheme = "http";
+          static_configs = [ { targets = [ "hydra.nixos-cuda.org:9198" ]; } ];
+        }
+        {
+          job_name = "hydra-webserver";
+          metrics_path = "/metrics";
+          scheme = "https";
+          static_configs = [ { targets = [ "hydra.nixos-cuda.org:443" ]; } ];
+        }
       ];
     };
 
