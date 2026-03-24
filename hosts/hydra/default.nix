@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
   imports = [
     ./cache.nix
@@ -36,6 +36,10 @@
       efiInstallAsRemovable = true;
     };
   };
+
+  environment.systemPackages = [
+    pkgs.btop
+  ];
 
   system.stateVersion = "25.05";
 }
