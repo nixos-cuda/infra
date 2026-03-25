@@ -25,8 +25,6 @@ let
       "$CREDENTIALS_DIRECTORY/github_app_key"
 
       "sync-branches"
-      "--hydra-url"
-      "https://${config.services.hydra.hydraURL}"
 
       # nixpkgs fork
       "--repo-full-name"
