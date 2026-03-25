@@ -52,14 +52,6 @@ in
 
           evaluator_workers = 12
           evaluator_max_memory_size = 4096
-
-          queue_runner_metrics_address = 0.0.0.0:9198
-          <hydra_notify>
-            <prometheus>
-              listen_address = 127.0.0.1
-              port = 9199
-            </prometheus>
-          </hydra_notify>
         '';
       };
       postgresqlBackup.enable = true;
@@ -75,7 +67,5 @@ in
   networking.firewall.allowedTCPPorts = [
     80
     443
-    9198 # queue-runner metrics
-    9199 # hydra_notify
   ];
 }

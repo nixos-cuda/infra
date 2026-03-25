@@ -161,8 +161,24 @@ in
         }
       '';
     };
+
+    hydra.extraConfig = ''
+      queue_runner_metrics_address = 0.0.0.0:9198
+      <hydra_notify>
+        <prometheus>
+          listen_address = 0.0.0.0
+          port = 9199
+        </prometheus>
+      </hydra_notify>
+    '';
   };
 
-  # TODO remove
-  networking.firewall.allowedTCPPorts = [ config.services.prometheus.port ];
+  networking.firewall.allowedTCPPorts = [
+    # TODO(@GaetanLepage): remove
+    config.services.prometheus.port
+
+    # CNO exposes these publicly, so do we for now - questionable choice?
+    9198 # queue-runner metrics
+    9199 # hydra_notify
+  ];
 }
