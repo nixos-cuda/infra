@@ -8,6 +8,7 @@ let
   domain = "grafana.nixos-cuda.org";
   dbName = "grafana";
   userName = "grafana";
+  caddyAdminEndpoint = "localhost:2019";
 in
 {
   systemd.services.grafana.serviceConfig.LoadCredential = [
@@ -105,6 +106,8 @@ in
             }
           ];
         }
+
+        # Hydra and scheduling
         {
           job_name = "hydra";
           metrics_path = "/prometheus";
@@ -122,6 +125,15 @@ in
           metrics_path = "/metrics";
           scheme = "https";
           static_configs = [ { targets = [ "hydra.nixos-cuda.org:443" ]; } ];
+        }
+
+        # Caddy
+        {
+          job_name = "caddy";
+          scrape_interval = "20s";
+          static_configs = [
+            { targets = [ caddyAdminEndpoint ]; }
+          ];
         }
       ];
     };
@@ -141,6 +153,12 @@ in
 
       virtualHosts.${domain}.extraConfig = ''
         reverse_proxy localhost:${toString config.services.grafana.settings.server.http_port}
+      '';
+      globalConfig = ''
+        metrics {
+            per_host
+            observe_catchall_hosts
+        }
       '';
     };
   };
