@@ -1,6 +1,9 @@
 use anyhow::{Context, Error, Result, anyhow};
 
-fn make_app_jwt(client_id: String, key: rsa::RsaPrivateKey) -> String {
+struct AppToken(String);
+struct InstallationToken(String);
+
+fn make_app_jwt(client_id: String, key: rsa::RsaPrivateKey) -> AppToken {
     use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
     let signer = rsa::pkcs1v15::SigningKey::<sha2::Sha256>::new(key);
     let jwt_header = URL_SAFE_NO_PAD.encode("{\"typ\":\"JWT\",\"alg\":\"RS256\"}") + ".";
@@ -19,12 +22,12 @@ fn make_app_jwt(client_id: String, key: rsa::RsaPrivateKey) -> String {
             .as_str();
     use rsa::signature::{SignatureEncoding, Signer};
     let signature = URL_SAFE_NO_PAD.encode(signer.sign(to_sign.as_bytes()).to_bytes());
-    to_sign + "." + &signature
+    AppToken(to_sign + "." + &signature)
 }
 
 fn get_installation_for_repo(
     http_client: &reqwest::blocking::Client,
-    app_token: &String,
+    app_token: &AppToken,
     repo_full_name: &String,
 ) -> Result<u64> {
     #[derive(serde::Deserialize)]
@@ -35,7 +38,7 @@ fn get_installation_for_repo(
         .get(format!(
             "https://api.github.com/repos/{repo_full_name}/installation",
         ))
-        .bearer_auth(app_token)
+        .bearer_auth(&app_token.0)
         .send()?
         .error_for_status_with_body()?
         .json::<Response>()?
@@ -44,9 +47,9 @@ fn get_installation_for_repo(
 
 fn get_installation_token(
     http_client: &reqwest::blocking::Client,
-    app_token: &String,
+    app_token: &AppToken,
     installation_id: u64,
-) -> Result<String> {
+) -> Result<InstallationToken> {
     #[derive(serde::Deserialize)]
     struct Response {
         token: String,
@@ -56,7 +59,7 @@ fn get_installation_token(
         .post(format!(
             "https://api.github.com/app/installations/{installation_id}/access_tokens",
         ))
-        .bearer_auth(app_token)
+        .bearer_auth(&app_token.0)
         .send()?
         .error_for_status_with_body()?
         .json::<Response>()?;
@@ -64,12 +67,12 @@ fn get_installation_token(
         "got a new installation token for {installation_id} valid until {}",
         resp.expires_at,
     );
-    Ok(resp.token)
+    Ok(InstallationToken(resp.token))
 }
 
 fn sync_branch(
     http_client: &reqwest::blocking::Client,
-    token: &String,
+    token: &InstallationToken,
     repo_full_name: &String,
     branch_name: &String,
 ) -> Result<()> {
@@ -81,7 +84,7 @@ fn sync_branch(
         .post(format!(
             "https://api.github.com/repos/{repo_full_name}/merge-upstream",
         ))
-        .bearer_auth(token)
+        .bearer_auth(&token.0)
         .json(&Request {
             branch: branch_name.to_string(),
         })
@@ -92,7 +95,7 @@ fn sync_branch(
 
 fn update_branch(
     http_client: &reqwest::blocking::Client,
-    token: &String,
+    token: &InstallationToken,
     repo_full_name: &String,
     branch_name: &String,
     commit_sha: &String,
@@ -106,7 +109,7 @@ fn update_branch(
         .patch(format!(
             "https://api.github.com/repos/{repo_full_name}/git/refs/heads/{branch_name}",
         ))
-        .bearer_auth(token)
+        .bearer_auth(&token.0)
         .json(&Request {
             sha: commit_sha.to_string(),
             force: true,
