@@ -12,33 +12,36 @@
   services.hydra = {
     extraConfig =
       let
-        hydraChannelUpdateScript =
-          pkgs.lib.getExe
-            inputs.self.packages.${config.nixpkgs.system}.hydra-channel-update-script;
+        helpers = pkgs.lib.getExe inputs.self.packages.${config.nixpkgs.system}.helpers;
 
         commandPrefix = lib.concatStringsSep " " [
-          hydraChannelUpdateScript
-
-          "https://${config.services.hydra.hydraURL}"
+          helpers
 
           # channel-updater GitHub app client ID
+          "--client-id"
           "Iv23liZJuJFjr3N1KsP0"
 
           # Path to the channel-updater Github app key file
+          "--private-key"
           config.sops.secrets.channel-updater-github-app-key.path
 
+          "update-channel"
+          "--hydra-url"
+          "https://${config.services.hydra.hydraURL}"
+
           # nixpkgs fork
+          "--repo-full-name"
           "nixos-cuda/nixpkgs"
         ];
       in
       ''
         <runcommand>
           job = nixos-cuda:channel-unstable:_tested
-          command = ${commandPrefix} nixos-unstable-small nixos-unstable-cuda
+          command = ${commandPrefix} --upstream-branch nixos-unstable-small --branch nixos-unstable-cuda
         </runcommand>
         <runcommand>
           job = nixos-cuda:channel-25.11:_tested
-          command = ${commandPrefix} nixos-25.11-small nixos-25.11-cuda
+          command = ${commandPrefix} --upstream-branch nixos-25.11-small --branch nixos-25.11-cuda
         </runcommand>
       '';
   };
