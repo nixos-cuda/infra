@@ -8,6 +8,7 @@
     ./hardware.nix
     ./hydra
     ./hydra-github-app.nix
+    ./sync-nixpkgs-branches.nix
   ];
 
   networking.hostId = "e1ce6466";
