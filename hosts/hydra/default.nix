@@ -1,6 +1,7 @@
 { lib, pkgs, ... }:
 {
   imports = [
+    ./caddy.nix
     ./cache.nix
     ./disko.nix
     ./github-runner.nix
