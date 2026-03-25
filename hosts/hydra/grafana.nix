@@ -10,6 +10,15 @@ let
   userName = "grafana";
 in
 {
+  systemd.services.grafana.serviceConfig.LoadCredential = [
+    "admin_pw:${config.sops.secrets."grafana/admin_pw".path}"
+  ];
+  sops.secrets."grafana/admin_pw" = {
+    owner = "grafana";
+    group = "grafana";
+    sopsFile = ./secrets-grafana.yaml;
+  };
+
   services = {
     grafana = {
       enable = true;
@@ -19,6 +28,11 @@ in
         "auth.anonymous" = {
           enabled = true;
           org_name = "NixOS CUDA";
+        };
+
+        security = {
+          admin_user = "clanker";
+          admin_password = "__file\${/run/credentials/grafana/admin_pw}";
         };
 
         server = {
@@ -90,6 +104,24 @@ in
               action = "replace";
             }
           ];
+        }
+        {
+          job_name = "hydra";
+          metrics_path = "/prometheus";
+          scheme = "https";
+          static_configs = [ { targets = [ "hydra.nixos-cuda.org:443" ]; } ];
+        }
+        {
+          job_name = "hydra_queue_runner";
+          metrics_path = "/metrics";
+          scheme = "http";
+          static_configs = [ { targets = [ "hydra.nixos-cuda.org:9198" ]; } ];
+        }
+        {
+          job_name = "hydra-webserver";
+          metrics_path = "/metrics";
+          scheme = "https";
+          static_configs = [ { targets = [ "hydra.nixos-cuda.org:443" ]; } ];
         }
       ];
     };
