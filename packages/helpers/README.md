@@ -38,3 +38,17 @@ This script is intended to be run in Hydra's RunCommand plugin. Here's a sample 
   command = helpers --client-id ig8Ib5DgPv2sDt38PjB0 --private-key private-key.pem update-channel --hydra-url https://hydra.nixos-cuda.org --repo-full-name nixos-cuda/nixpkgs --upstream-branch nixos-unstable-small --branch nixos-unstable-cuda
 </runcommand>
 ```
+
+## sync-branches
+
+Usage:
+```
+helpers --client-id <CLIENT_ID> --private-key <PRIVATE_KEY> sync-branches --repo-full-name <REPO_FULL_NAME> [BRANCHES]...
+```
+
+Syncs all branches listed in arguments with the upstream of the provided fork.
+
+Example:
+```
+helpers --client-id ig8Ib5DgPv2sDt38PjB0 --private-key private-key.pem sync-branches --repo-full-name nixos-cuda/nixpkgs master release-25.11
+```

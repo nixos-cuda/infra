@@ -23,6 +23,12 @@ enum Commands {
         #[arg(long)]
         branch: String,
     },
+    SyncBranches {
+        #[arg(long)]
+        repo_full_name: String,
+        #[arg(num_args=1..)]
+        branches: Vec<String>,
+    },
 }
 
 fn main() -> Result<()> {
@@ -49,6 +55,48 @@ fn main() -> Result<()> {
             upstream_branch,
             branch,
         ),
+        Commands::SyncBranches {
+            repo_full_name,
+            branches,
+        } => sync_branches(get_app_token, repo_full_name, branches),
+    }
+}
+
+fn sync_branches(
+    get_app_token: impl FnOnce() -> Result<AppToken>,
+    repo_full_name: String,
+    branches: Vec<String>,
+) -> Result<()> {
+    // Prepare HTTP client
+    let client = reqwest::blocking::Client::builder()
+        .user_agent(concat!(
+            env!("CARGO_PKG_NAME"),
+            "/",
+            env!("CARGO_PKG_VERSION"),
+        ))
+        .build()?;
+
+    let app_token = get_app_token()?;
+    let installation_id = get_installation_for_repo(&client, &app_token, &repo_full_name)
+        .with_context(|| {
+            format!("failed to get GitHub app installation for repo {repo_full_name}")
+        })?;
+    let installation_token = get_installation_token(&client, &app_token, installation_id)
+        .with_context(|| format!("failed to get token for installation {installation_id}"))?;
+
+    let mut has_errors = false;
+    for branch in branches {
+        if let Err(err) = sync_branch(&client, &installation_token, &repo_full_name, &branch) {
+            eprintln!(
+                "failed to sync branch {branch} in repo {repo_full_name} with the upstream: {err}"
+            );
+            has_errors = true;
+        }
+    }
+    if has_errors {
+        Err(anyhow!("failed to update some branches"))
+    } else {
+        Ok(())
     }
 }
 
