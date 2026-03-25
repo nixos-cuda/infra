@@ -1,4 +1,134 @@
-use anyhow::{Context, Error, Result, anyhow};
+use anyhow::{Context, Result, anyhow};
+
+#[derive(clap::Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+    #[arg(long)]
+    client_id: String,
+    #[arg(long)]
+    private_key: std::path::PathBuf,
+}
+
+#[derive(clap::Subcommand)]
+enum Commands {
+    UpdateChannel {
+        #[arg(long)]
+        hydra_url: String,
+        #[arg(long)]
+        repo_full_name: String,
+        #[arg(long)]
+        upstream_branch: String,
+        #[arg(long)]
+        branch: String,
+    },
+}
+
+fn main() -> Result<()> {
+    use clap::Parser;
+    let cli = Cli::parse();
+    let get_app_token = move || -> Result<AppToken> {
+        use rsa::pkcs1::DecodeRsaPrivateKey;
+        let private_key =
+            rsa::RsaPrivateKey::read_pkcs1_pem_file(&cli.private_key).with_context(|| {
+                format!("failed to read private key from file {:?}", cli.private_key)
+            })?;
+        Ok(make_app_jwt(cli.client_id, private_key))
+    };
+    match cli.command {
+        Commands::UpdateChannel {
+            hydra_url,
+            repo_full_name,
+            upstream_branch,
+            branch,
+        } => update_channel(
+            get_app_token,
+            hydra_url,
+            repo_full_name,
+            upstream_branch,
+            branch,
+        ),
+    }
+}
+
+fn update_channel(
+    get_app_token: impl FnOnce() -> Result<AppToken>,
+    hydra_url: String,
+    repo_full_name: String,
+    upstream_branch: String,
+    branch: String,
+) -> Result<()> {
+    // Parse Hydra's input JSON
+    let hydra_json = read_hydra_json()?;
+    if !hydra_json.finished || !matches!(hydra_json.build_status, BuildStatus::Succeeded) {
+        eprintln!(
+            "Build {} is not finished or is not successfull, aborting",
+            hydra_json.build
+        );
+        return Ok(());
+    }
+
+    // Prepare HTTP client
+    let client = reqwest::blocking::Client::builder()
+        .user_agent(concat!(
+            env!("CARGO_PKG_NAME"),
+            "/",
+            env!("CARGO_PKG_VERSION"),
+        ))
+        .build()?;
+
+    // Get Nixpkgs commit SHA
+    let build_evals = get_build_evals(&client, &hydra_url, hydra_json.build)
+        .with_context(|| format!("failed to get evals for build {}", hydra_json.build))?;
+    let last_eval = *build_evals.last().ok_or_else(|| {
+        anyhow!(
+            "build {} has no evals: {hydra_url}/build/{}/evals",
+            hydra_json.build,
+            hydra_json.build
+        )
+    })?;
+    let eval = get_eval(&client, &hydra_url, last_eval)
+        .with_context(|| format!("failed to get eval {last_eval}"))?;
+    let commit_sha = eval.jobsetevalinputs.get("nixpkgs")
+        .ok_or_else(|| anyhow!("eval input \"nixpkgs\" not found for eval {last_eval}: {hydra_url}/eval/{last_eval}#tabs-inputs"))?
+        .revision.clone()
+        .ok_or_else(|| anyhow!("eval input \"nixpkgs\" has no revision for eval {last_eval}: {hydra_url}/eval/{last_eval}#tabs-inputs"))?;
+    eprintln!(
+        "found Nixpkgs commit hash for build {} {commit_sha}",
+        hydra_json.build
+    );
+
+    // Update branch
+    let app_token = get_app_token()?;
+    let installation_id = get_installation_for_repo(&client, &app_token, &repo_full_name)
+        .with_context(|| {
+            format!("failed to get GitHub app installation for repo {repo_full_name}")
+        })?;
+    let installation_token = get_installation_token(&client, &app_token, installation_id)
+        .with_context(|| format!("failed to get token for installation {installation_id}"))?;
+    sync_branch(
+        &client,
+        &installation_token,
+        &repo_full_name,
+        &upstream_branch,
+    )
+    .with_context(|| {
+        format!("failed to sync branch {branch} in repo {repo_full_name} with the upstream")
+    })?;
+    update_branch(
+        &client,
+        &installation_token,
+        &repo_full_name,
+        &branch,
+        &commit_sha,
+    )
+    .with_context(|| {
+        format!("failed to update branch {branch} in repo {repo_full_name} to commit {commit_sha}")
+    })?;
+    eprintln!("updated branch {branch} in repo {repo_full_name} to commit {commit_sha}");
+    Ok(())
+}
 
 struct AppToken(String);
 struct InstallationToken(String);
@@ -199,103 +329,6 @@ fn get_eval(
         .send()?
         .error_for_status_with_body()?
         .json()?)
-}
-
-fn usage() -> Error {
-    anyhow!(
-        "usage: {} <hydra_url> <github_app_client_id> <github_app_secret_key> <owner/repo> <upstream_branch_name> <branch_name>",
-        std::env::args().next().unwrap()
-    )
-}
-
-fn main() -> Result<()> {
-    // Parse CLI args
-    let mut args = std::env::args();
-    let _ = args.next().ok_or_else(usage)?;
-    let hydra_url = args.next().ok_or_else(usage)?;
-    let client_id = args.next().ok_or_else(usage)?;
-    let secret_key_path = args.next().ok_or_else(usage)?;
-    let repo_full_name = args.next().ok_or_else(usage)?;
-    let upstream_branch_name = args.next().ok_or_else(usage)?;
-    let branch_name = args.next().ok_or_else(usage)?;
-    if args.next().is_some() {
-        return Err(usage());
-    }
-
-    // Parse Hydra's input JSON
-    let hydra_json = read_hydra_json()?;
-    if !hydra_json.finished || !matches!(hydra_json.build_status, BuildStatus::Succeeded) {
-        eprintln!(
-            "Build {} is not finished or is not successfull, aborting",
-            hydra_json.build
-        );
-        return Ok(());
-    }
-
-    // Prepare HTTP client
-    let client = reqwest::blocking::Client::builder()
-        .user_agent(concat!(
-            env!("CARGO_PKG_NAME"),
-            "/",
-            env!("CARGO_PKG_VERSION"),
-        ))
-        .build()?;
-
-    // Get Nixpkgs commit SHA
-    let build_evals = get_build_evals(&client, &hydra_url, hydra_json.build)
-        .with_context(|| format!("failed to get evals for build {}", hydra_json.build))?;
-    let last_eval = *build_evals.last().ok_or_else(|| {
-        anyhow!(
-            "build {} has no evals: {hydra_url}/build/{}/evals",
-            hydra_json.build,
-            hydra_json.build
-        )
-    })?;
-    let eval = get_eval(&client, &hydra_url, last_eval)
-        .with_context(|| format!("failed to get eval {last_eval}"))?;
-    let commit_sha = eval.jobsetevalinputs.get("nixpkgs")
-        .ok_or_else(|| anyhow!("eval input \"nixpkgs\" not found for eval {last_eval}: {hydra_url}/eval/{last_eval}#tabs-inputs"))?
-        .revision.clone()
-        .ok_or_else(|| anyhow!("eval input \"nixpkgs\" has no revision for eval {last_eval}: {hydra_url}/eval/{last_eval}#tabs-inputs"))?;
-    eprintln!(
-        "found Nixpkgs commit hash for build {} {commit_sha}",
-        hydra_json.build
-    );
-
-    // Update branch
-    use rsa::pkcs1::DecodeRsaPrivateKey;
-    let private_key = rsa::RsaPrivateKey::read_pkcs1_pem_file(secret_key_path.as_str())
-        .with_context(|| format!("failed to read private key from file {secret_key_path}"))?;
-    let app_token = make_app_jwt(client_id, private_key);
-    let installation_id = get_installation_for_repo(&client, &app_token, &repo_full_name)
-        .with_context(|| {
-            format!("failed to get GitHub app installation for repo {repo_full_name}")
-        })?;
-    let installation_token = get_installation_token(&client, &app_token, installation_id)
-        .with_context(|| format!("failed to get token for installation {installation_id}"))?;
-    sync_branch(
-        &client,
-        &installation_token,
-        &repo_full_name,
-        &upstream_branch_name,
-    )
-    .with_context(|| {
-        format!("failed to sync branch {branch_name} in repo {repo_full_name} with the upstream")
-    })?;
-    update_branch(
-        &client,
-        &installation_token,
-        &repo_full_name,
-        &branch_name,
-        &commit_sha,
-    )
-    .with_context(|| {
-        format!(
-            "failed to update branch {branch_name} in repo {repo_full_name} to commit {commit_sha}"
-        )
-    })?;
-    eprintln!("updated branch {branch_name} in repo {repo_full_name} to commit {commit_sha}");
-    Ok(())
 }
 
 // Convenience method to log response body along with the error

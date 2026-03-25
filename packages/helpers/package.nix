@@ -4,7 +4,7 @@
   clippy,
 }:
 rustPlatform.buildRustPackage {
-  name = "hydra-channel-update-script";
+  name = "helpers";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -23,5 +23,5 @@ rustPlatform.buildRustPackage {
     cargo clippy -- -Dwarnings
   '';
 
-  meta.mainProgram = "hydra-channel-update-script";
+  meta.mainProgram = "helpers";
 }

@@ -1,5 +1,5 @@
 [package]
-name = "hydra-channel-update-script"
+name = "helpers"
 version = "0.1.0"
 edition = "2024"
 
@@ -7,6 +7,7 @@ edition = "2024"
 anyhow = "1.0.100"
 base64 = "0.22.1"
 chrono = { version = "0.4.42", default-features = false, features = ["std", "now", "serde"] }
+clap = { version = "4.6.0", features = ["derive"] }
 reqwest = { version = "0.13.1", features = ["blocking", "gzip", "json", "query"] }
 rsa = { version = "0.9.9", features = ["sha2"] }
 serde = { version = "1.0.228", features = ["derive"] }
