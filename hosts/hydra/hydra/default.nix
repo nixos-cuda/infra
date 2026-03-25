@@ -6,6 +6,7 @@
 }:
 let
   baseDomain = "nixos-cuda.org";
+  cfg = config.services.hydra;
 in
 {
   imports = [
@@ -60,7 +61,19 @@ in
         enable = true;
 
         virtualHosts.${hydraURL}.extraConfig = ''
-          reverse_proxy localhost:${toString config.services.hydra.port}
+          rate_limit {
+              # Tasks so expensive we won't even do per-host limits
+              zone global_queue {
+                  match {
+                      # Spawns `nix-store --export ... | gzip`
+                      # path /job/*/*/*/channel/*
+                      path */channel/latest /build/*/*/closure/*
+                  }
+                  events 2
+                  window 1h
+              }
+          }
+          reverse_proxy localhost:${toString cfg.port}
         '';
       };
     };
