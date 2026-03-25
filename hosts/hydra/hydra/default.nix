@@ -45,6 +45,11 @@ in
           # Used by the cuda-packages exhaustive jobset
           allow_import_from_derivation = true
 
+          # Defaults to bzip2.
+          # Note that CNO Hydra sets `compress_build_logs = false`
+          # and `upload_logs_to_binary_cache = true` instead.
+          compress_build_logs_compression = zstd
+
           evaluator_workers = 12
           evaluator_max_memory_size = 4096
 
