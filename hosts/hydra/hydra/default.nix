@@ -91,8 +91,6 @@ in
           TARGET = "http://localhost:${toString cfg.port}";
           BIND = ":13001";
           BIND_NETWORK = "tcp";
-          METRICS_BIND = ":9001";
-          METRICS_BIND_NETWORK = "tcp";
         };
       };
     };
