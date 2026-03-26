@@ -7,6 +7,7 @@
 let
   baseDomain = "nixos-cuda.org";
   cfg = config.services.hydra;
+  anubisCfg = config.services.anubis.instances."hydra-server";
 in
 {
   imports = [
@@ -73,8 +74,26 @@ in
                   window 1h
               }
           }
-          reverse_proxy localhost:${toString cfg.port}
+          @whitelist {
+              # Based on NixOS/infra's build/hydra-proxy.nix
+              path /build/*/download /build/*/download-by-type /job/*/*/*/latest/download /job/*/*/*/latest/download-by-type
+          }
+          handle @whitelist {
+            reverse_proxy localhost:${toString cfg.port}
+          }
+          handle {
+            reverse_proxy localhost${anubisCfg.settings.BIND}
+          }
         '';
+      };
+      anubis.instances."hydra-server" = {
+        settings = {
+          TARGET = "http://localhost:${toString cfg.port}";
+          BIND = ":13001";
+          BIND_NETWORK = "tcp";
+          METRICS_BIND = ":9001";
+          METRICS_BIND_NETWORK = "tcp";
+        };
       };
     };
   networking.firewall.allowedTCPPorts = [
