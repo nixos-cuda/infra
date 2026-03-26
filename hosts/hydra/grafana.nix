@@ -126,6 +126,15 @@ in
           scheme = "https";
           static_configs = [ { targets = [ "hydra.nixos-cuda.org:443" ]; } ];
         }
+        {
+          # Can't find this in the CNO configs, but somehow their grafana shows the relevant entries.
+          # The content is different from :443/{metrics,prometheus} too...
+          job_name = "hydra-eval";
+          scrape_interval = "15s";
+          metrics_path = "/";
+          scheme = "http";
+          static_configs = [ { targets = [ "hydra.nixos-cuda.org:9199" ]; } ];
+        }
 
         # Caddy
         {
