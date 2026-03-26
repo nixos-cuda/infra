@@ -136,12 +136,22 @@ in
           static_configs = [ { targets = [ "hydra.nixos-cuda.org:9199" ]; } ];
         }
 
-        # Caddy
+        # Reverse-proxy &al
         {
           job_name = "caddy";
           scrape_interval = "20s";
           static_configs = [
             { targets = [ caddyAdminEndpoint ]; }
+          ];
+        }
+        {
+          job_name = "anubis";
+          scrape_interval = "20s";
+          metrics_path = "/metrics";
+          static_configs = [
+            {
+              targets = [ "localhost${config.services.anubis.instances."hydra-server".settings.METRICS_BIND}" ];
+            }
           ];
         }
       ];
@@ -180,6 +190,13 @@ in
         </prometheus>
       </hydra_notify>
     '';
+
+    anubis.instances."hydra-server" = {
+      settings = {
+        METRICS_BIND = ":9001";
+        METRICS_BIND_NETWORK = "tcp";
+      };
+    };
   };
 
   networking.firewall.allowedTCPPorts = [
