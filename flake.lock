@@ -205,11 +205,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1774271950,
-        "narHash": "sha256-JCJCPaacKZwXtjGODTkplC/wzb2FjwH6ZDHxTzhWaOc=",
+        "lastModified": 1774624931,
+        "narHash": "sha256-ehTfjsL9bpo2FeC5nVT0qWoEb46bq8mpMlBYVwG0PGE=",
         "owner": "YorikSar",
         "repo": "hydra-github-app",
-        "rev": "28bd0649c46b972cb7687f1b1317ecb29bbfd448",
+        "rev": "05a1c6607fdf880addc5c2150a92d2642f8e5e78",
         "type": "github"
       },
       "original": {
@@ -252,11 +252,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1774091411,
-        "narHash": "sha256-P+9bwtvc75FdmXQpg9GLiA5a7xXddhwOam6AQZMRGn8=",
+        "lastModified": 1774703172,
+        "narHash": "sha256-9+TAfY2T4Y6OqN/vrbzBNQx5c997k4Y6LW7oCMG6iVc=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "339e6f7841d6a785c1ca468e02cd0be88db5604e",
+        "rev": "a8dc30c6c6484fd1adbb2a2727bb6473dd8c38b5",
         "type": "github"
       },
       "original": {
@@ -286,11 +286,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773889674,
-        "narHash": "sha256-+ycaiVAk3MEshJTg35cBTUa0MizGiS+bgpYw/f8ohkg=",
+        "lastModified": 1774303811,
+        "narHash": "sha256-fhG4JAcLgjKwt+XHbjs8brpWnyKUfU4LikLm3s0Q/ic=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "29b6519f3e0780452bca0ac0be4584f04ac16cc5",
+        "rev": "614e256310e0a4f8a9ccae3fa80c11844fba7042",
         "type": "github"
       },
       "original": {
