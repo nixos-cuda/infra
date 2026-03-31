@@ -33,7 +33,7 @@ in
 
         security = {
           admin_user = "clanker";
-          admin_password = "__file\${/run/credentials/grafana/admin_pw}";
+          admin_password = "\$__file{/run/credentials/grafana/admin_pw}";
         };
 
         server = {
