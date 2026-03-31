@@ -84,7 +84,7 @@ in
             ) || remote_ip(
                 '127.0.0.0/23',
                 '::1'
-            )
+            ) ||  header({'Accept': 'application/json', 'User-Agent': 'YorikSar-test-repo-webhook-testing'})
           CEL
           handle @whitelist {
             reverse_proxy localhost:${toString cfg.port}
