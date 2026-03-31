@@ -74,10 +74,18 @@ in
                   window 1h
               }
           }
-          @whitelist {
-              # Based on NixOS/infra's build/hydra-proxy.nix
-              path /build/*/download /build/*/download-by-type /job/*/*/*/latest/download /job/*/*/*/latest/download-by-type
-          }
+          # Based on NixOS/infra s build/hydra-proxy.nix
+          @whitelist <<CEL
+            path(
+                '/build/*/download',
+                '/build/*/download-by-type',
+                '/job/*/*/*/latest/download',
+                '/job/*/*/*/latest/download-by-type'
+            ) || remote_ip(
+                '127.0.0.0/23',
+                '::1'
+            )
+          CEL
           handle @whitelist {
             reverse_proxy localhost:${toString cfg.port}
           }
