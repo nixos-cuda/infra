@@ -20,6 +20,14 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   networking.firewall.enable = true;
+  networking.useNetworkd = true;
+  # FIXME: Belongs in bridge configuration, e.g. if we bridge VMs?
+  # systemd.network.networks."99-ethernet-default-dhcp" = {
+  #   networkConfig = {
+  #     IPv6SendRA = true;
+  #     DHCPPrefixDelegation = true;
+  #   };
+  # };
 
   boot.loader = {
     systemd-boot = {
