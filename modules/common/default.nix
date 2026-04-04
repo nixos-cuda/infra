@@ -12,6 +12,7 @@
     ./nix.nix
     ./ssh.nix
     ./users.nix
+    ./network.nix
   ];
 
   time.timeZone = "Europe/Paris";
@@ -21,13 +22,6 @@
 
   networking.firewall.enable = true;
   networking.useNetworkd = true;
-  # FIXME: Belongs in bridge configuration, e.g. if we bridge VMs?
-  # systemd.network.networks."99-ethernet-default-dhcp" = {
-  #   networkConfig = {
-  #     IPv6SendRA = true;
-  #     DHCPPrefixDelegation = true;
-  #   };
-  # };
 
   boot.loader = {
     systemd-boot = {

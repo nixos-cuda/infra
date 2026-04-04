@@ -39,11 +39,26 @@
               inherit address;
             }) githubPagesIps;
 
-            hostRecords = lib.mapAttrsToList (hostname: hostCfg: {
-              type = "a";
-              label = hostname;
-              address = hostCfg.ip;
-            }) config.flake.hosts;
+            inherit (lib) optionals;
+            inherit (config.flake) hosts;
+            hosts' = map ({ name, value }: value // { hostName = name; }) (lib.attrsToList hosts);
+            hostRecords = builtins.concatMap (
+              { hostName, ip, ... }@hostCfg:
+              [
+                {
+                  type = "a";
+                  label = hostName;
+                  address = ip;
+                }
+              ]
+              ++ optionals (hostCfg ? ip6Prefix) [
+                {
+                  type = "aaaa";
+                  label = hostName;
+                  address = "${hostCfg.ip6Prefix}::1";
+                }
+              ]
+            ) hosts';
           in
           websiteRecords
           ++ hostRecords
