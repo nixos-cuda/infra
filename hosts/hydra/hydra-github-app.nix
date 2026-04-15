@@ -66,6 +66,9 @@ in
               nixpkgs = {
                 type = "pr base";
               };
+              targetBranch = {
+                type = "pr target branch";
+              };
             };
           };
         };
