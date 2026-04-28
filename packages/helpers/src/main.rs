@@ -5,10 +5,10 @@ use anyhow::{Context, Result, anyhow};
 struct Cli {
     #[command(subcommand)]
     command: Commands,
-    #[arg(long)]
-    client_id: String,
-    #[arg(long)]
-    private_key: std::path::PathBuf,
+    #[arg(long, requires = "private_key")]
+    client_id: Option<String>,
+    #[arg(long, requires = "client_id")]
+    private_key: Option<std::path::PathBuf>,
 }
 
 #[derive(clap::Subcommand)]
@@ -36,20 +36,53 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     let get_token = move |client: &reqwest::blocking::Client,
                           repo_full_name: &str|
-          -> Result<InstallationToken> {
-        use rsa::pkcs1::DecodeRsaPrivateKey;
-        let private_key =
-            rsa::RsaPrivateKey::read_pkcs1_pem_file(&cli.private_key).with_context(|| {
-                format!("failed to read private key from file {:?}", cli.private_key)
-            })?;
-        let app_token = make_app_jwt(cli.client_id, private_key);
-        let installation_id = get_installation_for_repo(client, &app_token, repo_full_name)
-            .with_context(|| {
-                format!("failed to get GitHub app installation for repo {repo_full_name}")
-            })?;
-        let installation_token = get_installation_token(client, &app_token, installation_id)
-            .with_context(|| format!("failed to get token for installation {installation_id}"))?;
-        Ok(installation_token)
+          -> Result<InstallationOrUserToken> {
+        Ok(InstallationOrUserToken(
+            match (cli.client_id, cli.private_key) {
+                (None, None) => {
+                    std::env::var("GITHUB_TOKEN").or_else(|err| match err {
+                        std::env::VarError::NotPresent => {
+                            eprintln!(
+                                "GITHUB_TOKEN environment variable is not set, trying `gh auth token`"
+                            );
+                            let stdout = std::process::Command::new("gh")
+                                .args(["auth", "token"])
+                                .stderr(std::process::Stdio::inherit())
+                                .output()
+                                .context("failed to run `gh auth token`")?
+                                .stdout;
+                            // Trim trailing newline from stdout
+                            Ok(String::from_utf8_lossy(&stdout[..stdout.len() - 1]).to_string())
+                        }
+                        std::env::VarError::NotUnicode(_) => {
+                            Err(anyhow!(err).context("couldn't parse GITHUB_TOKEN environment variable"))
+                        }
+                    })?
+                }
+                (Some(client_id), Some(private_key)) => {
+                    use rsa::pkcs1::DecodeRsaPrivateKey;
+                    let private_key = rsa::RsaPrivateKey::read_pkcs1_pem_file(&private_key)
+                        .with_context(|| {
+                            format!("failed to read private key from file {:?}", private_key)
+                        })?;
+                    let app_token = make_app_jwt(client_id, private_key);
+                    let installation_id = get_installation_for_repo(
+                        client,
+                        &app_token,
+                        repo_full_name,
+                    )
+                    .with_context(|| {
+                        format!("failed to get GitHub app installation for repo {repo_full_name}")
+                    })?;
+                    let installation_token =
+                        get_installation_token(client, &app_token, installation_id).with_context(
+                            || format!("failed to get token for installation {installation_id}"),
+                        )?;
+                    installation_token.0
+                }
+                (None, Some(_)) | (Some(_), None) => unreachable!("enforced by clap"),
+            },
+        ))
     };
     match cli.command {
         Commands::UpdateChannel {
@@ -72,7 +105,7 @@ fn main() -> Result<()> {
 }
 
 fn sync_branches(
-    get_token: impl FnOnce(&reqwest::blocking::Client, &str) -> Result<InstallationToken>,
+    get_token: impl FnOnce(&reqwest::blocking::Client, &str) -> Result<InstallationOrUserToken>,
     repo_full_name: String,
     branches: Vec<String>,
 ) -> Result<()> {
@@ -91,7 +124,7 @@ fn sync_branches(
     for branch in branches {
         if let Err(err) = sync_branch(&client, &token, &repo_full_name, &branch) {
             eprintln!(
-                "failed to sync branch {branch} in repo {repo_full_name} with the upstream: {err}"
+                "failed to sync branch {branch} in repo {repo_full_name} with the upstream: {err:?}"
             );
             has_errors = true;
         }
@@ -104,7 +137,7 @@ fn sync_branches(
 }
 
 fn update_channel(
-    get_token: impl FnOnce(&reqwest::blocking::Client, &str) -> Result<InstallationToken>,
+    get_token: impl FnOnce(&reqwest::blocking::Client, &str) -> Result<InstallationOrUserToken>,
     hydra_url: String,
     repo_full_name: String,
     upstream_branch: String,
@@ -164,6 +197,7 @@ fn update_channel(
 
 struct AppToken(String);
 struct InstallationToken(String);
+struct InstallationOrUserToken(String);
 
 /// Generate GitHub app token (JWT) from its private key.
 /// https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-json-web-token-jwt-for-a-github-app
@@ -242,7 +276,7 @@ fn get_installation_token(
 /// https://docs.github.com/rest/branches/branches#sync-a-fork-branch-with-the-upstream-repository
 fn sync_branch(
     http_client: &reqwest::blocking::Client,
-    token: &InstallationToken,
+    token: &InstallationOrUserToken,
     repo_full_name: &str,
     branch_name: &str,
 ) -> Result<()> {
@@ -268,7 +302,7 @@ fn sync_branch(
 /// https://docs.github.com/rest/git/refs#update-a-reference
 fn update_branch(
     http_client: &reqwest::blocking::Client,
-    token: &InstallationToken,
+    token: &InstallationOrUserToken,
     repo_full_name: &str,
     branch_name: &str,
     commit_sha: &str,
