@@ -36,6 +36,21 @@ enum Commands {
         body: String,
         pr_url: reqwest::Url,
     },
+    #[command(name = "sync-prs")]
+    SyncPRs {
+        #[arg(long, default_value = "NixOS/nixpkgs")]
+        upstream_repo_full_name: String,
+        #[arg(long, default_value = "nixos-cuda/nixpkgs")]
+        repo_full_name: String,
+        #[arg(long, default_values = vec!["ConnorBaker", "GaetanLepage", "SomeoneSerge", "YorikSar"])]
+        from_users: Vec<String>,
+        #[arg(long, default_value = "Clone of {html_url} for CI")]
+        body: String,
+        #[arg(long, default_value = "100")]
+        top: usize,
+        #[arg(long, default_value_t)]
+        dont_stop_at_first_existing: bool,
+    },
 }
 
 fn main() -> Result<()> {
@@ -113,6 +128,22 @@ fn main() -> Result<()> {
             body,
             pr_url,
         } => clone_pr(get_token, repo_full_name, body, pr_url),
+        Commands::SyncPRs {
+            upstream_repo_full_name,
+            repo_full_name,
+            from_users,
+            body,
+            top,
+            dont_stop_at_first_existing,
+        } => sync_prs(
+            get_token,
+            upstream_repo_full_name,
+            repo_full_name,
+            from_users,
+            body,
+            top,
+            dont_stop_at_first_existing,
+        ),
     }
 }
 
@@ -172,6 +203,63 @@ fn make_pr_clone(
         &body.replace("{html_url}", &pr.html_url),
     )?;
     Ok(new_pr)
+}
+
+fn sync_prs(
+    get_token: impl FnOnce(&reqwest::blocking::Client, &str) -> Result<InstallationOrUserToken>,
+    upstream_repo_full_name: String,
+    repo_full_name: String,
+    from_users: Vec<String>,
+    body: String,
+    top: usize,
+    dont_stop_at_first_existing: bool,
+) -> Result<()> {
+    // Prepare HTTP client
+    let client = reqwest::blocking::Client::builder()
+        .user_agent(concat!(
+            env!("CARGO_PKG_NAME"),
+            "/",
+            env!("CARGO_PKG_VERSION"),
+        ))
+        .build()?;
+
+    let token = get_token(&client, &repo_full_name)?;
+
+    for res in get_pulls_iter(&client, &token, &upstream_repo_full_name).take(top) {
+        let Ok(pr) = res else {
+            return res.map(|_| ());
+        };
+        if !matches!(pr.state, PullRequestState::Open) || !from_users.contains(&pr.user.login) {
+            continue;
+        }
+        eprintln!("Found {}", pr.html_url);
+        match make_pr_clone(&client, &token, &pr, &repo_full_name, &body) {
+            Ok(new_pr) => eprintln!("Created a new PR {}", new_pr.html_url),
+            Err(err) => match err.downcast_ref::<ErrorWithBody>() {
+                Some(body_err)
+                    if matches!(err.downcast_ref::<reqwest::Error>(),
+                    Some(http_err) if matches!(http_err.status(),
+                        Some(reqwest::StatusCode::UNPROCESSABLE_ENTITY)
+                    )) =>
+                {
+                    if !body_err.body.contains("A pull request already exists for") {
+                        return Err(err);
+                    }
+                    eprintln!(
+                        "A pull request already exists for {}:{}",
+                        pr.head.repo.owner.login, pr.head.r#ref
+                    );
+                    if !dont_stop_at_first_existing {
+                        eprintln!("Ran into already existing PR, stopping.");
+                        break;
+                    }
+                }
+                _ => return Err(err),
+            },
+        }
+    }
+
+    Ok(())
 }
 
 fn sync_branches(
@@ -414,11 +502,20 @@ struct PullRequestBase {
 }
 
 #[derive(serde::Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+enum PullRequestState {
+    Open,
+    Closed,
+}
+
+#[derive(serde::Deserialize, Debug)]
 struct PullRequest {
     html_url: String,
     title: String,
     head: PullRequestBase,
     base: PullRequestBase,
+    user: SimpleUser,
+    state: PullRequestState,
 }
 
 /// Get PR object from PR number
@@ -478,6 +575,127 @@ fn create_pr(
         .send()?
         .error_for_status_with_body()?
         .json()?)
+}
+
+fn get_pulls_iter<'a>(
+    http_client: &'a reqwest::blocking::Client,
+    token: &'a InstallationOrUserToken,
+    repo_full_name: &String,
+) -> impl Iterator<Item = Result<PullRequest>> {
+    enum State {
+        FirstUrl(String),
+        GotLinkHeader(reqwest::header::HeaderValue),
+        Stop,
+    }
+    struct Iter<'a> {
+        http_client: &'a reqwest::blocking::Client,
+        token: &'a InstallationOrUserToken,
+        state: State,
+    }
+    impl std::iter::FusedIterator for Iter<'_> {}
+    impl Iterator for Iter<'_> {
+        type Item = Result<Vec<PullRequest>>;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            let url = match self.state {
+                State::FirstUrl(ref url) => url,
+                State::GotLinkHeader(ref header_value) => {
+                    match get_next_link_from_header(header_value) {
+                        Ok(Some(url)) => url,
+                        Ok(None) => {
+                            self.state = State::Stop;
+                            return None;
+                        }
+                        Err(err) => {
+                            let err = err.context(format!(
+                                "failed to parse \"link\" header: {header_value:?}"
+                            ));
+                            self.state = State::Stop;
+                            return Some(Err(err));
+                        }
+                    }
+                }
+                State::Stop => return None,
+            };
+            eprintln!("Fetching {url}...");
+            let res = self
+                .http_client
+                .get(url)
+                .bearer_auth(&self.token.0)
+                .send()
+                .context("failed to send request for PRs")
+                .and_then(ResponseErrorWithBody::error_for_status_with_body)
+                .context("request for PRs failed");
+            let response = match res {
+                Err(err) => {
+                    self.state = State::Stop;
+                    return Some(Err(err));
+                }
+                Ok(response) => response,
+            };
+            self.state = match response.headers().get("link") {
+                Some(header) => State::GotLinkHeader(header.clone()),
+                None => State::Stop,
+            };
+            match response.json() {
+                Ok(prs) => Some(Ok(prs)),
+                Err(err) => {
+                    self.state = State::Stop;
+                    Some(Err(err).context("couldn't parse JSON response"))
+                }
+            }
+        }
+    }
+    use itertools::Itertools;
+    Iter {
+        http_client,
+        token,
+        state: State::FirstUrl(format!(
+            "https://api.github.com/repos/{repo_full_name}/pulls"
+        )),
+    }
+    .flatten_ok()
+}
+
+fn get_next_link_from_header(h: &reqwest::header::HeaderValue) -> Result<Option<&str>> {
+    // example header:
+    // link: <https://api.github.com/repositories/4542716/pulls?page=2>; rel="next", <https://api.github.com/repositories/4542716/pulls?page=359>; rel="last"
+    let link_header = h.to_str().context("failed to convert header to string")?;
+    for part in link_header.split(", ") {
+        let Ok([link_part, rel_part]): Result<[_; 2], _> =
+            part.split("; ").collect::<Vec<_>>().try_into()
+        else {
+            return Err(anyhow!(
+                "header part doesn't split into link and rel parts: {part}"
+            ));
+        };
+        if !link_part.starts_with('<') || !link_part.ends_with('>') {
+            return Err(anyhow!(
+                "link is not surrounded by angle brackets: {link_part}"
+            ));
+        }
+        let link = &link_part[1..link_part.len() - 1];
+        if !rel_part.starts_with("rel=\"") || !rel_part.ends_with('"') {
+            return Err(anyhow!("cannot parse rel value: {rel_part}"));
+        }
+        let rel = &rel_part[5..rel_part.len() - 1];
+        if rel == "next" {
+            return Ok(Some(link));
+        }
+    }
+    Ok(None)
+}
+
+#[test]
+fn test_get_next_link_from_header() {
+    assert!(matches!(
+        get_next_link_from_header(&reqwest::header::HeaderValue::from_static(
+            r#"<https://api.github.com/repositories/4542716/pulls?page=2>; rel="next", <https://api.github.com/repositories/4542716/pulls?page=359>; rel="last""#
+        )),
+        Ok(Some(
+            url
+        )) if url == "https://api.github.com/repositories/4542716/pulls?page=2"
+    ))
 }
 
 #[derive(serde_repr::Deserialize_repr, Debug, PartialEq)]
