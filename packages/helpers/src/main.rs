@@ -181,6 +181,8 @@ fn update_channel(
 struct AppToken(String);
 struct InstallationToken(String);
 
+/// Generate GitHub app token (JWT) from its private key.
+/// https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-json-web-token-jwt-for-a-github-app
 fn make_app_jwt(client_id: String, key: rsa::RsaPrivateKey) -> AppToken {
     use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
     let signer = rsa::pkcs1v15::SigningKey::<sha2::Sha256>::new(key);
@@ -203,6 +205,8 @@ fn make_app_jwt(client_id: String, key: rsa::RsaPrivateKey) -> AppToken {
     AppToken(to_sign + "." + &signature)
 }
 
+/// Get GitHub app installation ID for repository.
+/// https://docs.github.com/en/rest/apps/apps#get-a-repository-installation-for-the-authenticated-app
 fn get_installation_for_repo(
     http_client: &reqwest::blocking::Client,
     app_token: &AppToken,
@@ -223,6 +227,8 @@ fn get_installation_for_repo(
         .id)
 }
 
+/// Get GitHub app's installation access token.
+/// https://docs.github.com/en/rest/apps/apps#create-an-installation-access-token-for-an-app
 fn get_installation_token(
     http_client: &reqwest::blocking::Client,
     app_token: &AppToken,
@@ -248,6 +254,8 @@ fn get_installation_token(
     Ok(InstallationToken(resp.token))
 }
 
+/// Sync branch in a GitHub fork with the upstream repository.
+/// https://docs.github.com/rest/branches/branches#sync-a-fork-branch-with-the-upstream-repository
 fn sync_branch(
     http_client: &reqwest::blocking::Client,
     token: &InstallationToken,
@@ -271,6 +279,9 @@ fn sync_branch(
     Ok(())
 }
 
+/// Update branch on GitHub repo to the specified commit.
+/// The commit must be present in this fork.
+/// https://docs.github.com/rest/git/refs#update-a-reference
 fn update_branch(
     http_client: &reqwest::blocking::Client,
     token: &InstallationToken,
