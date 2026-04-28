@@ -34,13 +34,22 @@ enum Commands {
 fn main() -> Result<()> {
     use clap::Parser;
     let cli = Cli::parse();
-    let get_app_token = move || -> Result<AppToken> {
+    let get_token = move |client: &reqwest::blocking::Client,
+                          repo_full_name: &str|
+          -> Result<InstallationToken> {
         use rsa::pkcs1::DecodeRsaPrivateKey;
         let private_key =
             rsa::RsaPrivateKey::read_pkcs1_pem_file(&cli.private_key).with_context(|| {
                 format!("failed to read private key from file {:?}", cli.private_key)
             })?;
-        Ok(make_app_jwt(cli.client_id, private_key))
+        let app_token = make_app_jwt(cli.client_id, private_key);
+        let installation_id = get_installation_for_repo(client, &app_token, repo_full_name)
+            .with_context(|| {
+                format!("failed to get GitHub app installation for repo {repo_full_name}")
+            })?;
+        let installation_token = get_installation_token(client, &app_token, installation_id)
+            .with_context(|| format!("failed to get token for installation {installation_id}"))?;
+        Ok(installation_token)
     };
     match cli.command {
         Commands::UpdateChannel {
@@ -49,7 +58,7 @@ fn main() -> Result<()> {
             upstream_branch,
             branch,
         } => update_channel(
-            get_app_token,
+            get_token,
             hydra_url,
             repo_full_name,
             upstream_branch,
@@ -58,12 +67,12 @@ fn main() -> Result<()> {
         Commands::SyncBranches {
             repo_full_name,
             branches,
-        } => sync_branches(get_app_token, repo_full_name, branches),
+        } => sync_branches(get_token, repo_full_name, branches),
     }
 }
 
 fn sync_branches(
-    get_app_token: impl FnOnce() -> Result<AppToken>,
+    get_token: impl FnOnce(&reqwest::blocking::Client, &str) -> Result<InstallationToken>,
     repo_full_name: String,
     branches: Vec<String>,
 ) -> Result<()> {
@@ -76,17 +85,11 @@ fn sync_branches(
         ))
         .build()?;
 
-    let app_token = get_app_token()?;
-    let installation_id = get_installation_for_repo(&client, &app_token, &repo_full_name)
-        .with_context(|| {
-            format!("failed to get GitHub app installation for repo {repo_full_name}")
-        })?;
-    let installation_token = get_installation_token(&client, &app_token, installation_id)
-        .with_context(|| format!("failed to get token for installation {installation_id}"))?;
+    let token = get_token(&client, &repo_full_name)?;
 
     let mut has_errors = false;
     for branch in branches {
-        if let Err(err) = sync_branch(&client, &installation_token, &repo_full_name, &branch) {
+        if let Err(err) = sync_branch(&client, &token, &repo_full_name, &branch) {
             eprintln!(
                 "failed to sync branch {branch} in repo {repo_full_name} with the upstream: {err}"
             );
@@ -101,7 +104,7 @@ fn sync_branches(
 }
 
 fn update_channel(
-    get_app_token: impl FnOnce() -> Result<AppToken>,
+    get_token: impl FnOnce(&reqwest::blocking::Client, &str) -> Result<InstallationToken>,
     hydra_url: String,
     repo_full_name: String,
     upstream_branch: String,
@@ -148,30 +151,11 @@ fn update_channel(
     );
 
     // Update branch
-    let app_token = get_app_token()?;
-    let installation_id = get_installation_for_repo(&client, &app_token, &repo_full_name)
-        .with_context(|| {
-            format!("failed to get GitHub app installation for repo {repo_full_name}")
-        })?;
-    let installation_token = get_installation_token(&client, &app_token, installation_id)
-        .with_context(|| format!("failed to get token for installation {installation_id}"))?;
-    sync_branch(
-        &client,
-        &installation_token,
-        &repo_full_name,
-        &upstream_branch,
-    )
-    .with_context(|| {
+    let token = get_token(&client, &repo_full_name)?;
+    sync_branch(&client, &token, &repo_full_name, &upstream_branch).with_context(|| {
         format!("failed to sync branch {branch} in repo {repo_full_name} with the upstream")
     })?;
-    update_branch(
-        &client,
-        &installation_token,
-        &repo_full_name,
-        &branch,
-        &commit_sha,
-    )
-    .with_context(|| {
+    update_branch(&client, &token, &repo_full_name, &branch, &commit_sha).with_context(|| {
         format!("failed to update branch {branch} in repo {repo_full_name} to commit {commit_sha}")
     })?;
     eprintln!("updated branch {branch} in repo {repo_full_name} to commit {commit_sha}");
