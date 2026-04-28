@@ -210,7 +210,7 @@ fn make_app_jwt(client_id: String, key: rsa::RsaPrivateKey) -> AppToken {
 fn get_installation_for_repo(
     http_client: &reqwest::blocking::Client,
     app_token: &AppToken,
-    repo_full_name: &String,
+    repo_full_name: &str,
 ) -> Result<u64> {
     #[derive(serde::Deserialize)]
     struct Response {
@@ -259,8 +259,8 @@ fn get_installation_token(
 fn sync_branch(
     http_client: &reqwest::blocking::Client,
     token: &InstallationToken,
-    repo_full_name: &String,
-    branch_name: &String,
+    repo_full_name: &str,
+    branch_name: &str,
 ) -> Result<()> {
     #[derive(serde::Serialize)]
     struct Request {
@@ -285,9 +285,9 @@ fn sync_branch(
 fn update_branch(
     http_client: &reqwest::blocking::Client,
     token: &InstallationToken,
-    repo_full_name: &String,
-    branch_name: &String,
-    commit_sha: &String,
+    repo_full_name: &str,
+    branch_name: &str,
+    commit_sha: &str,
 ) -> Result<()> {
     #[derive(serde::Serialize)]
     struct Request {
@@ -351,7 +351,7 @@ fn read_hydra_json() -> Result<HydraJson> {
 
 fn get_build_evals(
     client: &reqwest::blocking::Client,
-    hydra_url: &String,
+    hydra_url: &str,
     build_id: u64,
 ) -> Result<Vec<u64>> {
     #[derive(serde::Deserialize)]
@@ -379,7 +379,7 @@ struct JobsetEval {
 
 fn get_eval(
     client: &reqwest::blocking::Client,
-    hydra_url: &String,
+    hydra_url: &str,
     eval_id: u64,
 ) -> Result<JobsetEval> {
     Ok(client
