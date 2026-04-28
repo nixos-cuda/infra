@@ -13,6 +13,7 @@
     ./ssh.nix
     ./users.nix
     ./network.nix
+    ./nvidia.nix
   ];
 
   time.timeZone = "Europe/Paris";
