@@ -554,6 +554,7 @@ dependencies = [
  "serde_json",
  "serde_repr",
  "sha2",
+ "url",
 ]
 
 [[package]]

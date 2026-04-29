@@ -29,6 +29,13 @@ enum Commands {
         #[arg(num_args=1..)]
         branches: Vec<String>,
     },
+    ClonePR {
+        #[arg(long, default_value = "nixos-cuda/nixpkgs")]
+        repo_full_name: String,
+        #[arg(long, default_value = "Clone of {html_url} for CI")]
+        body: String,
+        pr_url: reqwest::Url,
+    },
 }
 
 fn main() -> Result<()> {
@@ -101,7 +108,59 @@ fn main() -> Result<()> {
             repo_full_name,
             branches,
         } => sync_branches(get_token, repo_full_name, branches),
+        Commands::ClonePR {
+            repo_full_name,
+            body,
+            pr_url,
+        } => clone_pr(get_token, repo_full_name, body, pr_url),
     }
+}
+
+fn clone_pr(
+    get_token: impl FnOnce(&reqwest::blocking::Client, &str) -> Result<InstallationOrUserToken>,
+    repo_full_name: String,
+    body: String,
+    pr_url: reqwest::Url,
+) -> Result<()> {
+    if pr_url
+        .host()
+        .is_none_or(|host| host != url::Host::Domain("github.com"))
+        || pr_url.scheme() != "https"
+    {
+        return Err(anyhow!("PR URL must start with https://github.com"));
+    }
+    let ["", org, repo, "pull", pr_num_str] = pr_url.path().split('/').collect::<Vec<_>>()[..]
+    else {
+        return Err(anyhow!("PR URL path must be /<org>/<repo>/pull/<pr_num>"));
+    };
+    let upstream_repo_full_name = format!("{org}/{repo}");
+    let pr_num = pr_num_str.parse().context("couldn't parse PR number")?;
+
+    // Prepare HTTP client
+    let client = reqwest::blocking::Client::builder()
+        .user_agent(concat!(
+            env!("CARGO_PKG_NAME"),
+            "/",
+            env!("CARGO_PKG_VERSION"),
+        ))
+        .build()?;
+
+    let token = get_token(&client, &repo_full_name)?;
+    let pr = get_pr(&client, &token, &upstream_repo_full_name, pr_num)?;
+    let head = format!("{}:{}", pr.head.repo.owner.login, pr.head.r#ref);
+    let new_pr = create_pr(
+        &client,
+        &token,
+        &repo_full_name,
+        &pr.title,
+        &head,
+        &pr.head.repo.full_name,
+        &pr.base.r#ref,
+        &body.replace("{html_url}", &pr.html_url),
+    )?;
+    eprintln!("Created a new PR {}", new_pr.html_url);
+
+    Ok(())
 }
 
 fn sync_branches(
@@ -324,6 +383,90 @@ fn update_branch(
         .send()?
         .error_for_status_with_body()?;
     Ok(())
+}
+
+#[derive(serde::Deserialize, Debug)]
+struct SimpleUser {
+    login: String,
+}
+
+#[derive(serde::Deserialize, Debug)]
+struct Repository {
+    full_name: String,
+    owner: SimpleUser,
+}
+
+#[derive(serde::Deserialize, Debug)]
+struct PullRequestBase {
+    r#ref: String,
+    repo: Repository,
+}
+
+#[derive(serde::Deserialize, Debug)]
+struct PullRequest {
+    html_url: String,
+    title: String,
+    head: PullRequestBase,
+    base: PullRequestBase,
+}
+
+/// Get PR object from PR number
+/// https://docs.github.com/rest/pulls/pulls#get-a-pull-request
+fn get_pr(
+    http_client: &reqwest::blocking::Client,
+    token: &InstallationOrUserToken,
+    repo_full_name: &str,
+    pr_num: u64,
+) -> Result<PullRequest> {
+    Ok(http_client
+        .get(format!(
+            "https://api.github.com/repos/{repo_full_name}/pulls/{pr_num}",
+        ))
+        .bearer_auth(&token.0)
+        .send()?
+        .error_for_status_with_body()?
+        .json()?)
+}
+
+/// Create GitHub pull request
+/// https://docs.github.com/rest/pulls/pulls#create-a-pull-request
+#[allow(clippy::too_many_arguments)]
+fn create_pr(
+    http_client: &reqwest::blocking::Client,
+    token: &InstallationOrUserToken,
+    repo_full_name: &str,
+    title: &str,
+    head: &str,
+    head_repo: &str,
+    base: &str,
+    body: &str,
+) -> Result<PullRequest> {
+    #[derive(serde::Serialize, Debug)]
+    struct Request<'a> {
+        title: &'a str,
+        head: &'a str,
+        head_repo: &'a str,
+        base: &'a str,
+        body: &'a str,
+        maintainer_can_modify: bool,
+    }
+    let request = Request {
+        title,
+        head,
+        head_repo,
+        base,
+        body,
+        maintainer_can_modify: false,
+    };
+    Ok(http_client
+        .post(format!(
+            "https://api.github.com/repos/{repo_full_name}/pulls",
+        ))
+        .bearer_auth(&token.0)
+        .json(&request)
+        .send()?
+        .error_for_status_with_body()?
+        .json()?)
 }
 
 #[derive(serde_repr::Deserialize_repr, Debug, PartialEq)]
