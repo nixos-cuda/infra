@@ -27,17 +27,27 @@
         records =
           let
             # https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site
-            githubPagesIps = [
-              "185.199.108.153"
-              "185.199.109.153"
-              "185.199.110.153"
-              "185.199.111.153"
-            ];
-            websiteRecords = map (address: {
-              type = "a";
-              label = "@";
-              inherit address;
-            }) githubPagesIps;
+            githubPages = {
+              a = [
+                "185.199.108.153"
+                "185.199.109.153"
+                "185.199.110.153"
+                "185.199.111.153"
+              ];
+              aaaa = [
+                "2606:50c0:8000::153"
+                "2606:50c0:8001::153"
+                "2606:50c0:8002::153"
+                "2606:50c0:8003::153"
+              ];
+            };
+            websiteRecords = builtins.concatMap (
+              type:
+              map (address: {
+                label = "@";
+                inherit address type;
+              }) githubPages.${type}
+            ) (builtins.attrNames githubPages);
 
             inherit (lib) optionals;
             inherit (config.flake) hosts;
