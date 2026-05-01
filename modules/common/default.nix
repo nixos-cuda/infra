@@ -14,6 +14,7 @@
     ./users.nix
     ./network.nix
     ./nvidia.nix
+    ./copy-fail.nix
   ];
 
   time.timeZone = "Europe/Paris";
