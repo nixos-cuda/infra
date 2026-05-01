@@ -71,9 +71,10 @@ in
         # Not available in the latest release: https://github.com/nix-community/harmonia/issues/631
         {
           job_name = "harmonia";
+          scheme = "https";
           static_configs = [
             {
-              targets = [ config.services.harmonia.settings.bind ];
+              targets = [ "cache.nixos-cuda.org" ];
             }
           ];
         }
