@@ -12,7 +12,7 @@
       ];
 
       settings = {
-        bind = "/run/harmonia/socket";
+        bind = "unix:/run/harmonia/socket";
 
         # Pick a lower priority (higher number) than cache.nixos.org
         # https://cache.nixos.org/nix-cache-info
