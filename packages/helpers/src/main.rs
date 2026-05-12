@@ -147,20 +147,31 @@ fn clone_pr(
 
     let token = get_token(&client, &repo_full_name)?;
     let pr = get_pr(&client, &token, &upstream_repo_full_name, pr_num)?;
+    let new_pr = make_pr_clone(&client, &token, &pr, &repo_full_name, &body)?;
+    eprintln!("Created a new PR {}", new_pr.html_url);
+
+    Ok(())
+}
+
+fn make_pr_clone(
+    client: &reqwest::blocking::Client,
+    token: &InstallationOrUserToken,
+    pr: &PullRequest,
+    repo_full_name: &str,
+    body: &str,
+) -> Result<PullRequest, anyhow::Error> {
     let head = format!("{}:{}", pr.head.repo.owner.login, pr.head.r#ref);
     let new_pr = create_pr(
-        &client,
-        &token,
-        &repo_full_name,
+        client,
+        token,
+        repo_full_name,
         &pr.title,
         &head,
         &pr.head.repo.full_name,
         &pr.base.r#ref,
         &body.replace("{html_url}", &pr.html_url),
     )?;
-    eprintln!("Created a new PR {}", new_pr.html_url);
-
-    Ok(())
+    Ok(new_pr)
 }
 
 fn sync_branches(
