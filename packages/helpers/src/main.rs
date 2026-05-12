@@ -568,6 +568,16 @@ trait ResponseErrorWithBody {
     where
         Self: Sized;
 }
+#[derive(Debug)]
+struct ErrorWithBody {
+    body: String,
+}
+impl std::error::Error for ErrorWithBody {}
+impl std::fmt::Display for ErrorWithBody {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "got response body: {}", self.body)
+    }
+}
 impl ResponseErrorWithBody for reqwest::blocking::Response {
     fn error_for_status_with_body(self) -> Result<Self>
     where
@@ -579,8 +589,8 @@ impl ResponseErrorWithBody for reqwest::blocking::Response {
                 let mut buf = Vec::new();
                 use std::io::Read;
                 self.take(1024).read_to_end(&mut buf)?;
-                let body = String::from_utf8_lossy(&buf);
-                Err(anyhow!("got response body: {}", body).context(err))
+                let body = String::from_utf8_lossy(&buf).into_owned();
+                Err(ErrorWithBody { body }).context(err)
             }
         }
     }
