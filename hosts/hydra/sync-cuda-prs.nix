@@ -38,7 +38,7 @@ let
 
       # body for new PRs
       "--body"
-      "Clone of {html_url} for CI"
+      "'Clone of {html_url} for CI'"
 
       # scan last 100 PRs
       "--top"
