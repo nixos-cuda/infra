@@ -9,6 +9,7 @@ let
   branches = [
     "master"
     "release-25.11"
+    "release-26.05"
   ];
   serviceName = "sync-nixpkgs-branches";
   helpers = pkgs.lib.getExe inputs.self.packages.${config.nixpkgs.system}.helpers;

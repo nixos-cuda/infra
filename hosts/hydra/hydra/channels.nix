@@ -43,6 +43,10 @@
           job = nixos-cuda:channel-25.11:_tested
           command = ${commandPrefix} --upstream-branch nixos-25.11-small --branch nixos-25.11-cuda
         </runcommand>
+        <runcommand>
+          job = nixos-cuda:channel-26.05:_tested
+          command = ${commandPrefix} --upstream-branch nixos-26.05-small --branch nixos-26.05-cuda
+        </runcommand>
       '';
   };
 }
