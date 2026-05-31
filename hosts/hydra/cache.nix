@@ -3,7 +3,7 @@
   sops.secrets.harmonia-private-key = { };
 
   services = {
-    harmonia = {
+    harmonia.cache = {
       enable = true;
 
       signKeyPaths = [

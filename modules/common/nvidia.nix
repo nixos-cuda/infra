@@ -74,8 +74,9 @@ in
           allowUnfreePredicate =
             p:
             builtins.elem (lib.getName p) [
-              "nvidia-x11"
+              "nvidia-kernel-modules"
               "nvidia-settings"
+              "nvidia-x11"
             ]
             || pkgs._cuda.lib.allowUnfreeCudaPredicate p;
         };
