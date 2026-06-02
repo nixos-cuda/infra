@@ -13,11 +13,19 @@ in
 {
   systemd.services.grafana.serviceConfig.LoadCredential = [
     "admin_pw:${config.sops.secrets."grafana/admin_pw".path}"
+    "secret_key:${config.sops.secrets."grafana/secret_key".path}"
   ];
-  sops.secrets."grafana/admin_pw" = {
-    owner = "grafana";
-    group = "grafana";
-    sopsFile = ./secrets-grafana.yaml;
+  sops.secrets = {
+    "grafana/admin_pw" = {
+      owner = "grafana";
+      group = "grafana";
+      sopsFile = ./secrets-grafana.yaml;
+    };
+    "grafana/secret_key" = {
+      owner = "grafana";
+      group = "grafana";
+      sopsFile = ./secrets-grafana.yaml;
+    };
   };
 
   services = {
@@ -34,6 +42,7 @@ in
         security = {
           admin_user = "clanker";
           admin_password = "\$__file{/run/credentials/grafana.service/admin_pw}";
+          secret_key = "\$__file{/run/credentials/grafana.service/secret_key}";
         };
 
         server = {
