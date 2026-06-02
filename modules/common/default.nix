@@ -25,13 +25,19 @@
   networking.firewall.enable = true;
   networking.useNetworkd = true;
 
-  boot.loader = {
-    systemd-boot = {
-      enable = lib.mkDefault true;
-      configurationLimit = 10;
+  boot = {
+    loader = {
+      systemd-boot = {
+        enable = lib.mkDefault true;
+        configurationLimit = 10;
+      };
+
+      efi.canTouchEfiVariables = lib.mkDefault true;
     };
 
-    efi.canTouchEfiVariables = lib.mkDefault true;
+    # It is highly recommended to set this option to `false`, the new default from 26.11 on, to
+    # reduce the risk of data loss.
+    zfs.forceImportRoot = false;
   };
 
   environment.systemPackages = with pkgs; [
