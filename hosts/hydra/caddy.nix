@@ -6,6 +6,6 @@
       # Seriously, rate-limiting requires a third party plug-in?
       "github.com/mholt/caddy-ratelimit@v0.1.0"
     ];
-    hash = "sha256-JBDPuNQ3wDLnoNlWjts9u4MYLnqcNULW7/j2Ybhim7M=";
+    hash = "sha256-vQ+tS9QkVTzU/aiMaQNoJ67sH1TNrhjoJmYn7YX0dKw=";
   };
 }
