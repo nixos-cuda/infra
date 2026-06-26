@@ -44,6 +44,8 @@ enum Commands {
         repo_full_name: String,
         #[arg(long, default_values = vec!["ConnorBaker", "GaetanLepage", "SomeoneSerge", "YorikSar"])]
         from_users: Vec<String>,
+        #[arg(long, default_values = vec!["r-ryantm"])]
+        mentions_by: Vec<String>,
         #[arg(long, default_value = "Clone of {html_url} for CI")]
         body: String,
         #[arg(long, default_value = "100")]
@@ -132,6 +134,7 @@ fn main() -> Result<()> {
             upstream_repo_full_name,
             repo_full_name,
             from_users,
+            mentions_by,
             body,
             top,
             dont_stop_at_first_existing,
@@ -140,6 +143,7 @@ fn main() -> Result<()> {
             upstream_repo_full_name,
             repo_full_name,
             from_users,
+            mentions_by,
             body,
             top,
             dont_stop_at_first_existing,
@@ -205,11 +209,13 @@ fn make_pr_clone(
     Ok(new_pr)
 }
 
+#[allow(clippy::too_many_arguments)]
 fn sync_prs(
     get_token: impl FnOnce(&reqwest::blocking::Client, &str) -> Result<InstallationOrUserToken>,
     upstream_repo_full_name: String,
     repo_full_name: String,
     from_users: Vec<String>,
+    mentions_by: Vec<String>,
     body: String,
     top: usize,
     dont_stop_at_first_existing: bool,
@@ -229,7 +235,11 @@ fn sync_prs(
         let Ok(pr) = res else {
             return res.map(|_| ());
         };
-        if !matches!(pr.state, PullRequestState::Open) || !from_users.contains(&pr.user.login) {
+        if !matches!(pr.state, PullRequestState::Open)
+            || !(from_users.contains(&pr.user.login)
+                || mentions_by.contains(&pr.user.login)
+                    && matches!(pr.body, Some(ref s) if from_users.iter().any(|user| s.contains(user))))
+        {
             continue;
         }
         eprintln!("Found {}", pr.html_url);
@@ -516,6 +526,7 @@ struct PullRequest {
     base: PullRequestBase,
     user: SimpleUser,
     state: PullRequestState,
+    body: Option<String>,
 }
 
 /// Get PR object from PR number
