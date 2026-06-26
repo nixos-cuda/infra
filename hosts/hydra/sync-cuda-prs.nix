@@ -12,6 +12,9 @@ let
     "SomeoneSerge"
     "YorikSar"
   ];
+  mentionsBy = [
+    "r-ryantm"
+  ];
   serviceName = "sync-cuda-prs";
   helpers = pkgs.lib.getExe inputs.self.packages.${config.nixpkgs.system}.helpers;
   script = lib.concatStringsSep " " (
@@ -48,6 +51,10 @@ let
       "--from-users"
       user
     ]) users)
+    ++ (lib.concatMap (user: [
+      "--mentions-by"
+      user
+    ]) mentionsBy)
   );
 in
 {
