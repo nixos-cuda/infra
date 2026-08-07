@@ -103,9 +103,6 @@ in
       };
     };
 
-  # hydra-server uses zstd binary to serve logs when they are compressed with zstd
-  systemd.services.hydra-server.path = [ pkgs.zstd ];
-
   networking.firewall.allowedTCPPorts = [
     80
     443
