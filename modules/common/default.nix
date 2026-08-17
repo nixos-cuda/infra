@@ -31,6 +31,8 @@
         enable = lib.mkDefault true;
         configurationLimit = 10;
       };
+      # Some systems are not able to use systemd-boot.
+      grub.configurationLimit = 10;
 
       efi.canTouchEfiVariables = lib.mkDefault true;
     };
