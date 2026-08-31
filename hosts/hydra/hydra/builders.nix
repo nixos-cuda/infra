@@ -33,7 +33,7 @@
           ########### CPU builders
           atlas = {
             # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
-            publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUhwbG9zNlh0STY1VmVqbEMvdVNwbUF6bjJ4MEloZFIzYTl4d3ZFbWJsN0Igcm9vdEBhdGxhcwo=";
+            publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSU5FRjlkdDY2RFBkT2lzWUsvZjZxaHZFZXBEV1JUVmNBVnJtNzg4YkJBcGQgcm9vdEBhdGxhcwo=";
           };
           oxide-1 = {
             # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
