@@ -51,6 +51,7 @@ in
         };
         "nixos-cuda/nixpkgs" = {
           check_run_name = "CUDA CI check";
+          cancel_obsolete_builds = true;
           hydra_jobset_template = {
             description = "triggered by PR {pr_url}";
             nixexprinput = "jobsets";
