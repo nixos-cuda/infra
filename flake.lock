@@ -7,11 +7,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1788395115,
-        "narHash": "sha256-7sprixDLchHgjQt1yNoc91d0L0lnbd1VUb3OPZpsIJk=",
+        "lastModified": 1788879443,
+        "narHash": "sha256-qb9sL86UCUEd3SYAda4ItN1NV0vhMSdbpA64WckvVI0=",
         "owner": "serokell",
         "repo": "deploy-rs",
-        "rev": "a591d4600e8ada8b22489093ebf50337f4d98065",
+        "rev": "414ac5f35d79aabe5a0bf52451d8cf61eadf6c88",
         "type": "github"
       },
       "original": {
@@ -68,11 +68,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1788208138,
-        "narHash": "sha256-jXsrpgXcSHnkkN2YLiJ6fjks1uNqoKNb8oGKY+dI4QQ=",
+        "lastModified": 1789221426,
+        "narHash": "sha256-17ayPsWcCDLxKExA6XlfIICsgnpA1WefQB0f1r8ON2I=",
         "ref": "refs/heads/main",
-        "rev": "d46a766b7ac82e9907cd978ebdcbb701d2e3636b",
-        "revCount": 21,
+        "rev": "82966794e1d3c790cafd2311c16c71bca80b76fa",
+        "revCount": 22,
         "type": "git",
         "url": "https://codeberg.org/hu5ky/dnscontrol-nix.git"
       },
@@ -211,11 +211,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1788613347,
-        "narHash": "sha256-qEsrUbeH9x6A7+WyHMUtZBFsTjac/SytVOVNdmTrRGE=",
+        "lastModified": 1789233862,
+        "narHash": "sha256-mka8SFIzRsHoxBh6LGCFizdp8N1B81clSSe3wzid6Yc=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b6eb40ca4ccdbfeef07629a93fb3bc14c14cd111",
+        "rev": "6eb0f007b69f39ababe79d7025d8d0484553d163",
         "type": "github"
       },
       "original": {
@@ -245,11 +245,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788337237,
-        "narHash": "sha256-gkSH8VUtCo6hnysNmb9DbTuDepH2t5pv+QWjP75xKAk=",
+        "lastModified": 1788914643,
+        "narHash": "sha256-4GuMPW90JSxXWDPUB9M+1m7fYbe3H0apOd86/zBQ2Kw=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "fbf759290e0cb0a98dfc813a4eb7d53ad1dacb57",
+        "rev": "13616fff713a9f94055c66f15687ebdc17a335df",
         "type": "github"
       },
       "original": {
