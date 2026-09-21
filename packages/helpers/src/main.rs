@@ -729,7 +729,7 @@ struct HydraJson {
 #[test]
 fn test_actual_hydra_json() {
     let json = r#"{"startTime":1770974241,"license":null,"project":"nixos-cuda","system":"x86_64-linux","jobset":"channel-unstable","build":4,"description":null,"finished":true,"timestamp":1770974239,"buildStatus":0,"outputs":[{"path":"/nix/store/ibjafafzij6h1w29d3dvvh942wnkrawj-channel","name":"out"}],"nixName":"channel","job":"_tested","homepage":null,"metrics":[],"stopTime":1770974241,"event":"buildFinished","products":[],"drvPath":"/nix/store/aq9w1n2y9mdibm1m6mdm661g4jdv1slv-channel.drv"}"#;
-    let res = serde_json::from_str::<HydraJson>(&json);
+    let res = serde_json::from_str::<HydraJson>(json);
     let expected = HydraJson {
         build: 4,
         finished: true,
