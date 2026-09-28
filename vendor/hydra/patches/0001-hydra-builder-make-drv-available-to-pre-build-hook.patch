@@ -1,0 +1,44 @@
+From: Gaetan Lepage <gaetan@glepage.com>
+Subject: [PATCH] hydra-builder: make the drv available to the pre-build-hook
+
+Nix invokes `pre-build-hook` with the unresolved derivation path, but the
+builder only imports the closure of the resolved derivation's inputs, so that
+path is not a valid store path on the agent. Hooks that inspect the derivation
+-- `nix-required-mounts` reads `requiredSystemFeatures` with
+`nix derivation show` to decide which devices to bind into the build sandbox --
+therefore cannot see what the step requested, and bind nothing: CUDA steps run
+without a GPU.
+
+Ask the queue runner for the derivation alongside the inputs, so it is imported
+with them. This is the `hydra-builder` counterpart of the `copyClosureTo` fix
+the C++ queue runner needed for the same reason.
+
+Cf. https://github.com/NixOS/nix/issues/9272.
+---
+--- a/subprojects/hydra-builder/src/state.rs
++++ b/subprojects/hydra-builder/src/state.rs
+@@ -532,10 +532,22 @@
+                 JobFailure::Import(eyre::eyre!("failed to decode resolved derivation: {e}"))
+             })?;
+ 
+-        // Fetch the transitive closure of the resolved inputs.
++        // Fetch the transitive closure of the resolved inputs, plus the
++        // derivation itself. Nix hands `pre-build-hook` the unresolved drv
++        // path, and hooks that inspect it -- `nix-required-mounts` reads
++        // `requiredSystemFeatures` with `nix derivation show` to decide which
++        // devices to bind into the sandbox -- need it to be a valid store
++        // path. Without it the hook cannot tell what the step asked for and
++        // silently mounts nothing.
++        // Cf. https://github.com/NixOS/nix/issues/9272.
+         let requisites = client
+             .fetch_requisites(hydra_proto::StorePaths {
+-                paths: basic_drv.inputs.iter().map(ProtoStorePath::from).collect(),
++                paths: basic_drv
++                    .inputs
++                    .iter()
++                    .chain(std::iter::once(&drv))
++                    .map(ProtoStorePath::from)
++                    .collect(),
+             })
+             .await
+             .map_err(|e| JobFailure::Import(e.into()))?

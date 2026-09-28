@@ -12,6 +12,12 @@
     requiredMountsOnFeatures = [ "cuda-pascal" ];
   };
 
+  _hydraBuilder = {
+    enable = true;
+    extraSupportedFeatures = [ "cuda-pascal" ];
+    # mandatoryFeatures = [ "cuda-pascal" ];
+  };
+
   # Legacy BIOS
   boot.loader.systemd-boot.enable = false;
 

@@ -12,6 +12,12 @@
     requiredMountsOnFeatures = [ "cuda-ada" ];
   };
 
+  _hydraBuilder = {
+    enable = true;
+    extraSupportedFeatures = [ "cuda" ];
+    mandatoryFeatures = [ "cuda" ];
+  };
+
   networking.hostId = "7b3b5a4c";
 
   system.stateVersion = "25.05";
