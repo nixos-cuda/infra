@@ -3,19 +3,44 @@ keys:
   - &gaetan age16fjn06trywshgm5gg68d8zyr7x0tgdd2x22v92hrrtx806rq3sfs9xl5f6
   - &serge age1r40mw48s4mc9rgj5da0rhx04rtpntd72jnc4k60w9d9etztdy42swuxjtz
 
+  # Build agents, each derived from the host's /etc/ssh/ssh_host_ed25519_key.pub
+  # with `ssh-to-age`:
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJuF7aJFrurTPpL621eNfZY1GbtpvaNLHVVJq7Jt6tc6 root@ada
+  - &ada age13z5mcpxjn3uhh4xm9r6y7fsaxurtjspwjhtmu08kgzm2xh9cgdcseq88he
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINEF9dt66DPdOisYK/f6qhvEepDWRTVcAVrm788bBApd root@atlas
+  - &atlas age1lmn3ef3hj0q2wst7g588vftfl4na9jdhn430j6sd7wga69yvqq4qkkzz5s
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJOIiYU8XZu96RhYFrRz0yYNPEgH51M4cDx+ImXLzRx7 root@oxide-1
+  - &oxide-1 age10s44u6a0pxdu8jl2yqzrrdakw42x9kp2hwgug6lw9pctl8wwkuts28dwva
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDISAY0+w9AqunYOZV//eOC0R5ExFgdB3pjSxqLaQlvP root@pascal
+  - &pascal age1skcu7vxulx7t723yaz5784jm8me78p98jdedtu6kdw30f0r9tf8q6m0zes
+
+# Note: the first matching rule wins, so keep the specific rules above the
+# catch-all for the repository-level `.secrets.yaml`.
 creation_rules:
-  - path_regex: .secrets.yaml$
-    key_groups:
-    - age:
-      - *gaetan
-  - path_regex: hosts/hydra/secrets.yaml$
+  # The bearer token the build agents authenticate to the queue runner with.
+  # One static token shared by all of them, so it is readable by the Hydra
+  # host and by every agent.
+  - path_regex: ^secrets-queue-runner\.yaml$
     key_groups:
     - age:
       - *hydra
+      - *ada
+      - *atlas
+      - *oxide-1
+      - *pascal
       - *gaetan
-  - path_regex: hosts/hydra/secrets-grafana.yaml$
+  - path_regex: hosts/hydra/secrets-grafana\.yaml$
     key_groups:
     - age:
       - *hydra
       - *gaetan
       - *serge
+  - path_regex: hosts/hydra/secrets\.yaml$
+    key_groups:
+    - age:
+      - *hydra
+      - *gaetan
+  - path_regex: ^\.secrets\.yaml$
+    key_groups:
+    - age:
+      - *gaetan
