@@ -1,0 +1,48 @@
+From: Gaetan Lepage <gaetan@glepage.com>
+Subject: [PATCH] hydra-queue-runner: skip builds with an unparseable drvPath
+
+`get_not_finished_builds` parsed every row's drvPath into a `StorePath` and
+collected the batch into a single `Result`, so one unparseable row failed the
+whole query. The queue monitor then read no builds at all and nothing was ever
+scheduled -- the only symptom being an ERROR line every retry interval, with
+the machines sitting idle and the web interface showing a full queue.
+
+Old deployments do carry such rows: builds created before the Rust queue runner
+whose drvPath was recorded without the store directory are accepted by the Perl
+and C++ code, which treat the column as an opaque string.
+
+Skip those rows with a warning naming the build, so a handful of bad records
+degrades to a handful of unscheduled builds instead of a dead queue.
+---
+--- a/subprojects/crates/db/src/connection.rs
++++ b/subprojects/crates/db/src/connection.rs
+@@ -84,9 +84,26 @@
+         )
+         .fetch_all(&mut *self.conn)
+         .await?;
+-        rows.into_iter()
+-            .map(|r| Ok(r.parse_paths(store_dir)?))
+-            .collect()
++        // Skip rows we cannot make sense of rather than failing the batch.
++        // Very old deployments carry builds whose drvPath was recorded
++        // without the store directory, and returning `Err` here loses the
++        // whole queue -- the monitor reads no builds at all, so nothing is
++        // ever scheduled, with only a log line to say why.
++        Ok(rows
++            .into_iter()
++            .filter_map(|r| {
++                let (id, drvpath) = (r.id, r.drvpath.clone());
++                match r.parse_paths(store_dir) {
++                    Ok(build) => Some(build),
++                    Err(e) => {
++                        tracing::warn!(
++                            "skipping build {id}: cannot parse drvPath {drvpath:?}: {e}"
++                        );
++                        None
++                    }
++                }
++            })
++            .collect())
+     }
+ 
+     #[tracing::instrument(skip(self), err)]

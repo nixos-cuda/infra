@@ -88,6 +88,11 @@
               label = "grafana";
               target = "hydra";
             }
+            {
+              type = "cname";
+              label = "queue-runner";
+              target = "hydra";
+            }
           ];
       };
     };
