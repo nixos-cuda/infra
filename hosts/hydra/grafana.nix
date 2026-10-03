@@ -9,6 +9,14 @@ let
   dbName = "grafana";
   userName = "grafana";
   caddyAdminEndpoint = "localhost:2019";
+
+  # The Rust queue runner serves its Prometheus metrics from the REST
+  # listener, which stays on localhost; Prometheus runs on this very host.
+  queueRunnerRestEndpoint =
+    let
+      inherit (config.services.hydra.queueRunner) rest;
+    in
+    "${rest.address}:${toString rest.port}";
 in
 {
   systemd.services.grafana.serviceConfig.LoadCredential = [
@@ -128,7 +136,7 @@ in
           job_name = "hydra_queue_runner";
           metrics_path = "/metrics";
           scheme = "http";
-          static_configs = [ { targets = [ "hydra.nixos-cuda.org:9198" ]; } ];
+          static_configs = [ { targets = [ queueRunnerRestEndpoint ]; } ];
         }
         {
           job_name = "hydra-webserver";
@@ -192,7 +200,6 @@ in
     };
 
     hydra.extraConfig = ''
-      queue_runner_metrics_address = 0.0.0.0:9198
       <hydra_notify>
         <prometheus>
           listen_address = 0.0.0.0
@@ -213,8 +220,7 @@ in
     # TODO(@GaetanLepage): remove
     config.services.prometheus.port
 
-    # CNO exposes these publicly, so do we for now - questionable choice?
-    9198 # queue-runner metrics
+    # CNO exposes this publicly, so do we for now - questionable choice?
     9199 # hydra_notify
   ];
 }

@@ -1,60 +1,38 @@
+# Queue-runner side of the build agents.
+#
+# Since the Rust rewrite the queue runner no longer drives `nix.buildMachines`
+# over SSH: agents run `hydra-builder` (see `modules/hydra-builder.nix`), dial
+# the gRPC endpoint below and authenticate with a bearer token.
 {
-  lib,
   config,
-  hosts,
   ...
 }:
+let
+  queueRunnerURL = "queue-runner.nixos-cuda.org";
+in
 {
-  nix = {
-    distributedBuilds = true;
+  # A single static token, shared by every agent. The same file is read by the
+  # agents themselves, hence the shared secrets file rather than a per-host one.
+  sops.secrets.queue-runner-token = {
+    sopsFile = ../../../secrets-queue-runner.yaml;
+    owner = config.users.users.hydra-queue-runner.name;
+  };
 
-    buildMachines =
+  services = {
+    hydra.queueRunner.settings.tokenPaths = [ config.sops.secrets.queue-runner-token.path ];
+
+    # The gRPC listener itself stays on localhost; Caddy terminates TLS for it,
+    # which is also what the agents' `https://` endpoint expects.
+    caddy.virtualHosts.${queueRunnerURL}.extraConfig =
       let
-        defaultFeatures = [
-          "benchmark"
-          "big-parallel"
-          "kvm"
-          "nixos-test"
-        ];
-        mkBuilder =
-          name: cfg:
-          {
-            hostName = "${name}.nixos-cuda.org";
-            sshKey = config.sops.secrets.ssh-private-key.path;
-            sshUser = "nix";
-            system = "x86_64-linux";
-            supportedFeatures = defaultFeatures;
-            maxJobs = hosts.${name}.max-jobs;
-            inherit (hosts.${name}) speedFactor;
-          }
-          // cfg;
-
-        builders = {
-          ########### CPU builders
-          atlas = {
-            # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
-            publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSU5FRjlkdDY2RFBkT2lzWUsvZjZxaHZFZXBEV1JUVmNBVnJtNzg4YkJBcGQgcm9vdEBhdGxhcwo=";
-          };
-          oxide-1 = {
-            # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
-            publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpPSWlZVThYWnU5NlJoWUZyUnoweVlOUEVnSDUxTTRjRHgrSW1YTHpSeDcgcm9vdEBveGlkZS0xCg==";
-          };
-
-          ########### GPU builders
-          ada = {
-            # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
-            publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUp1RjdhSkZydXJUUHBMNjIxZU5mWlkxR2J0cHZhTkxIVlZKcTdKdDZ0YzYgcm9vdEBhZGEK";
-            supportedFeatures = defaultFeatures ++ [ "cuda" ];
-            mandatoryFeatures = [ "cuda" ];
-          };
-          pascal = {
-            # base64 -w0 /etc/ssh/ssh_host_ed25519_key.pub
-            publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSURJU0FZMCt3OUFxdW5ZT1pWLy9lT0MwUjVFeEZnZEIzcGpTeHFMYVFsdlAgcm9vdEBwYXNjYWwK";
-            supportedFeatures = defaultFeatures ++ [ "cuda-pascal" ];
-            # mandatoryFeatures = [ "cuda-pascal" ];
-          };
-        };
+        inherit (config.services.hydra.queueRunner) grpc;
       in
-      lib.mapAttrsToList mkBuilder builders;
+      ''
+        reverse_proxy h2c://${grpc.address}:${toString grpc.port} {
+          # Agents keep one long-lived HTTP/2 channel open and stream build
+          # logs over it, so nothing here may buffer or time out.
+          flush_interval -1
+        }
+      '';
   };
 }
