@@ -193,6 +193,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-hydra": {
+      "locked": {
+        "lastModified": 1791128802,
+        "narHash": "sha256-/aO6R5OgFwp+lDMjfP7khEz3yLECPGKhQd4GC+Wo3Xg=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "2f45e44cc987ef65a0fad53b519c2052e2f97fe8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable-small",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1747958103,
@@ -235,6 +251,7 @@
         "git-hooks-nix": "git-hooks-nix",
         "hydra-github-app": "hydra-github-app",
         "nixpkgs": "nixpkgs_3",
+        "nixpkgs-hydra": "nixpkgs-hydra",
         "sops-nix": "sops-nix"
       }
     },

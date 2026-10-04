@@ -1,21 +1,31 @@
-# Package set from https://github.com/NixOS/nixpkgs/pull/563797, vendored until
-# the PR lands in our nixpkgs channel. See ./README.md.
-final: _prev: {
-  hydra = final.callPackage ./pkgs/hydra/package.nix { };
-  # `patches/` holds our own fixes; see ./README.md. The patch does not touch
-  # Cargo.lock, so the vendored package's `cargoHash` stays valid.
-  hydra-builder = (final.callPackage ./pkgs/hydra-builder/package.nix { }).overrideAttrs (old: {
-    patches = (old.patches or [ ]) ++ [
-      ./patches/0001-hydra-builder-make-drv-available-to-pre-build-hook.patch
-    ];
-  });
-  hydra-evaluator = final.callPackage ./pkgs/hydra-evaluator/package.nix { };
-  hydra-queue-runner =
-    (final.callPackage ./pkgs/hydra-queue-runner/package.nix { }).overrideAttrs
-      (old: {
-        patches = (old.patches or [ ]) ++ [
-          ./patches/0002-queue-runner-skip-unparseable-drvpath.patch
-        ];
-      });
-  hydra-ws = final.callPackage ./pkgs/hydra-ws/package.nix { };
+# Hydra's Rust rewrite, taken from `nixpkgs-hydra` (unstable) because 26.05
+# predates it, plus the patches in ./patches. See ./README.md.
+#
+# `inherit`ing straight from the other package set keeps each package built
+# against the nixpkgs its NixOS module was written for, which is the point of
+# using a full nixpkgs as the input.
+inputs: final: _prev:
+let
+  hydraPkgs = inputs.nixpkgs-hydra.legacyPackages.${final.stdenv.hostPlatform.system};
+
+  withPatches =
+    package: patches:
+    package.overrideAttrs (old: {
+      patches = (old.patches or [ ]) ++ patches;
+    });
+in
+{
+  inherit (hydraPkgs)
+    hydra
+    hydra-evaluator
+    hydra-ws
+    ;
+
+  hydra-builder = withPatches hydraPkgs.hydra-builder [
+    ./patches/0001-hydra-builder-make-drv-available-to-pre-build-hook.patch
+  ];
+
+  hydra-queue-runner = withPatches hydraPkgs.hydra-queue-runner [
+    ./patches/0002-queue-runner-skip-unparseable-drvpath.patch
+  ];
 }
