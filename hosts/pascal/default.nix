@@ -7,7 +7,7 @@
   # GTX 1080
   _nvidia = {
     enable = true;
-    cudaCapabilities = [ "6.0" ];
+    cudaCapabilities = [ "6.1" ];
     openSourceKernelModules = false;
     requiredMountsOnFeatures = [ "cuda-pascal" ];
   };
