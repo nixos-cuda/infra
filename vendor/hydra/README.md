@@ -1,39 +1,31 @@
-# Vendored Hydra (Rust rewrite)
+# Hydra (Rust rewrite) from unstable
 
-Nixpkgs packages and NixOS modules taken verbatim from
-[NixOS/nixpkgs#563797](https://github.com/NixOS/nixpkgs/pull/563797)
-("hydra: 0-unstable-2026-03-16 -> 0-unstable-2026-09-09"), which updates Hydra
-to the Rust rewrite of the queue runner, evaluator and WebSocket log server.
+Hydra's Rust rewrite of the queue runner, evaluator and WebSocket log server
+landed in nixpkgs via
+[NixOS/nixpkgs#563797](https://github.com/NixOS/nixpkgs/pull/563797) (merged
+2026-10-04, `1becb0e39d8e9c0fb8168fa575a084128d59584e`), which is after the
+26.05 branch-off. The rest of the fleet runs stable, so the Hydra packages and
+their NixOS modules come from the separate `nixpkgs-hydra` input
+(`nixos-unstable-small`) instead.
 
-Vendored from the `update/hydra` branch (Hydra `0-unstable-2026-09-09`,
-`NixOS/hydra` rev `1d1d8b1c6fdc08444a514f383b291228f19d72d8`). The packages are
-as published at PR head `7fb38b1b27212eb059138a1d2549d4fd50acdb6e`;
-`nixos-modules/hydra/default.nix` additionally carries the
-`queue_runner_endpoint` fix below, which still has to be folded into the PR.
-Re-copy it once the PR is updated.
+These files used to be verbatim copies of the PR's packages and modules. Now
+that it is merged, only the glue and our own patches live here:
 
-## Layout
-
-| Path | Upstream path |
+| Path | What it does |
 | --- | --- |
-| `pkgs/hydra/package.nix` | `pkgs/by-name/hy/hydra/package.nix` |
-| `pkgs/hydra/nix-perl.nix` | `pkgs/by-name/hy/hydra/nix-perl.nix` |
-| `pkgs/hydra-builder/package.nix` | `pkgs/by-name/hy/hydra-builder/package.nix` |
-| `pkgs/hydra-evaluator/package.nix` | `pkgs/by-name/hy/hydra-evaluator/package.nix` |
-| `pkgs/hydra-queue-runner/package.nix` | `pkgs/by-name/hy/hydra-queue-runner/package.nix` |
-| `pkgs/hydra-ws/package.nix` | `pkgs/by-name/hy/hydra-ws/package.nix` |
-| `nixos-modules/hydra/default.nix` | `nixos/modules/services/continuous-integration/hydra/default.nix` |
-| `nixos-modules/hydra/builder.nix` | `nixos/modules/services/continuous-integration/hydra/builder.nix` |
+| `overlay.nix` | Takes `hydra`, `hydra-{builder,evaluator,queue-runner,ws}` from `nixpkgs-hydra` and applies `patches/` |
+| `nixos-modules/default.nix` | Imports `services.hydra{,-builder}` from `nixpkgs-hydra`, disabling stable's Hydra module |
+| `patches/` | Fixes not upstream yet |
 
-Those files are unmodified copies, so that re-syncing with the PR is a plain
-`cp`. Everything that glues them into this repo lives in `overlay.nix` and
-`nixos-modules/default.nix`.
+The packages are taken from the other package set as-is, so they are built
+against the nixpkgs their modules were written for; the modules themselves are
+evaluated by *our* `lib` and alongside *our* postgresql/systemd modules, which
+works today but is the thing most likely to break on an input bump.
 
 ## Our patches
 
-`patches/` holds fixes that are *not* in the PR yet; `overlay.nix` applies them
-with `overrideAttrs`, so the vendored `pkgs/` files stay verbatim. None of them
-touch `Cargo.lock`, so the packages' `cargoHash` stays valid.
+`overlay.nix` applies these with `overrideAttrs`. Neither touches
+`Cargo.lock`, so the packages' `cargoHash` stays valid.
 
 - `0001-hydra-builder-make-drv-available-to-pre-build-hook.patch` --
   `hydra-builder` only imports the closure of the *resolved* derivation's
@@ -41,9 +33,11 @@ touch `Cargo.lock`, so the packages' `cargoHash` stays valid.
   valid store path on the agent. `nix-required-mounts` reads that path with
   `nix derivation show` to decide which devices to bind into the sandbox, so
   without this our CUDA steps build with no GPU. This is the `hydra-builder`
-  counterpart of the `copyClosureTo` patch the C++ queue runner needed, which
-  used to live in `hosts/hydra/hydra/`.
-  Cf. [NixOS/nix#9272](https://github.com/NixOS/nix/issues/9272).
+  counterpart of the `copyClosureTo` patch the C++ queue runner needed.
+  Cf. [NixOS/nix#9272](https://github.com/NixOS/nix/issues/9272) and
+  [NixOS/hydra#1565](https://github.com/NixOS/hydra/pull/1565); needs
+  reshaping as an opt-in setting before it is upstreamable, since as written
+  it makes every build fetch the whole derivation graph.
 
 - `0002-queue-runner-skip-unparseable-drvpath.patch` --
   `get_not_finished_builds` parsed every row's `drvPath` and collected the
@@ -52,35 +46,25 @@ touch `Cargo.lock`, so the packages' `cargoHash` stays valid.
   only an ERROR line per retry to say why. We hit this right after the
   migration, from 33 pre-migration builds whose `drvPath` was stored without
   the `/nix/store/` prefix (the Perl and C++ code treat the column as an opaque
-  string, so they never minded). Those rows have since been normalised with
+  string, so they never minded). Those rows were normalised with
   `UPDATE builds SET drvpath = '/nix/store/' || drvpath WHERE drvpath NOT LIKE
   '/nix/store/%'`, but the fragility is worth removing.
 
-Both patches are against `NixOS/hydra`, not nixpkgs, so they do not belong in
-the nixpkgs PR -- they need their own upstream PRs.
+Both patch `NixOS/hydra`, not nixpkgs, so they need their own upstream PRs.
 
-## Fixed in the module, not yet in the PR
-
-The module did not write `queue_runner_endpoint` to `hydra.conf`, which the web
-app needs for `/machines` and `/queue-runner-status`, and without which
-`hydra-send-stats` exits with an error. It now emits
-`queue_runner_endpoint = http://<queueRunner.rest.address>:<port>` alongside
-`base_uri` and friends, with a `nixos/tests/hydra` assertion that `/machines`
-is non-empty.
-
-`pkgs/*/package.nix` still carry `passthru.tests = { inherit (nixosTests) hydra; }`.
-The NixOS test is not vendored, so `nixosTests.hydra` is the one from our
-nixpkgs channel and will not work against these packages. Nothing evaluates it
-here; it is kept only to avoid diverging from the PR.
+**They are pinned to a Hydra `src` rev by nothing but luck.** `nixpkgs-hydra`
+currently builds Hydra `0-unstable-2026-09-09`
+(`1d1d8b1c6fdc08444a514f383b291228f19d72d8`), which is what they were written
+against. When upstream bumps Hydra, `patch -p1` may stop applying -- at build
+time, on whoever runs `nix flake update`. Re-check them on every bump of this
+input.
 
 ## Dropping this
 
-Once the PR is merged and our `nixpkgs` input contains it:
+Once our stable nixpkgs carries the rewrite (26.11), and the patches are either
+upstreamed or no longer needed:
 
-1. check whether `patches/` is still needed, and upstream whatever is,
+1. drop the `nixpkgs-hydra` input from `flake.nix`,
 2. delete this directory,
 3. drop the `vendor/hydra/nixos-modules` import from `hosts/hydra/hydra` and
    from `modules/common/hydra-builder.nix`.
-
-No option or package name changes are expected, since the vendored modules
-are the upstream ones.

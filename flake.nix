@@ -4,6 +4,13 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05-small";
 
+    # Hydra's Rust rewrite landed after 26.05, so the Hydra packages and the
+    # `services.hydra{,-builder}` modules come from unstable while the rest of
+    # the fleet stays on stable. Cf. vendor/hydra/README.md.
+    # A full nixpkgs on purpose: the packages must be built against the same
+    # package set as the modules they are written for.
+    nixpkgs-hydra.url = "github:nixos/nixpkgs/nixos-unstable-small";
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
