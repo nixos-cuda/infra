@@ -53,9 +53,9 @@ works today but is the thing most likely to break on an input bump.
 Both patch `NixOS/hydra`, not nixpkgs, so they need their own upstream PRs.
 
 **They are pinned to a Hydra `src` rev by nothing but luck.** `nixpkgs-hydra`
-currently builds Hydra `0-unstable-2026-09-09`
-(`1d1d8b1c6fdc08444a514f383b291228f19d72d8`), which is what they were written
-against. When upstream bumps Hydra, `patch -p1` may stop applying -- at build
+currently builds Hydra `0-unstable-2026-10-04`
+(`588f42497842e9c0172067c8156f8d1b1ea691ff`), which is what they were last
+rebased onto. When upstream bumps Hydra, `patch -p1` may stop applying -- at build
 time, on whoever runs `nix flake update`. Re-check them on every bump of this
 input.
 

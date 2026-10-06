@@ -14,9 +14,9 @@ and C++ code, which treat the column as an opaque string.
 Skip those rows with a warning naming the build, so a handful of bad records
 degrades to a handful of unscheduled builds instead of a dead queue.
 ---
---- a/subprojects/crates/db/src/connection.rs
-+++ b/subprojects/crates/db/src/connection.rs
-@@ -84,9 +84,26 @@
+--- a/subprojects/crates/db/src/connection/builds.rs
++++ b/subprojects/crates/db/src/connection/builds.rs
+@@ -48,9 +48,26 @@
          )
          .fetch_all(&mut *self.conn)
          .await?;
@@ -45,4 +45,4 @@ degrades to a handful of unscheduled builds instead of a dead queue.
 +            .collect())
      }
  
-     #[tracing::instrument(skip(self), err)]
+     pub async fn insert_debug_build(
