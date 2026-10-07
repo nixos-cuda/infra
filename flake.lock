@@ -154,6 +154,54 @@
         "type": "github"
       }
     },
+    "grafana-dashboards": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788811780,
+        "narHash": "sha256-waKPgpwMQTZOnzVP83tRNACJmMb/F72I9NzR/EDZtPE=",
+        "owner": "rfmoz",
+        "repo": "grafana-dashboards",
+        "rev": "99a25cc154c21c4fcbae1aa24352bf1b6764d847",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rfmoz",
+        "repo": "grafana-dashboards",
+        "type": "github"
+      }
+    },
+    "harmonia": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791352914,
+        "narHash": "sha256-iTOnHq2WMN/q3LHDI+fy3GCR8JcKmJ4CvxBUgsq+KpY=",
+        "owner": "nix-community",
+        "repo": "harmonia",
+        "rev": "92c22b9c3f145a763b429a6508125bea26bbd6db",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "harmonia",
+        "type": "github"
+      }
+    },
+    "hydra-dashboard": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790501373,
+        "narHash": "sha256-jctueMgvTL0fkg9y3/5bKTghDnhwZQ+kC5Mm1UxJG+0=",
+        "owner": "applicative-systems",
+        "repo": "hydra-dashboard",
+        "rev": "b34867faaa093115c0dee226506279f2bebb47d3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "applicative-systems",
+        "repo": "hydra-dashboard",
+        "type": "github"
+      }
+    },
     "hydra-github-app": {
       "inputs": {
         "git-hooks-nix": [
@@ -249,6 +297,9 @@
         "dnscontrol-nix": "dnscontrol-nix",
         "flake-parts": "flake-parts",
         "git-hooks-nix": "git-hooks-nix",
+        "grafana-dashboards": "grafana-dashboards",
+        "harmonia": "harmonia",
+        "hydra-dashboard": "hydra-dashboard",
         "hydra-github-app": "hydra-github-app",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-hydra": "nixpkgs-hydra",

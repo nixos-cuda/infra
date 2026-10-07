@@ -2,6 +2,8 @@
   lib,
   config,
   hosts,
+  pkgs,
+  inputs,
   ...
 }:
 let
@@ -17,6 +19,23 @@ let
       inherit (config.services.hydra.queueRunner) rest;
     in
     "${rest.address}:${toString rest.port}";
+
+  dashboards = pkgs.runCommand "grafana-dashboards" { } ''
+    mkdir $out
+
+    cp ${inputs.grafana-dashboards}/prometheus/node-exporter-full.json $out/node-exporter-full.json
+    # Apply Full dashboard only to Linux hosts
+    substituteInPlace $out/node-exporter-full.json \
+      --replace-fail 'label_values(node_uname_info, job)' 'label_values(node_uname_info{sysname=\"Linux\"}, job)'
+
+    cp ${inputs.grafana-dashboards}/prometheus/node-exporter-bsd.json $out/node-exporter-bsd.json
+    # Apply BSD dashboard only to macOS hosts
+    substituteInPlace $out/node-exporter-bsd.json \
+      --replace-fail 'label_values(node_uname_info, job)' 'label_values(node_uname_info{sysname=\"Darwin\"}, job)'
+
+    cp ${inputs.harmonia}/harmonia-cache/harmonia-grafana-dashboard.json $out/harmonia-grafana-dashboard.json
+    cp ${inputs.hydra-dashboard}/dashboards/hydra.json $out/hydra.json
+  '';
 in
 {
   systemd.services.grafana.serviceConfig.LoadCredential = [
@@ -77,6 +96,7 @@ in
           isDefault = true;
         }
       ];
+      provision.dashboards.settings.providers = [ { options.path = dashboards; } ];
     };
 
     # Collect system metrics using prometheus and node exporter
