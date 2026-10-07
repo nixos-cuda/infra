@@ -47,6 +47,20 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.git-hooks-nix.follows = "git-hooks-nix";
     };
+
+    # Sources for grafana dashboards
+    grafana-dashboards = {
+      url = "github:rfmoz/grafana-dashboards";
+      flake = false;
+    };
+    harmonia = {
+      url = "github:nix-community/harmonia";
+      flake = false;
+    };
+    hydra-dashboard = {
+      url = "github:applicative-systems/hydra-dashboard";
+      flake = false;
+    };
   };
 
   outputs =
