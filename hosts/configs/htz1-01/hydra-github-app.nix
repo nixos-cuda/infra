@@ -72,6 +72,16 @@ in
               targetBranch = {
                 type = "pr target branch";
               };
+              # Computes what the PR changes via import-from-derivation
+              nixNixpkgsReview = {
+                type = "git";
+                value = "https://github.com/ConnorBaker/nix-nixpkgs-review";
+              };
+              # iets (a parallel Nix evaluator) used by nixNixpkgsReview, built by the tools jobset
+              iets = {
+                type = "build";
+                value = "nixos-cuda:tools:iets.x86_64-linux";
+              };
             };
           };
         };
