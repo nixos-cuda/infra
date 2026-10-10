@@ -70,6 +70,16 @@ in
               targetBranch = {
                 type = "pr target branch";
               };
+              # Computes what the PR changes via import-from-derivation
+              nixNixpkgsReview = {
+                type = "git";
+                value = "https://github.com/ConnorBaker/nix-nixpkgs-review";
+              };
+              # Determinate Nix (parallel evaluator) used by nixNixpkgsReview, built by the tools jobset
+              evalNix = {
+                type = "build";
+                value = "nixos-cuda:tools:determinate-nix.x86_64-linux";
+              };
             };
           };
         };
