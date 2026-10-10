@@ -36,6 +36,9 @@ in
 
   users.users =
     let
+      ConnorBaker = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJXpenPZWADrxK4+6nFmPspmYPPniI3m+3PxAfjbslg+"
+      ];
       GaetanLepage = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEJSonNBBb1DlhaO4EfMh3TbIIsV25phZQ9vp/qKOw9E"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOupOoulINUeCUKLfBllcS1Rulc1LzYnIOITXqEyYaao"
@@ -51,10 +54,10 @@ in
       ];
     in
     {
-      root.openssh.authorizedKeys.keys = GaetanLepage ++ SomeoneSerge ++ YorikSar;
+      root.openssh.authorizedKeys.keys = ConnorBaker ++ GaetanLepage ++ SomeoneSerge ++ YorikSar;
 
       nix.openssh.authorizedKeys.keys = map (key: "${ssh-restrict} ${key}") (
-        hydra ++ GaetanLepage ++ SomeoneSerge ++ YorikSar
+        hydra ++ ConnorBaker ++ GaetanLepage ++ SomeoneSerge ++ YorikSar
       );
     };
 }
