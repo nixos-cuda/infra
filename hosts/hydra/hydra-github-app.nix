@@ -23,6 +23,8 @@ in
       reverse_proxy ${config.services.hydra-github-app.settings.listen}
     }
   '';
+  # The app tries to log in to Hydra during startup, so wait for Hydra to do that
+  systemd.services.hydra-github-app.after = [ "hydra-server.service" ];
   services.hydra-github-app = {
     enable = true;
     settings = {
