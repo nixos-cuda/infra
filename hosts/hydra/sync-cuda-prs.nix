@@ -11,6 +11,7 @@ let
     "GaetanLepage"
     "SomeoneSerge"
     "YorikSar"
+    "ethancedwards8"
   ];
   mentionsBy = [
     "r-ryantm"
