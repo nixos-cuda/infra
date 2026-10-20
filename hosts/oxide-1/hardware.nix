@@ -19,6 +19,11 @@
       ];
       kernelModules = [ ];
     };
+    kernelParams = [
+      "console=ttyS0,115200n8"
+      # Oxide vmm clocksource workaround — see omicron#8001
+      "tsc=reliable"
+    ];
     kernelModules = [ ];
     extraModulePackages = [ ];
   };

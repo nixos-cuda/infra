@@ -3,7 +3,7 @@
     disk = {
       ssd = {
         type = "disk";
-        device = "/dev/disk/by-id/nvme-nvme.01de-6469736b--00000001";
+        device = "/dev/disk/by-id/nvme-nvme.01de-73746f72616765--00000001";
         content = {
           type = "gpt";
           partitions = {
