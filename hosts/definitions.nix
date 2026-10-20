@@ -9,9 +9,15 @@
 
   # CPU builders
   oxide-1 = {
-    ip = "45.154.216.118";
+    ip = "45.154.216.84";
     cores = 32;
-    max-jobs = 4;
+    max-jobs = 2;
+    speedFactor = 4;
+  };
+  oxide-2 = {
+    ip = "45.154.216.166";
+    cores = 32;
+    max-jobs = 2;
     speedFactor = 4;
   };
   atlas = {
