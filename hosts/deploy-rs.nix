@@ -2,10 +2,28 @@
   lib,
   inputs,
   self,
+  config,
   ...
 }:
 let
-  inherit (inputs) deploy-rs;
+  deploy-rs-pkgs = inputs.nixpkgs.lib.genAttrs config.systems (
+    system:
+    (import inputs.nixpkgs {
+      inherit system;
+      overlays = [
+        inputs.deploy-rs.overlays.default
+        (final: prev: {
+          deploy-rs = prev.deploy-rs // {
+            inherit (inputs.nixpkgs.legacyPackages.${system}) deploy-rs;
+          };
+        })
+      ];
+    })
+  );
+  deploy-rs = {
+    packages = builtins.mapAttrs (_: pkgs: { inherit (pkgs.deploy-rs) deploy-rs; }) deploy-rs-pkgs;
+    lib = builtins.mapAttrs (_: pkgs: pkgs.deploy-rs.lib) deploy-rs-pkgs;
+  };
 in
 {
   flake = {
@@ -33,7 +51,7 @@ in
       checks = deploy-rs.lib.${system}.deployChecks self.deploy;
 
       devshells.default.packages = [
-        inputs'.deploy-rs.packages.default
+        deploy-rs.packages.${system}.deploy-rs
       ];
     };
 }
