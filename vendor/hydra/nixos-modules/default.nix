@@ -2,7 +2,7 @@
 # `nixpkgs-hydra` (unstable) because 26.05 predates Hydra's Rust rewrite.
 # See ../README.md.
 #
-# Imported by the Hydra server (hosts/hydra) and by every build agent
+# Imported by the Hydra server (hosts/htz1-01) and by every build agent
 # (modules/common/hydra-builder.nix); both need the overlay, since
 # `services.hydra` and `services.hydra-builder` default to the packages it
 # provides.

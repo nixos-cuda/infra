@@ -4,7 +4,7 @@
 # driven over SSH by the queue runner: each agent runs `hydra-builder`, dials
 # the queue runner's gRPC endpoint itself and builds through its own
 # nix-daemon. The queue-runner side of this lives in
-# `hosts/hydra/hydra/builders.nix`.
+# `hosts/htz1-01/hydra/builders.nix`.
 {
   config,
   hosts,
@@ -57,7 +57,7 @@ in
 
   config = lib.mkIf cfg.enable {
     # The same static token the queue runner accepts; see
-    # hosts/hydra/hydra/builders.nix.
+    # hosts/htz1-01/hydra/builders.nix.
     sops.secrets.queue-runner-token = {
       sopsFile = ../../secrets-queue-runner.yaml;
       owner = "hydra-builder";

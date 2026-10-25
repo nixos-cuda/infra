@@ -1,5 +1,5 @@
 keys:
-  - &hydra age1yd6t2gsq9z7rcste8h8zd4jzlzhnqck6xaplhsptzy2w7apdrpusr2aa02
+  - &htz1-01 age1yd6t2gsq9z7rcste8h8zd4jzlzhnqck6xaplhsptzy2w7apdrpusr2aa02
   - &gaetan age16fjn06trywshgm5gg68d8zyr7x0tgdd2x22v92hrrtx806rq3sfs9xl5f6
   - &serge age1r40mw48s4mc9rgj5da0rhx04rtpntd72jnc4k60w9d9etztdy42swuxjtz
 
@@ -8,20 +8,20 @@ keys:
   #   nix run github:Mic92/ssh-to-age -- -i /etc/ssh/ssh_host_ed25519_key.pub
   #
   #
-  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJuF7aJFrurTPpL621eNfZY1GbtpvaNLHVVJq7Jt6tc6 root@ada
-  - &ada age13z5mcpxjn3uhh4xm9r6y7fsaxurtjspwjhtmu08kgzm2xh9cgdcseq88he
-
   #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINEF9dt66DPdOisYK/f6qhvEepDWRTVcAVrm788bBApd root@atlas
-  - &atlas age1lmn3ef3hj0q2wst7g588vftfl4na9jdhn430j6sd7wga69yvqq4qkkzz5s
-
-  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIriqAMfPye39gHKlrCaTtpZGlDo8M7hkobSjMG2/G7K root@oxide-1
-  - &oxide-1 age10hyg6svu9gy9svxshn3nsf0dtwfjfvsp5ug924rexwngp2eqtpzq30fhy0
-
-  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILZA85tQ/mTqa3EaLRxjaY0QlOkoHvHcclhkgo4cLLam root@oxide-2
-  - &oxide-2 age1srt6yqexc00uc9heysv9j5t5vrs5qakkh2gezj32hft2n0gwzadq8e2re5
+  - &htz1-02 age1lmn3ef3hj0q2wst7g588vftfl4na9jdhn430j6sd7wga69yvqq4qkkzz5s
 
   #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDISAY0+w9AqunYOZV//eOC0R5ExFgdB3pjSxqLaQlvP root@pascal
-  - &pascal age1skcu7vxulx7t723yaz5784jm8me78p98jdedtu6kdw30f0r9tf8q6m0zes
+  - &htz1-04 age1skcu7vxulx7t723yaz5784jm8me78p98jdedtu6kdw30f0r9tf8q6m0zes
+
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJuF7aJFrurTPpL621eNfZY1GbtpvaNLHVVJq7Jt6tc6 root@ada
+  - &htz1-03 age13z5mcpxjn3uhh4xm9r6y7fsaxurtjspwjhtmu08kgzm2xh9cgdcseq88he
+
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIriqAMfPye39gHKlrCaTtpZGlDo8M7hkobSjMG2/G7K root@oxide-1
+  - &oxi1-01 age10hyg6svu9gy9svxshn3nsf0dtwfjfvsp5ug924rexwngp2eqtpzq30fhy0
+
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILZA85tQ/mTqa3EaLRxjaY0QlOkoHvHcclhkgo4cLLam root@oxide-2
+  - &oxi1-02 age1srt6yqexc00uc9heysv9j5t5vrs5qakkh2gezj32hft2n0gwzadq8e2re5
 
 # Note: the first matching rule wins, so keep the specific rules above the
 # catch-all for the repository-level `.secrets.yaml`.
@@ -32,23 +32,23 @@ creation_rules:
   - path_regex: ^secrets-queue-runner\.yaml$
     key_groups:
     - age:
-      - *hydra
-      - *ada
-      - *atlas
-      - *oxide-1
-      - *oxide-2
-      - *pascal
+      - *htz1-01
+      - *htz1-02
+      - *htz1-03
+      - *htz1-04
+      - *oxi1-01
+      - *oxi1-02
       - *gaetan
-  - path_regex: hosts/hydra/secrets-grafana\.yaml$
+  - path_regex: hosts/htz1-01/secrets-grafana\.yaml$
     key_groups:
     - age:
-      - *hydra
+      - *htz1-01
       - *gaetan
       - *serge
-  - path_regex: hosts/hydra/secrets\.yaml$
+  - path_regex: hosts/htz1-01/secrets\.yaml$
     key_groups:
     - age:
-      - *hydra
+      - *htz1-01
       - *gaetan
   - path_regex: ^\.secrets\.yaml$
     key_groups:
