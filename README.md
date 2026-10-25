@@ -20,14 +20,16 @@ We aim to detect and distinguish between:
 
 Accounts of currently available hardware and access.
 
-| Hostname  | Purpose                                                               | IP                                        | GPU                   | GPU architecture  |
-|-----------|-----------------------------------------------------------------------|-------------------------------------------|-----------------------|-------------------|
-| ada       | GPU builder                                                           | `ada.nixos-cuda.org` - 144.76.101.55      | RTX 4000 ada (SFF)    | Ada Lovelace      |
-| pascal    | GPU builder                                                           | `pascal.nixos-cuda.org` - 95.216.72.164   | GeForce GTX 1080      | Pascal            |
-| hydra     | Hydra + binary cache                                                  | `hydra.nixos-cuda.org` - 37.27.129.22     | -                     | -                 |
-| atlas     | CPU builder                                                           | `atlas.nixos-cuda.org` - 95.216.20.88     | -                     | -                 |
-| oxide-1   | CPU builder (provided by [Oxide computers](https://oxide.computer))   | `oxide-1.nixos-cuda.org` - 45.154.216.84  | -                     | -                 |
-| oxide-2   | CPU builder (provided by [Oxide computers](https://oxide.computer))   | `oxide-2.nixos-cuda.org` - 45.154.216.166 | -                     | -                 |
+| Hostname  | Purpose                                                               | IP                                        | system        | GPU                   | GPU architecture  |
+|-----------|-----------------------------------------------------------------------|-------------------------------------------|---------------|-----------------------|-------------------|
+| htz1-01   | Hydra + binary cache + Grafana                                        | `htz1-01.nixos-cuda.org` - 37.27.129.22   | x86_64-linux  | -                     | -                 |
+| htz1-02   | CPU builder (AMD EPYC 9454P)                                          | `htz1-02.nixos-cuda.org` - 95.216.20.88   | x86_64-linux  | -                     | -                 |
+| htz1-03   | GPU builder                                                           | `htz1-03.nixos-cuda.org` - 144.76.101.55  | x86_64-linux  | RTX 4000 ada (SFF)    | Ada Lovelace      |
+| htz1-04   | GPU builder                                                           | `htz1-04.nixos-cuda.org` - 95.216.72.164  | x86_64-linux  | GeForce GTX 1080      | Pascal            |
+| oxi1-01   | CPU builder (provided by [Oxide computers](https://oxide.computer))   | `oxi1-01.nixos-cuda.org` - 45.154.216.84  | x86_64-linux  | -                     | -                 |
+| oxi1-02   | CPU builder (provided by [Oxide computers](https://oxide.computer))   | `oxi1-02.nixos-cuda.org` - 45.154.216.166 | x86_64-linux  | -                     | -                 |
+
+`hydra.nixos-cuda.org`, `cache.nixos-cuda.org` and `grafana.nixos-cuda.org` are CNAMEs pointing to `htz1-01`.
 
 ## [Hydra](https://hydra.nixos-cuda.org) jobsets
 
