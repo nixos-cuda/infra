@@ -69,6 +69,9 @@
                 }
               ]
             ) hosts';
+
+            # Server hosting Hydra, Grafana, the binary cache, etc.
+            masterHostname = "htz1-01";
           in
           websiteRecords
           ++ hostRecords
@@ -80,13 +83,18 @@
             }
             {
               type = "cname";
+              label = "hydra";
+              target = masterHostname;
+            }
+            {
+              type = "cname";
               label = "cache";
-              target = "hydra";
+              target = masterHostname;
             }
             {
               type = "cname";
               label = "grafana";
-              target = "hydra";
+              target = masterHostname;
             }
             {
               type = "cname";
