@@ -66,5 +66,5 @@ upstreamed or no longer needed:
 
 1. drop the `nixpkgs-hydra` input from `flake.nix`,
 2. delete this directory,
-3. drop the `vendor/hydra/nixos-modules` import from `hosts/hydra/hydra` and
+3. drop the `vendor/hydra/nixos-modules` import from `hosts/htz1-01/hydra` and
    from `modules/common/hydra-builder.nix`.
