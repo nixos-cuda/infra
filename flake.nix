@@ -48,6 +48,11 @@
       inputs.git-hooks-nix.follows = "git-hooks-nix";
     };
 
+    gradient = {
+      url = "github:wavelens/gradient";
+      inputs.nixpkgs.follows = "nixpkgs-hydra";
+    };
+
     # Sources for grafana dashboards
     grafana-dashboards = {
       url = "github:rfmoz/grafana-dashboards";
