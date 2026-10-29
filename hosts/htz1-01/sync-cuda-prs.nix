@@ -9,7 +9,7 @@ let
   users = [
     "ConnorBaker"
     "GaetanLepage"
-    "SomeoneSerge"
+    # "SomeoneSerge"
     "YorikSar"
     "ethancedwards8"
   ];

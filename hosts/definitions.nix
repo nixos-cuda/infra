@@ -47,4 +47,56 @@
     max-jobs = 2;
     speedFactor = 4;
   };
+
+  ########
+  # BREV #
+  ########
+  brv1-01 = {
+    ip = "54.235.229.247";
+    cores = 32;
+    max-jobs = 2;
+    speedFactor = 4;
+  };
+  brv1-02 = {
+    ip = "3.88.168.65";
+    cores = 32;
+    max-jobs = 2;
+    speedFactor = 4;
+  };
+  brv1-03 = {
+    ip = "98.84.33.137";
+    cores = 32;
+    max-jobs = 2;
+    speedFactor = 4;
+  };
+  brv1-04 = {
+    ip = "44.192.102.46";
+    cores = 32;
+    max-jobs = 2;
+    speedFactor = 4;
+  };
+  brv1-05 = {
+    ip = "3.81.157.120";
+    cores = 32;
+    max-jobs = 2;
+    speedFactor = 4;
+  };
+  brv1-06 = {
+    ip = "54.210.202.168";
+    cores = 32;
+    max-jobs = 2;
+    speedFactor = 4;
+  };
+  brv1-07 = {
+    ip = "184.72.199.142";
+    cores = 32;
+    max-jobs = 2;
+    speedFactor = 4;
+  };
+  brv1-08 = {
+    ip = "3.89.64.43";
+    cores = 32;
+    max-jobs = 2;
+    speedFactor = 4;
+  };
 }

@@ -24,6 +24,30 @@ keys:
   #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILZA85tQ/mTqa3EaLRxjaY0QlOkoHvHcclhkgo4cLLam root@oxide-2
   - &oxi1-02 age1srt6yqexc00uc9heysv9j5t5vrs5qakkh2gezj32hft2n0gwzadq8e2re5
 
+  # ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF7h2lldqkKbs6duk9GHc8wr3BXr5mvjbJQRH5T6snLU
+  - &brv1-01 age1h493vepnlf22sf3mgv9wnag6r6ryjqfcj2djuje66pqydhl9hejq49q3he
+
+  # ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIITcm3mWrIX6ZSepoH/VGqHYq2yFqp4PBCVcem97gQfm
+  - &brv1-02 age100kzyhp2pkq2a7wvuju3mea7ncf2fuk8v2za5370pn0xtk88uysq0kmdwe
+
+  # ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG4oRMM3VvH80NaLi2aErO8AObIyfXb8HdYCjKCsu9Vk
+  - &brv1-03 age1z4gc83wk35fsa8eqwkc5d28eptlcmp4f5pq8lnp48mmyujxges8sxva309
+
+  # ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN86IQ9FWnKRJY10MCqtxDZp91jsNwEFGTp538BRNqxP
+  - &brv1-04 age1rasqlr3577haqyxvjrp6v7t8j30c5adpplmpcvrtge4hzaj0j9jq5t0n0a
+
+  # ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL/c4stS6X7YN4igOZHXK9Dbgi+0vah3QBNrwqrMJfNB root@brv1-05
+  - &brv1-05 age14mtc4gmq2925r6el7xe9fgneqepvxwxm0l993l7jp3txyjq24fzsy54lzk
+
+  # ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK+/t2DWDQayECEYeDGgjhHyrgaMV2aBqnzXf97Hb0Pt
+  - &brv1-06 age1jg09lfk0pjdgxdajplxzr77hqqkauxgypfx5q3fjaedd9jzygcpsvahreq
+
+  # ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICwkBWc0KEhOrZTAL9gon9jw2LtooxT09IDIJ8ePxHjj
+  - &brv1-07 age1juk6vggrlnnn9ar04a75de55tet957s8nc9702qqkhp5ttcuyd7s8g8vul
+
+  # ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHJEeRCLVP6Csd9i3pL5fU8+ja4Tgb5UbJiUw5yKIAw
+  - &brv1-08 age14m00pq3uzpx7m9rat9rnmfn67gg9jskahe27r22n6ycut4g9vphq0nwzn6
+
 # Note: the first matching rule wins, so keep the specific rules above the
 # catch-all for the repository-level `.secrets.yaml`.
 creation_rules:
@@ -39,6 +63,14 @@ creation_rules:
       - *htz1-04
       - *oxi1-01
       - *oxi1-02
+      - *brv1-01
+      - *brv1-02
+      - *brv1-03
+      - *brv1-04
+      - *brv1-05
+      - *brv1-06
+      - *brv1-07
+      - *brv1-08
       - *gaetan
       - *yuriy
   - path_regex: hosts/htz1-01/secrets-grafana\.yaml$

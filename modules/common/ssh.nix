@@ -44,7 +44,7 @@ in
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOupOoulINUeCUKLfBllcS1Rulc1LzYnIOITXqEyYaao"
       ];
       SomeoneSerge = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILQBX9vypn+dy8nqtV5cchWes2xB5MqsBVMrtJ6hjX1D"
+        # "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILQBX9vypn+dy8nqtV5cchWes2xB5MqsBVMrtJ6hjX1D"
       ];
       YorikSar = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINeK+D62nHcQfidm6bKP86RyWUda7pf14H1hABAQPnss"
