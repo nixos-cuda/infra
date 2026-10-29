@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  config,
   ...
 }:
 let
@@ -32,32 +33,21 @@ in
   services.openssh = {
     enable = true;
     settings.PasswordAuthentication = false;
+    settings.PermitRootLogin = "no";
   };
 
   users.users =
     let
-      ConnorBaker = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJXpenPZWADrxK4+6nFmPspmYPPniI3m+3PxAfjbslg+"
-      ];
-      GaetanLepage = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEJSonNBBb1DlhaO4EfMh3TbIIsV25phZQ9vp/qKOw9E"
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOupOoulINUeCUKLfBllcS1Rulc1LzYnIOITXqEyYaao"
-      ];
-      SomeoneSerge = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILQBX9vypn+dy8nqtV5cchWes2xB5MqsBVMrtJ6hjX1D"
-      ];
-      YorikSar = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINeK+D62nHcQfidm6bKP86RyWUda7pf14H1hABAQPnss"
-      ];
       hydra = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDi1X4YCtWEto02ovI/fsond7hMKPZ0cFYMLkGn9rGtu"
       ];
     in
     {
-      root.openssh.authorizedKeys.keys = ConnorBaker ++ GaetanLepage ++ SomeoneSerge ++ YorikSar;
-
       nix.openssh.authorizedKeys.keys = map (key: "${ssh-restrict} ${key}") (
-        hydra ++ ConnorBaker ++ GaetanLepage ++ SomeoneSerge ++ YorikSar
+        hydra
+        ++ (lib.concatMap (
+          x: lib.optionals (x.hosts == [ ] || lib.elem config.networking.hostName x.hosts) x.authorizedKeys
+        ) (lib.attrValues config.nixos-cuda.users))
       );
     };
 }

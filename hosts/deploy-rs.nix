@@ -30,7 +30,6 @@ in
     deploy.nodes = lib.mapAttrs (hostname: configuration: {
       hostname = "${hostname}.nixos-cuda.org";
       profiles.system = {
-        sshUser = "root";
         user = "root";
         path =
           let
