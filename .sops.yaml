@@ -41,6 +41,17 @@ creation_rules:
       - *oxi1-02
       - *gaetan
       - *yuriy
+  - path_regex: ^user-passwords\.yaml$
+    key_groups:
+    - age:
+      - *htz1-01
+      - *htz1-02
+      - *htz1-03
+      - *htz1-04
+      - *oxi1-01
+      - *oxi1-02
+      - *gaetan
+      - *yuriy
   - path_regex: hosts/htz1-01/secrets-grafana\.yaml$
     key_groups:
     - age:
