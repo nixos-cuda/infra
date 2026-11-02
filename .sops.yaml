@@ -1,27 +1,29 @@
 keys:
-  - &htz1-01 age1yd6t2gsq9z7rcste8h8zd4jzlzhnqck6xaplhsptzy2w7apdrpusr2aa02
   - &gaetan age16fjn06trywshgm5gg68d8zyr7x0tgdd2x22v92hrrtx806rq3sfs9xl5f6
   - &yuriy age13q8dprl2c3ps08tfmkh90atkde0zkpth4rx2a4egwsrl7whjte3qrk4y8q
 
-  # Build agents, each derived from the host's /etc/ssh/ssh_host_ed25519_key.pub
+  # Hosts, each derived from the host's /etc/ssh/ssh_host_ed25519_key.pub
   # with `ssh-to-age`:
   #   nix run github:Mic92/ssh-to-age -- -i /etc/ssh/ssh_host_ed25519_key.pub
   #
   #
-  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINEF9dt66DPdOisYK/f6qhvEepDWRTVcAVrm788bBApd root@atlas
-  - &htz1-02 age1lmn3ef3hj0q2wst7g588vftfl4na9jdhn430j6sd7wga69yvqq4qkkzz5s
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKXeZfqYHdhw0f213fo5qY054LIP7NxWox5UWyp7HfGn root@htz1-01
+  - &htz1-01 age10gwas7dvxejard74mzsfhggphea0rax463fzlj4agyk3gcxmjc7slxx5vd
 
-  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDISAY0+w9AqunYOZV//eOC0R5ExFgdB3pjSxqLaQlvP root@pascal
-  - &htz1-04 age1skcu7vxulx7t723yaz5784jm8me78p98jdedtu6kdw30f0r9tf8q6m0zes
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBEwzY+IkGbTLK7FDTVOHYEhYt9oxHGPx3p0pkMBReiZ root@htz1-02 (atlas)
+  - &htz1-02 age1q2x43wszgg8tp6e5x5ntgglhcn0etn6e6n9ff4yska8l6ald2flsgyq5cc
 
-  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJuF7aJFrurTPpL621eNfZY1GbtpvaNLHVVJq7Jt6tc6 root@ada
-  - &htz1-03 age13z5mcpxjn3uhh4xm9r6y7fsaxurtjspwjhtmu08kgzm2xh9cgdcseq88he
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMtqgoU8yr3YYFuDIRwm+BbxnkYVtdJ5H0ue66QL+/8K root@htz1-04 (pascal)
+  - &htz1-04 age1h0647zsumt78h9rgdjpzq08lxjjlkzr0xlwztz8ln7zavprmrajsltlgqr
 
-  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIriqAMfPye39gHKlrCaTtpZGlDo8M7hkobSjMG2/G7K root@oxide-1
-  - &oxi1-01 age10hyg6svu9gy9svxshn3nsf0dtwfjfvsp5ug924rexwngp2eqtpzq30fhy0
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIJnN2QprSW/RBkQQuUDezsqjGrsGak5Fo897CkysGvB root@htz1-03 (ada)
+  - &htz1-03 age1qyzhx0afpzf3t9mv7gfw0ka3dgmv9v99rh9ks05ws32w9grgydlqydgueg
 
-  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILZA85tQ/mTqa3EaLRxjaY0QlOkoHvHcclhkgo4cLLam root@oxide-2
-  - &oxi1-02 age1srt6yqexc00uc9heysv9j5t5vrs5qakkh2gezj32hft2n0gwzadq8e2re5
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJzcW06o32bJ/bdIgyRoDvL86HwF2MmO+iVUDs6qHkUn root@oxi1-01
+  - &oxi1-01 age1w5dee3mzy4n2ukhhtseczym5jgxc85c77rrw586df0vcppc37fhq6fqpn4
+
+  #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID9pppAkVGQPrih9r2paU2SPQ1bK/epRYNlu0hbwf7ac root@oxi1-02
+  - &oxi1-02 age1fm6hy2vu38qk7wdqjapmhuhqjfl3fmhz0wxzyeuked7v7g2jfe9q24purr
 
 # Note: the first matching rule wins, so keep the specific rules above the
 # catch-all for the repository-level `.secrets.yaml`.
