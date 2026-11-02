@@ -2,7 +2,7 @@
 
 { config, ... }:
 {
-  sops.secrets.gh-runner-token = { };
+  sops.secrets.gh-runner-token.restartUnits = [ "github-runner-main.service" ];
 
   services.github-runners.main = {
     enable = true;
