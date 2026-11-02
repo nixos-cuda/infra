@@ -47,11 +47,13 @@ in
       owner = "grafana";
       group = "grafana";
       sopsFile = ./secrets-grafana.yaml;
+      restartUnits = [ "grafana.service" ];
     };
     "grafana/secret_key" = {
       owner = "grafana";
       group = "grafana";
       sopsFile = ./secrets-grafana.yaml;
+      restartUnits = [ "grafana.service" ];
     };
   };
 

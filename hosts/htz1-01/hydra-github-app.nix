@@ -11,9 +11,9 @@ in
   imports = [ inputs.hydra-github-app.nixosModules.default ];
 
   sops.secrets = {
-    hydra-github-app-webhook-secret = { };
-    hydra-github-app-private-key = { };
-    hydra-github-app-hydra-password = { };
+    hydra-github-app-webhook-secret.restartUnits = [ "hydra-github-app.service" ];
+    hydra-github-app-private-key.restartUnits = [ "hydra-github-app.service" ];
+    hydra-github-app-hydra-password.restartUnits = [ "hydra-github-app.service" ];
   };
 
   # Caddy will evaluate handle_path before reverse_proxy, see docs at

@@ -61,6 +61,7 @@ in
     sops.secrets.queue-runner-token = {
       sopsFile = ../../secrets-queue-runner.yaml;
       owner = "hydra-builder";
+      restartUnits = [ "hydra-builder.service" ];
     };
 
     services.hydra-builder = {

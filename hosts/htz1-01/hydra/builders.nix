@@ -16,6 +16,7 @@ in
   sops.secrets.queue-runner-token = {
     sopsFile = ../../../secrets-queue-runner.yaml;
     owner = config.users.users.hydra-queue-runner.name;
+    restartUnits = [ "hydra-queue-runner.service" ];
   };
 
   services = {
