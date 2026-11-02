@@ -42,7 +42,7 @@ enum Commands {
         upstream_repo_full_name: String,
         #[arg(long, default_value = "nixos-cuda/nixpkgs")]
         repo_full_name: String,
-        #[arg(long, default_values = vec!["ConnorBaker", "GaetanLepage", "SomeoneSerge", "YorikSar"])]
+        #[arg(long, default_values = vec!["ConnorBaker", "GaetanLepage", "YorikSar"])]
         from_users: Vec<String>,
         #[arg(long, default_values = vec!["r-ryantm"])]
         mentions_by: Vec<String>,
