@@ -43,9 +43,6 @@ in
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEJSonNBBb1DlhaO4EfMh3TbIIsV25phZQ9vp/qKOw9E"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOupOoulINUeCUKLfBllcS1Rulc1LzYnIOITXqEyYaao"
       ];
-      SomeoneSerge = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILQBX9vypn+dy8nqtV5cchWes2xB5MqsBVMrtJ6hjX1D"
-      ];
       YorikSar = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINeK+D62nHcQfidm6bKP86RyWUda7pf14H1hABAQPnss"
       ];
@@ -54,10 +51,10 @@ in
       ];
     in
     {
-      root.openssh.authorizedKeys.keys = ConnorBaker ++ GaetanLepage ++ SomeoneSerge ++ YorikSar;
+      root.openssh.authorizedKeys.keys = ConnorBaker ++ GaetanLepage ++ YorikSar;
 
       nix.openssh.authorizedKeys.keys = map (key: "${ssh-restrict} ${key}") (
-        hydra ++ ConnorBaker ++ GaetanLepage ++ SomeoneSerge ++ YorikSar
+        hydra ++ ConnorBaker ++ GaetanLepage ++ YorikSar
       );
     };
 }
