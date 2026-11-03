@@ -98,6 +98,11 @@
             }
             {
               type = "cname";
+              label = "gradient";
+              target = masterHostname;
+            }
+            {
+              type = "cname";
               label = "queue-runner";
               target = "hydra";
             }

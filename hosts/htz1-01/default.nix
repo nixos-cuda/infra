@@ -6,6 +6,7 @@
     ./disko.nix
     ./github-runner.nix
     ./grafana.nix
+    ./gradient.nix
     ./hardware.nix
     ./hydra
     ./hydra-github-app.nix
