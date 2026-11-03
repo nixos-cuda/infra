@@ -40,12 +40,20 @@
     cores = 32;
     max-jobs = 2;
     speedFactor = 4;
+    profiles = [
+      ../profiles/hardware/oxide-32.nix
+      ../profiles/hydra-builder.nix
+    ];
   };
   oxi1-02 = {
     ip = "45.154.216.166";
     cores = 32;
     max-jobs = 2;
     speedFactor = 4;
+    profiles = [
+      ../profiles/hardware/oxide-32.nix
+      ../profiles/hydra-builder.nix
+    ];
   };
 
   ########
