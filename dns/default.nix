@@ -15,7 +15,7 @@
 
   flake.dns = inputs.dnscontrol-nix.lib.buildConfig {
     settings.sops = {
-      file = ./.secrets.yaml;
+      file = ./secrets.yaml;
       extractString = "['dns-creds']";
     };
     domains = {
