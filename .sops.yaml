@@ -54,7 +54,7 @@ creation_rules:
       - *htz1-01
       - *gaetan
       - *yuriy
-  - path_regex: ^\.secrets\.yaml$
+  - path_regex: dns/secrets\.yaml$
     key_groups:
     - age:
       - *gaetan

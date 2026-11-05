@@ -79,7 +79,7 @@
       ];
 
       imports = [
-        ./dns.nix
+        ./dns
         ./hosts
         inputs.devshell.flakeModule
         inputs.git-hooks-nix.flakeModule
