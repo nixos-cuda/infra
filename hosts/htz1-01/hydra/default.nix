@@ -60,11 +60,14 @@ in
           evaluator_max_memory_size = 4096
 
           # How many derivations an evaluation may build at once, for
-          # import-from-derivation (vendor/hydra/patches/0003; Hydra passes 1
-          # otherwise). The nixpkgs PR jobsets build their nix-nixpkgs-review
-          # reports this way, each using 8 threads and ~16 GB, so this many
-          # of them per evaluation, times the evaluations running at once.
-          evaluator_max_jobs = 2
+          # import-from-derivation (vendor/hydra/patches/0003). The nixos-cuda
+          # jobsets build their nix-nixpkgs-review reports this way, each using
+          # 8 threads and ~16 GB. 1, as Hydra passes without the patch: on this
+          # host (16 threads), 2 at once took each report twice as long, so an
+          # evaluation took as long (164.2 s against 161.4 s for cuda-packages,
+          # 225.9 s against 228.8 s for a PR jobset), with less memory left and
+          # some swapping. More would help with more cores per report.
+          evaluator_max_jobs = 1
 
           # Makes the build page tail live logs from `hydra-ws` instead of
           # waiting for the finished log file. Routed below.
