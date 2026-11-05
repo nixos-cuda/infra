@@ -1,0 +1,23 @@
+From: Connor Baker <ConnorBaker01@gmail.com>
+Subject: [PATCH] hydra-eval-jobset: make nix-eval-jobs' --max-jobs configurable
+
+`hydra-eval-jobset` always passed `--max-jobs 1`, and the daemon applies a
+client's `max-jobs` to the builds it runs locally for that connection. So an
+evaluation that imports from derivations builds them one at a time, however
+many it asks for at once.
+
+Read it from `evaluator_max_jobs` in hydra.conf instead, defaulting to 1 as
+before. This is the setting NixOS/hydra#2040 (commit 54b37ab4) adds to the
+Rust evaluator, under the same name, in evaluator.toml.
+---
+--- a/script/hydra-eval-jobset
++++ b/script/hydra-eval-jobset
+@@ -423,7 +423,7 @@ sub evalJobsCmd {
+     }
+ 
+     push @cmd, ("--gc-roots-dir", $gcRootsDir) if defined $gcRootsDir;
+-    push @cmd, ("--max-jobs", 1);
++    push @cmd, ("--max-jobs", $config->{evaluator_max_jobs} // 1);
+     push @cmd, "--meta";
+     push @cmd, "--constituents";
+     push @cmd, "--force-recurse";

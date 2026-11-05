@@ -24,7 +24,7 @@ works today but is the thing most likely to break on an input bump.
 
 ## Our patches
 
-`overlay.nix` applies these with `overrideAttrs`. Neither touches
+`overlay.nix` applies these with `overrideAttrs`. None touches
 `Cargo.lock`, so the packages' `cargoHash` stays valid.
 
 - `0001-hydra-builder-make-drv-available-to-pre-build-hook.patch` --
@@ -50,7 +50,18 @@ works today but is the thing most likely to break on an input bump.
   `UPDATE builds SET drvpath = '/nix/store/' || drvpath WHERE drvpath NOT LIKE
   '/nix/store/%'`, but the fragility is worth removing.
 
-Both patch `NixOS/hydra`, not nixpkgs, so they need their own upstream PRs.
+- `0003-hydra-eval-jobset-configurable-max-jobs.patch` -- `hydra-eval-jobset`
+  always passed `--max-jobs 1` to `nix-eval-jobs`, so an evaluation builds
+  what it imports from derivations one at a time: the nixpkgs PR jobsets'
+  eight nix-nixpkgs-review reports are built one after another. This
+  reads `evaluator_max_jobs` from `hydra.conf`, defaulting to 1, and
+  `hosts/htz1-01/hydra` sets it. Upstream it is part of
+  [NixOS/hydra#2040](https://github.com/NixOS/hydra/pull/2040) (commit
+  `54b37ab4`), which ports the evaluator to Rust and moves the setting, under
+  the same name, to `services.hydra.evaluatorSettings`. Drop this patch once
+  that is in `nixpkgs-hydra`, and move the setting there.
+
+All three patch `NixOS/hydra`, not nixpkgs, so they need their own upstream PRs.
 
 **They are pinned to a Hydra `src` rev by nothing but luck.** `nixpkgs-hydra`
 currently builds Hydra `0-unstable-2026-10-04`

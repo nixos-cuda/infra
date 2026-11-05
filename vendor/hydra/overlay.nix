@@ -16,10 +16,13 @@ let
 in
 {
   inherit (hydraPkgs)
-    hydra
     hydra-evaluator
     hydra-ws
     ;
+
+  hydra = withPatches hydraPkgs.hydra [
+    ./patches/0003-hydra-eval-jobset-configurable-max-jobs.patch
+  ];
 
   hydra-builder = withPatches hydraPkgs.hydra-builder [
     ./patches/0001-hydra-builder-make-drv-available-to-pre-build-hook.patch

@@ -59,6 +59,13 @@ in
           evaluator_workers = 12
           evaluator_max_memory_size = 4096
 
+          # How many derivations an evaluation may build at once, for
+          # import-from-derivation (vendor/hydra/patches/0003; Hydra passes 1
+          # otherwise). The nixpkgs PR jobsets build their nix-nixpkgs-review
+          # reports this way, each using 8 threads and ~16 GB, so this many
+          # of them per evaluation, times the evaluations running at once.
+          evaluator_max_jobs = 2
+
           # Makes the build page tail live logs from `hydra-ws` instead of
           # waiting for the finished log file. Routed below.
           ws_endpoint = wss://${hydraURL}/ws
