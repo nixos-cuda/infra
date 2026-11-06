@@ -2,11 +2,6 @@
 {
   sops.secrets.harmonia-private-key = { };
 
-  # The socket file lives in harmonia.service's RuntimeDirectory, which systemd deletes whenever
-  # the service stops. harmonia.socket then keeps "listening" on a path that no longer exists and
-  # caddy returns 502s. Keep the directory around so the socket survives service restarts.
-  systemd.services.harmonia.serviceConfig.RuntimeDirectoryPreserve = "yes";
-
   services = {
     harmonia.cache = {
       enable = true;
@@ -17,7 +12,10 @@
       ];
 
       settings = {
-        bind = "unix:/run/harmonia/socket";
+        # Don't put the socket in /run/harmonia: it is harmonia.service's RuntimeDirectory, which
+        # systemd wipes whenever the service stops. harmonia.socket would then keep listening on a
+        # deleted path and caddy would return 502s.
+        bind = "unix:/run/harmonia-cache/socket";
 
         # Pick a lower priority (higher number) than cache.nixos.org
         # https://cache.nixos.org/nix-cache-info
@@ -30,7 +28,7 @@
     };
 
     caddy.virtualHosts."cache.nixos-cuda.org".extraConfig = ''
-      reverse_proxy unix//run/harmonia/socket
+      reverse_proxy unix//run/harmonia-cache/socket
     '';
   };
 }
