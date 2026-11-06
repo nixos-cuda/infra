@@ -2,6 +2,11 @@
 {
   sops.secrets.harmonia-private-key = { };
 
+  # The socket file lives in harmonia.service's RuntimeDirectory, which systemd deletes whenever
+  # the service stops. harmonia.socket then keeps "listening" on a path that no longer exists and
+  # caddy returns 502s. Keep the directory around so the socket survives service restarts.
+  systemd.services.harmonia.serviceConfig.RuntimeDirectoryPreserve = "yes";
+
   services = {
     harmonia.cache = {
       enable = true;
