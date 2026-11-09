@@ -8,7 +8,6 @@
   imports = [
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
-    ./brev-builder
     ./hydra-builder.nix
     ./monitoring.nix
     ./nix.nix
