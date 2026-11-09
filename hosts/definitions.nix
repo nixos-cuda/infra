@@ -43,6 +43,7 @@
     profiles = [
       ../profiles/hardware/oxide-32.nix
       ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   oxi1-02 = {
@@ -53,6 +54,7 @@
     profiles = [
       ../profiles/hardware/oxide-32.nix
       ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
 
@@ -67,6 +69,7 @@
     profiles = [
       ../profiles/hardware/brev-32-x86.nix
       ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-02 = {
@@ -77,6 +80,7 @@
     profiles = [
       ../profiles/hardware/brev-32-x86.nix
       ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-03 = {
@@ -87,6 +91,7 @@
     profiles = [
       ../profiles/hardware/brev-32-x86.nix
       ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-04 = {
@@ -97,6 +102,7 @@
     profiles = [
       ../profiles/hardware/brev-32-x86.nix
       ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-05 = {
@@ -107,6 +113,7 @@
     profiles = [
       ../profiles/hardware/brev-32-aarch64.nix
       ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-06 = {
@@ -117,6 +124,7 @@
     profiles = [
       ../profiles/hardware/brev-32-aarch64.nix
       ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-07 = {
@@ -127,6 +135,7 @@
     profiles = [
       ../profiles/hardware/brev-32-aarch64.nix
       ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-08 = {
@@ -137,6 +146,7 @@
     profiles = [
       ../profiles/hardware/brev-32-aarch64.nix
       ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
 }

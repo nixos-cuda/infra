@@ -35,7 +35,7 @@
           };
           modules = [
             ../modules/common
-            configs.${hostname}
+            configs.${hostname} or { }
             {
               networking.hostName = hostname;
 
