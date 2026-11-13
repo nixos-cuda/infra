@@ -14,19 +14,6 @@
       # (nothing to say of other applications of `evalModules`).
       # Instead one may e.g. prepare a module with the "defaults" that can be explicitly put in `imports`.
       inherit (config.flake) hosts;
-      configs = lib.concatMapAttrs (
-        name: type:
-        if type == "directory" then
-          {
-            ${name} = ./configs/${name};
-          }
-        else if type == "regular" then
-          {
-            ${lib.removeSuffix ".nix" name} = ./configs/${name};
-          }
-        else
-          lib.warn "Ignoring non-regular file hosts/config/${name}" { }
-      ) (builtins.readDir ./configs);
       mkNixosConfig =
         hostname: hostCfg:
         (inputs.nixpkgs.lib.nixosSystem {
@@ -35,7 +22,6 @@
           };
           modules = [
             ../modules/common
-            configs.${hostname} or { }
             {
               networking.hostName = hostname;
 
@@ -46,7 +32,7 @@
               };
             }
           ]
-          ++ hostCfg.profiles or [ ];
+          ++ hostCfg.profiles;
         });
     in
     {

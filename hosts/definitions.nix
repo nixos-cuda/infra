@@ -9,6 +9,9 @@
     hwaddr = "04:42:1a:23:df:46";
     cores = 16;
     max-jobs = "auto";
+    profiles = [
+      ./configs/htz1-01
+    ];
   };
   # AMD EPYC 9454P
   htz1-02 = {
@@ -16,6 +19,9 @@
     cores = 96;
     max-jobs = 10;
     speedFactor = 10;
+    profiles = [
+      ./configs/htz1-02
+    ];
   };
   # Ada GPU builder
   htz1-03 = {
@@ -23,6 +29,9 @@
     cores = 20;
     max-jobs = 6;
     speedFactor = 4;
+    profiles = [
+      ./configs/htz1-03
+    ];
   };
   # Pascal GPU builder
   htz1-04 = {
@@ -30,6 +39,9 @@
     cores = 8;
     max-jobs = 1;
     speedFactor = 2;
+    profiles = [
+      ./configs/htz1-04
+    ];
   };
 
   #########
