@@ -27,29 +27,17 @@ let
 in
 {
   flake = {
-    deploy.nodes =
-      lib.mapAttrs (hostname: configuration: {
-        hostname = "${hostname}.nixos-cuda.org";
-        profiles.system = {
-          user = "root";
-          path =
-            let
-              inherit (configuration.pkgs.stdenv.hostPlatform) system;
-            in
-            deploy-rs.lib.${system}.activate.nixos configuration;
-        };
-      }) self.nixosConfigurations
-      // lib.mapAttrs (hostname: configuration: {
-        hostname = "${hostname}.nixos-cuda.org";
-        profiles.system = {
-          user = "root";
-          path =
-            let
-              inherit (configuration.pkgs.stdenv.hostPlatform) system;
-            in
-            deploy-rs.lib.${system}.activate.darwin configuration;
-        };
-      }) self.darwinConfigurations;
+    deploy.nodes = lib.mapAttrs (hostname: configuration: {
+      hostname = "${hostname}.nixos-cuda.org";
+      profiles.system = {
+        user = "root";
+        path =
+          let
+            inherit (configuration.pkgs.stdenv.hostPlatform) system;
+          in
+          deploy-rs.lib.${system}.activate.nixos configuration;
+      };
+    }) self.nixosConfigurations;
   };
 
   perSystem =
