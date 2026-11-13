@@ -16,7 +16,7 @@ let
     "r-ryantm"
   ];
   serviceName = "sync-cuda-prs";
-  helpers = pkgs.lib.getExe inputs.self.packages.${config.nixpkgs.system}.helpers;
+  helpers = pkgs.lib.getExe inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.helpers;
   script = lib.concatStringsSep " " (
     [
       helpers
