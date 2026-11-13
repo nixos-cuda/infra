@@ -17,13 +17,11 @@
       mkNixosConfig =
         hostname: hostCfg:
         (inputs.nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
           specialArgs = {
             inherit inputs hosts;
           };
           modules = [
             ../modules/common
-            ./${hostname}
             {
               networking.hostName = hostname;
 
@@ -33,7 +31,8 @@
                 cores = if max-jobs == "auto" then 0 else hostCfg.cores / max-jobs;
               };
             }
-          ];
+          ]
+          ++ hostCfg.profiles;
         });
     in
     {

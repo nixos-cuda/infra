@@ -12,7 +12,7 @@ in
   imports = [
     # Hydra's Rust rewrite, vendored from NixOS/nixpkgs#563797 until it lands
     # in our nixpkgs channel.
-    ../../../vendor/hydra/nixos-modules
+    ../../../../vendor/hydra/nixos-modules
 
     ./builders.nix
     ./channels.nix
