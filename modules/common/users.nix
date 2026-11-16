@@ -7,19 +7,10 @@
     security.sudo = {
       enable = true;
       execWheelOnly = true;
+      wheelNeedsPassword = false;
     };
     services.openssh.authorizedKeysInHomedir = false;
     services.userborn.enable = true;
-    sops.secrets = lib.mapAttrs' (
-      _: x:
-      lib.nameValuePair "user-${x.name}-password" (
-        lib.mkIf (x.hosts == [ ] || lib.elem config.networking.hostName x.hosts) {
-          sopsFile = ../../user-passwords.yaml;
-          key = x.name;
-          neededForUsers = true;
-        }
-      )
-    ) config.nixos-cuda.users;
 
     users = {
       mutableUsers = false;
@@ -38,7 +29,6 @@
           inherit (x) uid;
           group = "users";
           extraGroups = [ "wheel" ];
-          hashedPasswordFile = config.sops.secrets."user-${x.name}-password".path;
         }
       ) config.nixos-cuda.users;
       groups.nix = { };
