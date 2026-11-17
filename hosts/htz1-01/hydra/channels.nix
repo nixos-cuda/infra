@@ -12,7 +12,7 @@
   services.hydra = {
     extraConfig =
       let
-        helpers = pkgs.lib.getExe inputs.self.packages.${config.nixpkgs.system}.helpers;
+        helpers = pkgs.lib.getExe inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.helpers;
 
         commandPrefix = lib.concatStringsSep " " [
           helpers

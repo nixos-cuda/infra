@@ -47,7 +47,7 @@ in
       };
 
       _module.args.pkgsCuda = import pkgs.path {
-        inherit (config.nixpkgs.hostPlatform) system;
+        inherit (pkgs.stdenv.hostPlatform) system;
         config =
           { pkgs, ... }:
           {
