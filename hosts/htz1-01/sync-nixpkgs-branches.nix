@@ -12,7 +12,7 @@ let
     "release-26.05"
   ];
   serviceName = "sync-nixpkgs-branches";
-  helpers = pkgs.lib.getExe inputs.self.packages.${config.nixpkgs.system}.helpers;
+  helpers = pkgs.lib.getExe inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.helpers;
   script = lib.concatStringsSep " " (
     [
       helpers
