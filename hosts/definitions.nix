@@ -53,7 +53,9 @@
     max-jobs = 2;
     speedFactor = 4;
     profiles = [
-      ./configs/oxi1-01
+      ../profiles/hardware/oxide-32.nix
+      ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   oxi1-02 = {
@@ -62,7 +64,9 @@
     max-jobs = 2;
     speedFactor = 4;
     profiles = [
-      ./configs/oxi1-02
+      ../profiles/hardware/oxide-32.nix
+      ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
 
