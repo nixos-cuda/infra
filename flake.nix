@@ -9,7 +9,10 @@
     # the fleet stays on stable. Cf. vendor/hydra/README.md.
     # A full nixpkgs on purpose: the packages must be built against the same
     # package set as the modules they are written for.
-    nixpkgs-hydra.url = "github:nixos/nixpkgs/nixos-unstable-small";
+    #   TODO: switch back to nixos-unstable-small when it will have
+    #   https://github.com/NixOS/nixpkgs/pull/589449
+    # nixpkgs-hydra.url = "github:nixos/nixpkgs/nixos-unstable-small";
+    nixpkgs-hydra.url = "github:nixos/nixpkgs/202e2d1fc958e3cb49dd65cdce999a48aeac7f55";
 
     sops-nix = {
       url = "github:Mic92/sops-nix";

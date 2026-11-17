@@ -243,17 +243,17 @@
     },
     "nixpkgs-hydra": {
       "locked": {
-        "lastModified": 1794695590,
-        "narHash": "sha256-A6bX2QkfIPvZxxF+cIhPJFfO3/ygrOZZ5yAz4jPszxM=",
+        "lastModified": 1794950901,
+        "narHash": "sha256-UXFtUfg/qXQslM+Awo/ck+ppFHETMymK1cLpuWfqKtI=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b8ce2154aa91238463c676b59f95d29c74c1f95d",
+        "rev": "202e2d1fc958e3cb49dd65cdce999a48aeac7f55",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixos-unstable-small",
         "repo": "nixpkgs",
+        "rev": "202e2d1fc958e3cb49dd65cdce999a48aeac7f55",
         "type": "github"
       }
     },
