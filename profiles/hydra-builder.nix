@@ -1,0 +1,3 @@
+{
+  _hydraBuilder.enable = true;
+}
