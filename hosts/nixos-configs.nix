@@ -22,7 +22,6 @@
           };
           modules = [
             ../modules/common
-            ./${hostname}
             {
               networking.hostName = hostname;
 
@@ -32,7 +31,8 @@
                 cores = if max-jobs == "auto" then 0 else hostCfg.cores / max-jobs;
               };
             }
-          ];
+          ]
+          ++ hostCfg.profiles;
         });
     in
     {

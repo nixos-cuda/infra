@@ -14,7 +14,7 @@ in
   # A single static token, shared by every agent. The same file is read by the
   # agents themselves, hence the shared secrets file rather than a per-host one.
   sops.secrets.queue-runner-token = {
-    sopsFile = ../../../secrets-queue-runner.yaml;
+    sopsFile = ../../../../secrets-queue-runner.yaml;
     owner = config.users.users.hydra-queue-runner.name;
     restartUnits = [ "hydra-queue-runner.service" ];
   };
