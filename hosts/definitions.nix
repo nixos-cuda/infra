@@ -79,7 +79,9 @@
     max-jobs = 2;
     speedFactor = 4;
     profiles = [
-      ./configs/brv1-01
+      ../profiles/hardware/brev-32-x86.nix
+      ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-02 = {
@@ -88,7 +90,9 @@
     max-jobs = 2;
     speedFactor = 4;
     profiles = [
-      ./configs/brv1-02
+      ../profiles/hardware/brev-32-x86.nix
+      ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-03 = {
@@ -97,7 +101,9 @@
     max-jobs = 2;
     speedFactor = 4;
     profiles = [
-      ./configs/brv1-03
+      ../profiles/hardware/brev-32-x86.nix
+      ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-04 = {
@@ -106,7 +112,9 @@
     max-jobs = 2;
     speedFactor = 4;
     profiles = [
-      ./configs/brv1-04
+      ../profiles/hardware/brev-32-x86.nix
+      ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-05 = {
@@ -115,7 +123,9 @@
     max-jobs = 2;
     speedFactor = 4;
     profiles = [
-      ./configs/brv1-05
+      ../profiles/hardware/brev-32-aarch64.nix
+      ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-06 = {
@@ -124,7 +134,9 @@
     max-jobs = 2;
     speedFactor = 4;
     profiles = [
-      ./configs/brv1-06
+      ../profiles/hardware/brev-32-aarch64.nix
+      ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-07 = {
@@ -133,7 +145,9 @@
     max-jobs = 2;
     speedFactor = 4;
     profiles = [
-      ./configs/brv1-07
+      ../profiles/hardware/brev-32-aarch64.nix
+      ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
   brv1-08 = {
@@ -142,7 +156,9 @@
     max-jobs = 2;
     speedFactor = 4;
     profiles = [
-      ./configs/brv1-08
+      ../profiles/hardware/brev-32-aarch64.nix
+      ../profiles/hydra-builder.nix
+      { system.stateVersion = "25.05"; }
     ];
   };
 }
