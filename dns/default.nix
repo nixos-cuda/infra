@@ -54,7 +54,7 @@
             hosts' = map ({ name, value }: value // { hostName = name; }) (lib.attrsToList hosts);
             hostRecords = builtins.concatMap (
               { hostName, ip, ... }@hostCfg:
-              [
+              optionals (ip != null) [
                 {
                   type = "a";
                   label = hostName;

@@ -49,6 +49,9 @@ keys:
   # ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHJEeRCLVP6Csd9i3pL5fU8+ja4Tgb5UbJiUw5yKIAw
   - &brv1-08 age14m00pq3uzpx7m9rat9rnmfn67gg9jskahe27r22n6ycut4g9vphq0nwzn6
 
+  # ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMOoYoXf1ypQp8a8b7aBLQWzvMN8KmAfrTfedAInp4sl
+  - &ttn1-01 age19lzcdagzwuamgjp3swhuhs45fzscymnjllxc6jpt0m96gkh6e4aq25nyur
+
 # Note: the first matching rule wins, so keep the specific rules above the
 # catch-all for the repository-level `.secrets.yaml`.
 creation_rules:
@@ -72,6 +75,7 @@ creation_rules:
       - *brv1-06
       - *brv1-07
       - *brv1-08
+      - *ttn1-01
       - *gaetan
       - *yuriy
   - path_regex: hosts/configs/htz1-01/secrets-grafana\.yaml$

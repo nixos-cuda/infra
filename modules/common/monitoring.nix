@@ -1,8 +1,13 @@
 {
+  lib,
+  isLinux,
+  ...
+}:
+{
   services.prometheus.exporters.node = {
     enable = true;
-    enabledCollectors = [ "systemd" ];
+    enabledCollectors = lib.optionals isLinux [ "systemd" ];
 
-    openFirewall = true;
+    openFirewall = lib.mkIf isLinux true;
   };
 }

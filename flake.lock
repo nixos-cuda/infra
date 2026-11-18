@@ -186,6 +186,22 @@
         "type": "github"
       }
     },
+    "hydra": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1795012085,
+        "narHash": "sha256-pTjmc0rILsZGXipa1kWiZ1GgLHc2E//logM0HMnUh9Q=",
+        "owner": "NixOS",
+        "repo": "hydra",
+        "rev": "02f5417147614fb3a20fcb6d8549e771b9dcd3e6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "hydra",
+        "type": "github"
+      }
+    },
     "hydra-dashboard": {
       "flake": false,
       "locked": {
@@ -320,6 +336,7 @@
         "git-hooks-nix": "git-hooks-nix",
         "grafana-dashboards": "grafana-dashboards",
         "harmonia": "harmonia",
+        "hydra": "hydra",
         "hydra-dashboard": "hydra-dashboard",
         "hydra-github-app": "hydra-github-app",
         "nix-darwin": "nix-darwin",
