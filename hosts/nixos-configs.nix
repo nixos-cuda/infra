@@ -25,6 +25,8 @@
           ];
           specialArgs = {
             inherit inputs modulesPath;
+            isLinux = false;
+            isDarwin = false;
           };
         }).config.nixpkgs.localSystem
       ) hosts;
@@ -34,6 +36,8 @@
         (inputs.nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs hosts;
+            isLinux = true;
+            isDarwin = false;
           };
           modules = [
             ../modules/common
@@ -55,6 +59,8 @@
         (inputs.nix-darwin.lib.darwinSystem {
           specialArgs = {
             inherit inputs hosts;
+            isLinux = false;
+            isDarwin = true;
           };
           modules = [
             ../modules/common

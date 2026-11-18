@@ -88,6 +88,24 @@ in
     ];
   };
 
+  #######
+  # TTN #
+  #######
+  ttn1-01 = {
+    purpose = "CPU builder";
+    ip = null; # public IP not known yet
+    cores = 16;
+    max-jobs = 2;
+    speedFactor = 4;
+    profiles = [
+      {
+        nixpkgs.system = "aarch64-darwin";
+        system.stateVersion = 7;
+      }
+      ../profiles/hydra-builder.nix
+    ];
+  };
+
   ########
   # BREV #
   ########

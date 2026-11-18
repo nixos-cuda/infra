@@ -2,6 +2,8 @@
   lib,
   pkgs,
   config,
+  isLinux,
+  isDarwin,
   ...
 }:
 let
@@ -32,8 +34,16 @@ in
 {
   services.openssh = {
     enable = true;
+  }
+  // lib.optionalAttrs isLinux {
     settings.PasswordAuthentication = false;
     settings.PermitRootLogin = "no";
+  }
+  // lib.optionalAttrs isDarwin {
+    extraConfig = ''
+      PasswordAuthentication no
+      PermitRootLogin no
+    '';
   };
 
   users.users =

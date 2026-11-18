@@ -1,7 +1,16 @@
 {
+  lib,
+  isLinux,
+  isDarwin,
+  ...
+}:
+{
   nix = {
     settings = {
-      experimental-features = "nix-command flakes";
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
 
       warn-dirty = false;
 
@@ -18,10 +27,22 @@
     };
 
     # Garbage collection
-    gc = {
-      automatic = true;
-      dates = "05:00";
-      options = "--delete-older-than 30d";
-    };
+    gc = lib.mkMerge [
+      {
+        automatic = true;
+        options = "--delete-older-than 30d";
+      }
+      (lib.optionalAttrs isLinux {
+        dates = "05:00";
+      })
+      (lib.optionalAttrs isDarwin {
+        interval = [
+          {
+            Hour = 5;
+            Minute = 0;
+          }
+        ];
+      })
+    ];
   };
 }

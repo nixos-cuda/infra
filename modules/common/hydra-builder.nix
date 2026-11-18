@@ -9,6 +9,8 @@
   config,
   hosts,
   lib,
+  isLinux,
+  isDarwin,
   ...
 }:
 let
@@ -60,11 +62,16 @@ in
     # hosts/htz1-01/hydra/builders.nix.
     sops.secrets.queue-runner-token = {
       sopsFile = ../../secrets-queue-runner.yaml;
+    }
+    // lib.optionalAttrs isLinux {
       owner = "hydra-builder";
       restartUnits = [ "hydra-builder.service" ];
+    }
+    // lib.optionalAttrs isDarwin {
+      owner = "hydra-queue-builder";
     };
 
-    services.hydra-builder = {
+    services.${if isLinux then "hydra-builder" else "hydra-queue-builder-dev"} = {
       enable = true;
 
       # Terminated by Caddy on the Hydra host, which proxies to the queue

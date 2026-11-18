@@ -54,6 +54,8 @@ in
 
           # Users are all untrusted and thus are not allowed to push store paths
           remoteBuild = true;
+          # Magic rollback doesn't work with macOS remote for some reason, disable it
+          magicRollback = false;
         };
       }) self.darwinConfigurations;
   };

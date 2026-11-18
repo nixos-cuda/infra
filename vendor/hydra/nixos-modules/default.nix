@@ -6,17 +6,33 @@
 # (modules/common/hydra-builder.nix); both need the overlay, since
 # `services.hydra` and `services.hydra-builder` default to the packages it
 # provides.
-{ inputs, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  isLinux,
+  isDarwin,
+  ...
+}:
 let
-  hydraModules = "${inputs.nixpkgs-hydra}/nixos/modules/services/continuous-integration/hydra";
+  hydraNixOSModules = "${inputs.nixpkgs-hydra}/nixos/modules/services/continuous-integration/hydra";
+  hydraDarwinModules = "${inputs.hydra}/darwin-modules";
 in
 {
   disabledModules = [ "services/continuous-integration/hydra/default.nix" ];
 
-  imports = [
-    "${hydraModules}/builder.nix"
-    "${hydraModules}/default.nix"
-  ];
+  imports =
+    lib.optionals isLinux [
+      "${hydraNixOSModules}/builder.nix"
+      "${hydraNixOSModules}/default.nix"
+    ]
+    ++ lib.optionals isDarwin [
+      "${hydraDarwinModules}/builder-module.nix"
+    ];
 
   nixpkgs.overlays = [ (import ../overlay.nix inputs) ];
+
+  services = lib.optionalAttrs isDarwin {
+    hydra-queue-builder-dev.package = pkgs.hydra-builder;
+  };
 }
