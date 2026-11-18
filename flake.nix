@@ -11,6 +11,11 @@
     # package set as the modules they are written for.
     nixpkgs-hydra.url = "github:nixos/nixpkgs/nixos-unstable-small";
 
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
