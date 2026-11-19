@@ -36,6 +36,9 @@ in
             inherit (configuration.pkgs.stdenv.hostPlatform) system;
           in
           deploy-rs.lib.${system}.activate.nixos configuration;
+
+        # Users are all untrusted and thus are not allowed to push store paths
+        remoteBuild = true;
       };
     }) self.nixosConfigurations;
   };
