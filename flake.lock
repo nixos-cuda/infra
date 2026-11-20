@@ -212,11 +212,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792579432,
-        "narHash": "sha256-d8WKpK51FwvgvZot/uWnrr3mtlreanl71y5KBy+4C/o=",
+        "lastModified": 1795207047,
+        "narHash": "sha256-XE87dYi244/SDuPMFedyVKE/ljK+5JYWOWddfDGbzM0=",
         "owner": "YorikSar",
         "repo": "hydra-github-app",
-        "rev": "7830068dc3fb1497e7a32aa6040dcd2ff6b1e8de",
+        "rev": "9475491210a59fb64c4762ba92fd3fa712848aa8",
         "type": "github"
       },
       "original": {
