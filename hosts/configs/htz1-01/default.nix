@@ -18,6 +18,9 @@
   # Disable GC
   nix.gc.automatic = lib.mkForce false;
 
+  # Save some space in our big store by hardlinking same files in different store paths
+  nix.settings.auto-optimise-store = true;
+
   sops.defaultSopsFile = ./secrets.yaml;
 
   # Enable zramSwap to ponder nix-eval-jobs' high RAM usage
