@@ -10,6 +10,7 @@ let
     "master"
     "release-25.11"
     "release-26.05"
+    "release-26.11"
   ];
   serviceName = "sync-nixpkgs-branches";
   helpers = pkgs.lib.getExe inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.helpers;
